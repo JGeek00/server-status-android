@@ -31,10 +31,10 @@ fun NavigationManager() {
 
     NavHost(
         navController = navigationController,
-        startDestination = "/status"
+        startDestination = Routes.STATUS
     ) {
         composable(
-            route = "/status",
+            route = Routes.STATUS,
             enterTransition = { enterTransition },
             exitTransition = { exitTransition },
             popEnterTransition = { popEnterTransition },
@@ -43,7 +43,7 @@ fun NavigationManager() {
             StatusView(navigationController)
         }
         composable(
-            route = "/settings",
+            route = Routes.SETTINGS,
             enterTransition = { enterTransition },
             exitTransition = { exitTransition },
             popEnterTransition = { popEnterTransition },

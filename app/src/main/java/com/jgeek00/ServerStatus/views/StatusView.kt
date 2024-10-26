@@ -56,6 +56,7 @@ import androidx.navigation.NavHostController
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.Gauge
 import com.jgeek00.ServerStatus.constants.gaugeColors
+import com.jgeek00.ServerStatus.navigation.Routes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -105,7 +106,7 @@ fun StatusView(navigationController: NavHostController) {
                         state = rememberTooltipState(),
                     ) {
                         IconButton(
-                            onClick = { navigationController.navigate("/settings") },
+                            onClick = { navigationController.navigate(Routes.SETTINGS) },
                             modifier = Modifier
                         ) {
                             Icon(
