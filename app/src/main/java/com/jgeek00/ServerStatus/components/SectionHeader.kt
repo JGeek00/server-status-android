@@ -10,12 +10,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SectionHeader(title: String) {
+fun SectionHeader(title: String, modifier: Modifier? = null) {
     Text(
         text = title,
         color = MaterialTheme.colorScheme.primary,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 12.sp,
-        modifier = Modifier.padding(16.dp),
+        fontSize = 14.sp,
+        modifier = modifier ?: Modifier.padding(16.dp),
     )
 }

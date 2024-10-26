@@ -35,16 +35,16 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.NavHostController
 import com.jgeek00.ServerStatus.R
+import com.jgeek00.ServerStatus.components.ListTile
 import com.jgeek00.ServerStatus.components.SectionHeader
 import com.jgeek00.ServerStatus.constants.DataStoreKeys
 import com.jgeek00.ServerStatus.constants.Enums
 import com.jgeek00.ServerStatus.services.DataStoreService
+import com.jgeek00.ServerStatus.utils.getAppVersion
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -82,7 +82,7 @@ fun SettingsView(navigationController: NavHostController) {
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .padding(padding)
         ) {
-           SectionHeader(title = "Theme")
+            SectionHeader(title = "Theme")
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
@@ -93,6 +93,18 @@ fun SettingsView(navigationController: NavHostController) {
                 ThemeBox(Enums.Theme.LIGHT)
                 ThemeBox(Enums.Theme.DARK)
             }
+
+            SectionHeader(
+                title = "About the app",
+                modifier = Modifier
+                    .padding(top = 32.dp)
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 8.dp)
+            )
+            getAppVersion(LocalContext.current)?.also { value ->
+                ListTile(label = "App version", supportingText = value)
+            }
+            ListTile("Created by", "JGeek00")
         }
     }
 }
@@ -100,8 +112,7 @@ fun SettingsView(navigationController: NavHostController) {
 @Composable
 fun ThemeBox(theme: Enums.Theme) {
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-    val dataStore = DataStoreService(context)
+    val dataStore = DataStoreService(LocalContext.current)
 
     val darkModeValue = dataStore.getValue(DataStoreKeys.THEME_MODE as Preferences.Key<Any>).collectAsState(
         Enums.Theme.SYSTEM_DEFINED.name).value as String?

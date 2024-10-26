@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.datastore.preferences.core.Preferences
 import com.jgeek00.ServerStatus.constants.DataStoreKeys
@@ -21,11 +23,20 @@ class MainActivity : ComponentActivity() {
         val dataStore = DataStoreService(this)
 
         setContent {
-            val darkModeValue = dataStore.getValue(DataStoreKeys.THEME_MODE as Preferences.Key<Any>).collectAsState(
-                Enums.Theme.SYSTEM_DEFINED.name).value as String?
+            val themeValue = dataStore.getValue(DataStoreKeys.THEME_MODE as Preferences.Key<Any>).collectAsState(
+                Enums.Theme.SYSTEM_DEFINED.name).value as String? ?: Enums.Theme.SYSTEM_DEFINED.name
+
+            @Composable
+            fun getDarkModeEnabled(themeValue: Enums.Theme): Boolean {
+                return when (themeValue) {
+                    Enums.Theme.SYSTEM_DEFINED -> isSystemInDarkTheme()
+                    Enums.Theme.LIGHT -> false
+                    Enums.Theme.DARK -> true
+                }
+            }
 
             ServerStatusTheme(
-                darkTheme = if (darkModeValue !== null) Enums.Theme.valueOf(darkModeValue) == Enums.Theme.DARK else false,
+                darkTheme = getDarkModeEnabled(themeValue = Enums.Theme.valueOf(themeValue)),
             ) {
                 NavigationManager()
             }
