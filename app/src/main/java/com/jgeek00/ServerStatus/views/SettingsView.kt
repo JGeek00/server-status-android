@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.NavHostController
@@ -58,7 +59,7 @@ fun SettingsView(navigationController: NavHostController) {
         topBar = {
             LargeTopAppBar(
                 title = {
-                    Text("Settings")
+                    Text(stringResource(R.string.settings))
                 },
                 navigationIcon = {
                     IconButton(
@@ -68,7 +69,7 @@ fun SettingsView(navigationController: NavHostController) {
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 }
@@ -82,7 +83,7 @@ fun SettingsView(navigationController: NavHostController) {
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .padding(padding)
         ) {
-            SectionHeader(title = "Theme")
+            SectionHeader(title = stringResource(R.string.theme))
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
@@ -95,16 +96,16 @@ fun SettingsView(navigationController: NavHostController) {
             }
 
             SectionHeader(
-                title = "About the app",
+                title = stringResource(R.string.about_the_app),
                 modifier = Modifier
                     .padding(top = 32.dp)
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 8.dp)
             )
             getAppVersion(LocalContext.current)?.also { value ->
-                ListTile(label = "App version", supportingText = value)
+                ListTile(label = stringResource(R.string.app_version), supportingText = value)
             }
-            ListTile("Created by", "JGeek00")
+            ListTile(stringResource(R.string.created_by), "JGeek00")
         }
     }
 }
@@ -121,7 +122,7 @@ fun ThemeBox(theme: Enums.Theme) {
         Enums.Theme.SYSTEM_DEFINED -> {
             ThemeButton(
                 iconId = R.drawable.smartphone_icon,
-                text = "System",
+                text = stringResource(R.string.system),
                 isEnabled = if (darkModeValue !== null) Enums.Theme.valueOf(darkModeValue) == Enums.Theme.SYSTEM_DEFINED else true
             ) {
                 scope.launch {
@@ -132,7 +133,7 @@ fun ThemeBox(theme: Enums.Theme) {
         Enums.Theme.LIGHT -> {
             ThemeButton(
                 iconId = R.drawable.light_mode_icon,
-                text = "Light",
+                text = stringResource(R.string.light),
                 isEnabled = if (darkModeValue !== null) Enums.Theme.valueOf(darkModeValue) == Enums.Theme.LIGHT else false
             ) {
                 scope.launch {
@@ -143,7 +144,7 @@ fun ThemeBox(theme: Enums.Theme) {
         Enums.Theme.DARK -> {
             ThemeButton(
                 iconId = R.drawable.dark_mode_icon,
-                text = "Dark",
+                text = stringResource(R.string.dark),
                 isEnabled = if (darkModeValue !== null) Enums.Theme.valueOf(darkModeValue) == Enums.Theme.DARK else false
             ) {
                 scope.launch {
@@ -164,7 +165,7 @@ fun ThemeButton(iconId: Int, text: String, isEnabled: Boolean, onClick: () -> Un
             contentColor = if (isEnabled) MaterialTheme.colorScheme.primaryContainer else Color.Gray,
         ),
         modifier = Modifier
-            .size(width = 100.dp, height = 100.dp)
+            .size(width = 120.dp, height = 100.dp)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -172,7 +173,7 @@ fun ThemeButton(iconId: Int, text: String, isEnabled: Boolean, onClick: () -> Un
         ) {
             Image(
                 painter = painterResource(iconId),
-                contentDescription = "System defined",
+                contentDescription = text,
                 colorFilter = ColorFilter.tint(color = if (isEnabled) MaterialTheme.colorScheme.primaryContainer else Color.Gray),
                 modifier = Modifier.size(24.dp)
             )

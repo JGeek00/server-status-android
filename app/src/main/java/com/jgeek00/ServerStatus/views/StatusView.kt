@@ -48,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -91,7 +92,7 @@ fun StatusView(navigationController: NavHostController) {
                     Column(
                         horizontalAlignment = Alignment.Start
                     ) {
-                        Text(text = "Status")
+                        Text(text = stringResource(R.string.status))
                         Text(
                             text = "https://status.server.com",
                             color = Color.Gray,
@@ -117,7 +118,7 @@ fun StatusView(navigationController: NavHostController) {
                                     contentDescription = "Settings"
                                 )
                             },
-                            text = { Text("Settings") },
+                            text = { Text(stringResource(R.string.settings)) },
                             onClick = { navigationController.navigate("/settings") }
                         )
                     }
@@ -170,7 +171,7 @@ fun CpuCard() {
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.cpu_icon),
-                    contentDescription = "CPU",
+                    contentDescription = stringResource(R.string.cpu),
                     colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
                     modifier = Modifier
                         .size(50.dp)
@@ -178,7 +179,7 @@ fun CpuCard() {
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(
-                        text = "CPU",
+                        text = stringResource(R.string.cpu),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -202,7 +203,7 @@ fun CpuCard() {
                     icon = {
                         Image(
                             painter = painterResource(id = R.drawable.cpu_icon),
-                            contentDescription = "CPU",
+                            contentDescription = stringResource(R.string.cpu),
                             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
                             modifier = Modifier.size(40.dp)
                         )
@@ -216,7 +217,7 @@ fun CpuCard() {
                     icon = {
                         Image(
                             painter = painterResource(id = R.drawable.thermostat_icon),
-                            contentDescription = "Temperature",
+                            contentDescription = stringResource(R.string.temperature),
                             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
                             modifier = Modifier.size(40.dp)
                         )
@@ -235,11 +236,11 @@ fun CpuCard() {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("View more")
+                        Text(stringResource(R.string.view_more))
                         Spacer(modifier = Modifier.width(6.dp))
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
-                            contentDescription = "View more"
+                            contentDescription = stringResource(R.string.view_more)
                         )
                     }
                 }
@@ -264,7 +265,7 @@ fun MemoryCard() {
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.memory_icon),
-                    contentDescription = "Memory",
+                    contentDescription = stringResource(R.string.memory),
                     colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
                     modifier = Modifier
                         .size(50.dp)
@@ -272,7 +273,7 @@ fun MemoryCard() {
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(
-                        text = "Memory (RAM)",
+                        text = stringResource(R.string.memory_ram),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -296,7 +297,7 @@ fun MemoryCard() {
                     icon = {
                         Image(
                             painter = painterResource(id = R.drawable.memory_icon),
-                            contentDescription = "memory",
+                            contentDescription = stringResource(R.string.memory),
                             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
                             modifier = Modifier.size(40.dp)
                         )
@@ -309,23 +310,23 @@ fun MemoryCard() {
                     Row {
                         Text("10 GB", fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.width(4.dp))
-                        Text("available")
+                        Text(stringResource(R.string.available))
                     }
                     Row {
                         Text("6 GB", fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.width(4.dp))
-                        Text("in use")
+                        Text(stringResource(R.string.in_use))
                     }
                     Spacer(Modifier.height(4.dp))
                     Row {
                         Text("0 GB", fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
                         Spacer(Modifier.width(4.dp))
-                        Text("in swap", fontSize = 12.sp)
+                        Text(stringResource(R.string.in_swap), fontSize = 12.sp)
                     }
                     Row {
                         Text("8 GB", fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
                         Spacer(Modifier.width(4.dp))
-                        Text("in cache", fontSize = 12.sp)
+                        Text(stringResource(R.string.in_cache), fontSize = 12.sp)
                     }
                 }
             }
@@ -341,11 +342,11 @@ fun MemoryCard() {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("View more")
+                        Text(stringResource(R.string.view_more))
                         Spacer(modifier = Modifier.width(6.dp))
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
-                            contentDescription = "View more"
+                            contentDescription = stringResource(R.string.view_more)
                         )
                     }
                 }
@@ -370,7 +371,7 @@ fun StorageCard() {
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.storage_icon),
-                    contentDescription = "Storage",
+                    contentDescription = stringResource(R.string.storage),
                     colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
                     modifier = Modifier
                         .size(50.dp)
@@ -378,7 +379,7 @@ fun StorageCard() {
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(
-                        text = "Storage",
+                        text = stringResource(R.string.storage),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -402,7 +403,7 @@ fun StorageCard() {
                     icon = {
                         Image(
                             painter = painterResource(id = R.drawable.storage_icon),
-                            contentDescription = "memory",
+                            contentDescription = stringResource(R.string.storage),
                             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
                             modifier = Modifier.size(40.dp)
                         )
@@ -415,12 +416,12 @@ fun StorageCard() {
                     Row {
                         Text("1", fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.width(4.dp))
-                        Text("volume")
+                        Text(stringResource(R.string.volume))
                     }
                     Row {
                         Text("450 GB", fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.width(4.dp))
-                        Text("available")
+                        Text(stringResource(R.string.available))
                     }
                 }
             }
@@ -436,11 +437,11 @@ fun StorageCard() {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("View more")
+                        Text(stringResource(R.string.view_more))
                         Spacer(modifier = Modifier.width(6.dp))
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
-                            contentDescription = "View more"
+                            contentDescription = stringResource(R.string.view_more)
                         )
                     }
                 }
@@ -465,7 +466,7 @@ fun NetworkCard() {
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.network_icon),
-                    contentDescription = "Network",
+                    contentDescription = stringResource(R.string.network),
                     colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
                     modifier = Modifier
                         .size(50.dp)
@@ -473,7 +474,7 @@ fun NetworkCard() {
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(
-                        text = "Network",
+                        text = stringResource(R.string.network),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -495,7 +496,7 @@ fun NetworkCard() {
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.KeyboardArrowDown,
-                        contentDescription = "Download traffic",
+                        contentDescription = stringResource(R.string.download_traffic),
                         modifier = Modifier.size(50.dp)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -513,7 +514,7 @@ fun NetworkCard() {
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.KeyboardArrowUp,
-                        contentDescription = "Upload traffic",
+                        contentDescription = stringResource(R.string.upload_traffic),
                         modifier = Modifier.size(50.dp)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -538,11 +539,11 @@ fun NetworkCard() {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("View more")
+                        Text(stringResource(R.string.view_more))
                         Spacer(modifier = Modifier.width(6.dp))
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
-                            contentDescription = "View more"
+                            contentDescription = stringResource(R.string.view_more)
                         )
                     }
                 }

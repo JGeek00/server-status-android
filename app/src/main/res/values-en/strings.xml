@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Server Status</string>
+    <string name="app_name">Server Status</string>
     <string name="status">Status</string>
     <string name="settings">Settings</string>
     <string name="cpu">CPU</string>

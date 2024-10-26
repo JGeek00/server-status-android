@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Server Status</string>
+    <string name="status">Estado</string>
+    <string name="settings">Ajustes</string>
+    <string name="cpu">CPU</string>
+    <string name="temperature">Temperatura</string>
+    <string name="view_more">Ver mas</string>
+    <string name="memory">Memoria</string>
+    <string name="memory_ram">Memoria (RAM)</string>
+    <string name="available">disponible</string>
+    <string name="in_use">en uso</string>
+    <string name="in_swap">en swap</string>
+    <string name="in_cache">en caché</string>
+    <string name="upload_traffic">Tráfico de subida</string>
+    <string name="download_traffic">Tráfico de bajada</string>
+    <string name="network">Red</string>
+    <string name="volume">volúmen</string>
+    <string name="storage">Almacenamiento</string>
+    <string name="back">Atrás</string>
+    <string name="theme">Tema</string>
+    <string name="about_the_app">Sobre la app</string>
+    <string name="app_version">Versión de la app</string>
+    <string name="created_by">Creado por</string>
+    <string name="light">Claro</string>
+    <string name="system">Sistema</string>
+    <string name="dark">Oscuro</string>
+</resources>
