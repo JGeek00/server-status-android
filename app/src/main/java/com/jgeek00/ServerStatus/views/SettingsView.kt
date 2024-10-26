@@ -36,6 +36,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.NavHostController
@@ -162,7 +163,7 @@ fun ThemeButton(iconId: Int, text: String, isEnabled: Boolean, onClick: () -> Un
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (isEnabled) MaterialTheme.colorScheme.primary else Color.Gray.copy(alpha = 0.2f),
-            contentColor = if (isEnabled) MaterialTheme.colorScheme.primaryContainer else Color.Gray,
+            contentColor = if (isEnabled) MaterialTheme.colorScheme.surfaceContainer else Color.Gray,
         ),
         modifier = Modifier
             .size(width = 120.dp, height = 100.dp)
@@ -174,11 +175,17 @@ fun ThemeButton(iconId: Int, text: String, isEnabled: Boolean, onClick: () -> Un
             Image(
                 painter = painterResource(iconId),
                 contentDescription = text,
-                colorFilter = ColorFilter.tint(color = if (isEnabled) MaterialTheme.colorScheme.primaryContainer else Color.Gray),
+                colorFilter = ColorFilter.tint(color = if (isEnabled) MaterialTheme.colorScheme.surfaceContainer else Color.Gray),
                 modifier = Modifier.size(24.dp)
             )
             Spacer(Modifier.height(16.dp))
             Text(text)
         }
     }
+}
+
+@Composable
+@Preview
+fun ThemeButtonPreview() {
+    ThemeButton(R.drawable.smartphone_icon, "System", true) {}
 }
