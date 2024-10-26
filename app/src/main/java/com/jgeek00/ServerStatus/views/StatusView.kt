@@ -33,9 +33,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -52,6 +56,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.PopupPositionProvider
 import androidx.navigation.NavHostController
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.Gauge
@@ -64,8 +69,6 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun StatusView(navigationController: NavHostController) {
-    var dropdownExpanded by remember { mutableStateOf(false) }
-
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     var refreshing by remember { mutableStateOf(false) }
@@ -101,26 +104,22 @@ fun StatusView(navigationController: NavHostController) {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { dropdownExpanded = true }) {
-                        Icon(
-                            imageVector = Icons.Rounded.MoreVert,
-                            contentDescription = "Menu"
-                        )
-                    }
-                    DropdownMenu(
-                        onDismissRequest = { dropdownExpanded = false },
-                        expanded = dropdownExpanded
+                    TooltipBox(
+                        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+                        tooltip = {
+                            PlainTooltip { Text(stringResource(R.string.settings)) }
+                        },
+                        state = rememberTooltipState(),
                     ) {
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Rounded.Settings,
-                                    contentDescription = "Settings"
-                                )
-                            },
-                            text = { Text(stringResource(R.string.settings)) },
-                            onClick = { navigationController.navigate("/settings") }
-                        )
+                        IconButton(
+                            onClick = { navigationController.navigate("/settings") },
+                            modifier = Modifier
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Settings,
+                                contentDescription = stringResource(R.string.settings)
+                            )
+                        }
                     }
                 },
             )
