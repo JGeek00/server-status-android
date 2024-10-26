@@ -2,7 +2,6 @@ package com.jgeek00.ServerStatus.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,20 +13,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
-import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.Memory
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material.icons.rounded.Thermostat
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,6 +33,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -56,7 +52,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.PopupPositionProvider
 import androidx.navigation.NavHostController
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.Gauge
@@ -66,15 +61,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatusView(navigationController: NavHostController) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     var refreshing by remember { mutableStateOf(false) }
-    val state = rememberPullRefreshState(refreshing, {
-        refreshing = true
-    })
+    val state = rememberPullToRefreshState()
 
     LaunchedEffect(refreshing) {
         if (refreshing) {
@@ -125,10 +118,11 @@ fun StatusView(navigationController: NavHostController) {
             )
         }
     ) { padding ->
-        Box(
+        PullToRefreshBox(
+            state = state,
+            isRefreshing = refreshing,
+            onRefresh = { refreshing = true },
             modifier = Modifier
-                .fillMaxSize()
-                .pullRefresh(state)
                 .padding(padding)
         ) {
             Column(
@@ -143,13 +137,6 @@ fun StatusView(navigationController: NavHostController) {
                 StorageCard()
                 NetworkCard()
             }
-            PullRefreshIndicator(
-                refreshing = refreshing,
-                state = state,
-                modifier = Modifier
-                    .align(alignment = Alignment.TopCenter),
-                contentColor = MaterialTheme.colorScheme.primary
-            )
         }
     }
 }
@@ -168,12 +155,10 @@ fun CpuCard() {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.cpu_icon),
+                Icon(
+                    imageVector = Icons.Rounded.Memory,
                     contentDescription = stringResource(R.string.cpu),
-                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
-                    modifier = Modifier
-                        .size(50.dp)
+                    modifier = Modifier.size(50.dp),
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
@@ -200,11 +185,10 @@ fun CpuCard() {
                     percentage = 20.0,
                     size = 100.dp,
                     icon = {
-                        Image(
-                            painter = painterResource(id = R.drawable.cpu_icon),
+                        Icon(
+                            imageVector = Icons.Rounded.Memory,
                             contentDescription = stringResource(R.string.cpu),
-                            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier.size(40.dp),
                         )
                     }
                 )
@@ -214,11 +198,10 @@ fun CpuCard() {
                     percentage = 50.0,
                     size = 100.dp,
                     icon = {
-                        Image(
-                            painter = painterResource(id = R.drawable.thermostat_icon),
+                        Icon(
+                            imageVector = Icons.Rounded.Thermostat,
                             contentDescription = stringResource(R.string.temperature),
-                            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier.size(40.dp),
                         )
                     }
                 )
