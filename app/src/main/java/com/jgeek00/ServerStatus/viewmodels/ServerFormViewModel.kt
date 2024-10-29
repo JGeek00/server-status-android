@@ -2,8 +2,11 @@ package com.jgeek00.ServerStatus.viewmodels
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jgeek00.ServerStatus.constants.Enums
 import com.jgeek00.ServerStatus.constants.RegExps
+import com.jgeek00.ServerStatus.providers.ServerInstancesProvider
+import kotlinx.coroutines.launch
 
 class ServerFormViewModel: ViewModel() {
     var serverName = mutableStateOf("")
@@ -28,8 +31,14 @@ class ServerFormViewModel: ViewModel() {
     var basicAuthPassword = mutableStateOf("")
     var basicAuthPasswordError = mutableStateOf<String?>(null)
 
-    fun validateForm() {
+    var saving = mutableStateOf(false)
+    var savingError = mutableStateOf(false)
+
+    private fun validateForm(): Boolean {
+        var ret = true
+
         if (serverName.value.isEmpty()) {
+            ret = false
             serverNameError.value = "Server name cannot be empty"
         }
         else {
@@ -37,9 +46,11 @@ class ServerFormViewModel: ViewModel() {
         }
 
         if (ipDomain.value.isEmpty()) {
-           ipDomainError.value = "IP address or domain cannot be empty"
+            ret = false
+            ipDomainError.value = "IP address or domain cannot be empty"
         }
         else if (!RegExps.ipv4Address.matches(ipDomain.value) && !RegExps.ipv6Address.matches(ipDomain.value) && !RegExps.domain.matches(ipDomain.value)) {
+            ret = false
             ipDomainError.value = "Invalid IP address or domain"
         }
         else {
@@ -47,6 +58,7 @@ class ServerFormViewModel: ViewModel() {
         }
 
         if (port.value.isNotEmpty() && !RegExps.port.matches(port.value)) {
+            ret = false
             portError.value = "Invalid port"
         }
         else {
@@ -54,6 +66,7 @@ class ServerFormViewModel: ViewModel() {
         }
 
         if (path.value.isNotEmpty() && !RegExps.path.matches(path.value)) {
+            ret = false
             pathError.value = "Invalid path"
         }
         else {
@@ -61,6 +74,7 @@ class ServerFormViewModel: ViewModel() {
         }
 
         if (useBasicAuth.value && basicAuthUsername.value.isEmpty()) {
+            ret = false
             basicAuthUsernameError.value = "Username cannot be empty"
         }
         else {
@@ -68,14 +82,34 @@ class ServerFormViewModel: ViewModel() {
         }
 
         if (useBasicAuth.value && basicAuthPassword.value.isEmpty()) {
+            ret = false
             basicAuthPasswordError.value = "Password cannot be empty"
         }
         else {
             basicAuthPasswordError.value = null
         }
+
+        return ret
     }
 
     fun save() {
-        validateForm()
+        val res = validateForm()
+        if (!res) return
+
+        viewModelScope.launch {
+            saving.value = true
+            val result = ServerInstancesProvider.getInstance().createServer(
+                name = serverName.value,
+                method = connectionMethod.value.toString().lowercase(),
+                ipDomain = ipDomain.value,
+                port = port.value.toIntOrNull(),
+                path = path.value,
+                useBasicAuth = useBasicAuth.value,
+                basicAuthUser = basicAuthUsername.value,
+                basicAuthPassword = basicAuthPassword.value
+            )
+            savingError.value = !result
+            saving.value = false
+        }
     }
 }

@@ -11,7 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.jgeek00.ServerStatus.views.ServerFormView
-import com.jgeek00.ServerStatus.views.SettingsView
+import com.jgeek00.ServerStatus.views.Settings.SettingsView
 import com.jgeek00.ServerStatus.views.StatusView
 
 @Composable

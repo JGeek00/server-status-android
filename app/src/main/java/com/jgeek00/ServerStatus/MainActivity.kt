@@ -14,20 +14,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.datastore.preferences.core.Preferences
+import androidx.lifecycle.lifecycleScope
 import com.jgeek00.ServerStatus.constants.DataStoreKeys
 import com.jgeek00.ServerStatus.constants.Enums
 import com.jgeek00.ServerStatus.navigation.NavigationManager
 import com.jgeek00.ServerStatus.providers.ServerInstancesProvider
 import com.jgeek00.ServerStatus.services.DataStoreService
+import com.jgeek00.ServerStatus.services.DatabaseService
 import com.jgeek00.ServerStatus.ui.theme.ServerStatusTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val dataStore = DataStoreService(this)
-        ServerInstancesProvider.getInstance().getServersFromDatabase(this)
+        DatabaseService.init(this)  // Init database
+        val dataStore = DataStoreService(this)  // Init datastore
+
+        lifecycleScope.launch {
+            ServerInstancesProvider.getInstance().getServersFromDatabase() // Load servers from database
+        }
 
         setContent {
             val themeValue = dataStore.getValue(DataStoreKeys.THEME_MODE as Preferences.Key<Any>).collectAsState(

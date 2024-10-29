@@ -14,7 +14,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.Save
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,6 +29,7 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -36,6 +40,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -73,7 +78,8 @@ fun ServerFormView(navigationController: NavController) {
                 },
                 actions = {
                     IconButton(
-                        onClick = { viewModel.save() }
+                        onClick = { viewModel.save() },
+                        enabled = !viewModel.saving.value
                     ) {
                         Image(
                             imageVector = Icons.Rounded.Save,
@@ -113,7 +119,8 @@ fun ServerFormView(navigationController: NavController) {
                         if (viewModel.serverNameError.value != null) {
                             Text(viewModel.serverNameError.value!!, color = MaterialTheme.colorScheme.error)
                         }
-                    }
+                    },
+                    enabled = !viewModel.saving.value
                 )
                 SectionHeader(
                     title = "Connection details",
@@ -130,6 +137,7 @@ fun ServerFormView(navigationController: NavController) {
                             selected = viewModel.connectionMethod.value === Enums.ConnectionMethod.HTTP,
                             onClick = { viewModel.connectionMethod.value = Enums.ConnectionMethod.HTTP },
                             shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
+                            enabled = !viewModel.saving.value
                         ) {
                             Text("HTTP")
                         }
@@ -137,6 +145,7 @@ fun ServerFormView(navigationController: NavController) {
                             selected = viewModel.connectionMethod.value === Enums.ConnectionMethod.HTTPS,
                             onClick = { viewModel.connectionMethod.value = Enums.ConnectionMethod.HTTPS },
                             shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
+                            enabled = !viewModel.saving.value
                         ) {
                             Text("HTTPS")
                         }
@@ -157,7 +166,8 @@ fun ServerFormView(navigationController: NavController) {
                         if (viewModel.ipDomainError.value != null) {
                             Text(viewModel.ipDomainError.value!!, color = MaterialTheme.colorScheme.error)
                         }
-                    }
+                    },
+                    enabled = !viewModel.saving.value
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextField(
@@ -177,7 +187,8 @@ fun ServerFormView(navigationController: NavController) {
                         else {
                             Text("Optional")
                         }
-                    }
+                    },
+                    enabled = !viewModel.saving.value
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextField(
@@ -198,7 +209,8 @@ fun ServerFormView(navigationController: NavController) {
                         else {
                             Text("Optional")
                         }
-                    }
+                    },
+                    enabled = !viewModel.saving.value
                 )
                 SectionHeader(
                     title = "Basic authentication",
@@ -210,7 +222,8 @@ fun ServerFormView(navigationController: NavController) {
             SwitchListTile(
                 label = "Use basic authentication",
                 checked = viewModel.useBasicAuth.value,
-                onCheckedChange = { viewModel.useBasicAuth.value = it}
+                onCheckedChange = { viewModel.useBasicAuth.value = it},
+                enabled = !viewModel.saving.value
             )
             if (viewModel.useBasicAuth.value) {
                 Column(
@@ -230,7 +243,8 @@ fun ServerFormView(navigationController: NavController) {
                             if (viewModel.basicAuthUsernameError.value != null) {
                                 Text(viewModel.basicAuthUsernameError.value!!, color = MaterialTheme.colorScheme.error)
                             }
-                        }
+                        },
+                        enabled = !viewModel.saving.value
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     OutlinedTextField(
@@ -248,10 +262,39 @@ fun ServerFormView(navigationController: NavController) {
                             if (viewModel.basicAuthPasswordError.value != null) {
                                 Text(viewModel.basicAuthPasswordError.value!!, color = MaterialTheme.colorScheme.error)
                             }
-                        }
+                        },
+                        enabled = !viewModel.saving.value
                     )
                 }
             }
+        }
+        if (viewModel.savingError.value) {
+            AlertDialog(
+                icon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Error,
+                        contentDescription = "Error",
+                    )
+                },
+                title = {
+                    Text(
+                        text = "Couldn't create server connection",
+                        textAlign = TextAlign.Center
+                    )
+                },
+                text = {
+                    Text(text = "An error occurred while trying to create a server connection.")
+                },
+                onDismissRequest = {},
+                confirmButton = {},
+                dismissButton = {
+                    TextButton(
+                        onClick = { viewModel.savingError.value = false }
+                    ) {
+                        Text("Close")
+                    }
+                }
+            )
         }
     }
 }

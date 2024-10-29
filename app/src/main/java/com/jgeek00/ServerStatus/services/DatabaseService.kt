@@ -1,14 +1,29 @@
 package com.jgeek00.ServerStatus.services
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.jgeek00.ServerStatus.constants.AppConfig
 import com.jgeek00.ServerStatus.models.ServerModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 private const val DB_VERSION = 1
 
 class DatabaseService(context: Context?): SQLiteOpenHelper(context, AppConfig.DATABASE_NAME, null, DB_VERSION) {
+    companion object {
+        private var INSTANCE: DatabaseService? = null
+
+        fun init(context: Context) {
+            INSTANCE = DatabaseService(context)
+        }
+
+        fun getInstance(): DatabaseService {
+            return INSTANCE!!
+        }
+    }
+
     override fun onCreate(db: SQLiteDatabase) {
         val query = ("CREATE TABLE servers ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -27,43 +42,74 @@ class DatabaseService(context: Context?): SQLiteOpenHelper(context, AppConfig.DA
 
     }
 
-    fun getServers(): List<ServerModel>? {
-        try {
-            val db = this.readableDatabase
-            val items = mutableListOf<ServerModel>()
-            val cursor = db.rawQuery("SELECT * FROM servers", null)
-            if (cursor.moveToFirst()) {
-                do {
-                    val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
-                    val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
-                    val method = cursor.getString(cursor.getColumnIndexOrThrow("method"))
-                    val ipDomain = cursor.getString(cursor.getColumnIndexOrThrow("ipDomain"))
-                    val port = cursor.getInt(cursor.getColumnIndexOrThrow("port"))
-                    val path = cursor.getString(cursor.getColumnIndexOrThrow("path"))
-                    val useBasicAuth = cursor.getInt(cursor.getColumnIndexOrThrow("useBasicAuth"))
-                    val basicAuthUser = cursor.getString(cursor.getColumnIndexOrThrow("basicAuthUser"))
-                    val basicAuthPassword = cursor.getString(cursor.getColumnIndexOrThrow("basicAuthPassword"))
-                    items.add(
-                        ServerModel(
-                            id,
-                            name,
-                            method,
-                            ipDomain,
-                            port,
-                            path,
-                            useBasicAuth = useBasicAuth == 1,
-                            basicAuthUser,
-                            basicAuthPassword
+    suspend fun getServers(): List<ServerModel>? {
+        val db = this.readableDatabase
+        return withContext(Dispatchers.IO) {
+            try {
+                val items = mutableListOf<ServerModel>()
+                val cursor = db.rawQuery("SELECT * FROM servers", null)
+                if (cursor.moveToFirst()) {
+                    do {
+                        items.add(
+                            ServerModel(
+                                id = cursor.getInt(cursor.getColumnIndexOrThrow("id")),
+                                name = cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                                method = cursor.getString(cursor.getColumnIndexOrThrow("method")),
+                                ipDomain = cursor.getString(cursor.getColumnIndexOrThrow("ipDomain")),
+                                port = cursor.getInt(cursor.getColumnIndexOrThrow("port")),
+                                path = cursor.getString(cursor.getColumnIndexOrThrow("path")),
+                                useBasicAuth = cursor.getInt(cursor.getColumnIndexOrThrow("useBasicAuth")) == 1,
+                                basicAuthUser = cursor.getString(cursor.getColumnIndexOrThrow("basicAuthUser")),
+                                basicAuthPassword = cursor.getString(cursor.getColumnIndexOrThrow("basicAuthPassword"))
+                            )
                         )
-                    )
-                } while (cursor.moveToNext())
+                    } while (cursor.moveToNext())
+                }
+                cursor.close()
+                db.close()
+                items
+            } catch (e: Exception) {
+                println(e.localizedMessage)
+                null
             }
-            cursor.close()
-            db.close()
-            return items
-        } catch (e: Exception) {
-            println(e.localizedMessage)
-            return null
+        }
+    }
+
+    suspend fun createServer(name: String, method: String, ipDomain: String, port: Int?, path: String?, useBasicAuth: Boolean, basicAuthUser: String?, basicAuthPassword: String?): Long? {
+        val db = this.writableDatabase
+        return withContext(Dispatchers.IO) {
+            try {
+                val contentValues = ContentValues().apply {
+                    put("name", name)
+                    put("method", method)
+                    put("ipDomain", ipDomain)
+                    if (port != null) put("port", port)
+                    if (path != null) put("path", path)
+                    put("useBasicAuth", if (useBasicAuth) 1 else 0)
+                    if (basicAuthUser != null) put("basicAuthUser", basicAuthUser)
+                    if (basicAuthPassword != null) put("basicAuthPassword", basicAuthPassword)
+                }
+                val query = db.insert("servers", null, contentValues)
+                db.close()
+                query
+            } catch (e: Exception) {
+                println(e.localizedMessage)
+                null
+            }
+        }
+    }
+
+    suspend fun deleteServer(serverId: Int): Boolean {
+        val db = this.writableDatabase
+        return withContext(Dispatchers.IO) {
+            try {
+                db.delete("servers", "id = ?", arrayOf(serverId.toString()))
+                db.close()
+                true
+            } catch (e: Exception) {
+                println(e.localizedMessage)
+                false
+            }
         }
     }
 }
