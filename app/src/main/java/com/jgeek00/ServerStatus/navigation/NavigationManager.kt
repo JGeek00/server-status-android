@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.jgeek00.ServerStatus.views.ServerFormView
 import com.jgeek00.ServerStatus.views.SettingsView
 import com.jgeek00.ServerStatus.views.StatusView
 
@@ -50,6 +51,15 @@ fun NavigationManager() {
             popExitTransition = { popExitTransition }
         ) {
             SettingsView(navigationController)
+        }
+        composable(
+            route = Routes.SERVER_FORM,
+            enterTransition = { enterTransition },
+            exitTransition = { exitTransition },
+            popEnterTransition = { popEnterTransition },
+            popExitTransition = { popExitTransition }
+        ) {
+            ServerFormView(navigationController)
         }
     }
 }

@@ -2,8 +2,6 @@ package com.jgeek00.ServerStatus.providers
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jgeek00.ServerStatus.models.ServerModel
 import com.jgeek00.ServerStatus.services.DatabaseService
 

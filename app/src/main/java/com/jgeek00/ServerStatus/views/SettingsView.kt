@@ -50,6 +50,7 @@ import com.jgeek00.ServerStatus.components.ListTile
 import com.jgeek00.ServerStatus.components.SectionHeader
 import com.jgeek00.ServerStatus.constants.DataStoreKeys
 import com.jgeek00.ServerStatus.constants.Enums
+import com.jgeek00.ServerStatus.navigation.Routes
 import com.jgeek00.ServerStatus.providers.ServerInstancesProvider
 import com.jgeek00.ServerStatus.services.DataStoreService
 import com.jgeek00.ServerStatus.utils.createServerAddress
@@ -91,7 +92,7 @@ fun SettingsView(navigationController: NavHostController) {
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .padding(padding)
         ) {
-            ServersSection()
+            ServersSection(navigationController)
 
             SectionHeader(title = stringResource(R.string.theme))
             Row(
@@ -121,7 +122,7 @@ fun SettingsView(navigationController: NavHostController) {
 }
 
 @Composable
-fun ServersSection() {
+fun ServersSection(navigationController: NavHostController) {
     val serversProvider: ServerInstancesProvider = viewModel()
 
     SectionHeader(title = stringResource(R.string.servers))
@@ -163,7 +164,7 @@ fun ServersSection() {
     ) {
         Button(
             onClick = {
-
+                navigationController.navigate(Routes.SERVER_FORM)
             }
         ) {
             Row(
