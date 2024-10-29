@@ -7,9 +7,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.jgeek00.ServerStatus.providers.NavigationProvider
+import com.jgeek00.ServerStatus.providers.ServerInstancesProvider
 import com.jgeek00.ServerStatus.views.ServerFormView
 import com.jgeek00.ServerStatus.views.Settings.SettingsView
 import com.jgeek00.ServerStatus.views.StatusView
@@ -17,6 +22,7 @@ import com.jgeek00.ServerStatus.views.StatusView
 @Composable
 fun NavigationManager() {
     val navigationController = rememberNavController()
+    val navEvent by NavigationProvider.getInstance().navEvent.collectAsState()
 
     val slideTime = 400
 
@@ -29,6 +35,20 @@ fun NavigationManager() {
 
     val popExitTransition = slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(slideTime, easing = easing)) + fadeOut(animationSpec = tween(slideTime, easing = easing))
     val popEnterTransition = slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(slideTime, easing = easing)) + fadeIn(animationSpec = tween(slideTime, easing = easing))
+
+    LaunchedEffect(navEvent) {
+        when (val event = navEvent) {
+            is NavigationProvider.NavEvent.Navigate -> {
+                navigationController.navigate(event.destination)
+                NavigationProvider.getInstance().clearNavEvent()
+            }
+            is NavigationProvider.NavEvent.PopBack -> {
+                navigationController.popBackStack()
+                NavigationProvider.getInstance().clearNavEvent()
+            }
+            else -> Unit
+        }
+    }
 
     NavHost(
         navController = navigationController,

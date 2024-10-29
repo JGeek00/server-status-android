@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jgeek00.ServerStatus.constants.Enums
 import com.jgeek00.ServerStatus.constants.RegExps
+import com.jgeek00.ServerStatus.providers.NavigationProvider
 import com.jgeek00.ServerStatus.providers.ServerInstancesProvider
 import kotlinx.coroutines.launch
 
@@ -110,6 +111,9 @@ class ServerFormViewModel: ViewModel() {
             )
             savingError.value = !result
             saving.value = false
+            if (result) {
+                NavigationProvider.getInstance().popBack()
+            }
         }
     }
 }
