@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -16,9 +17,9 @@ import androidx.datastore.preferences.core.Preferences
 import com.jgeek00.ServerStatus.constants.DataStoreKeys
 import com.jgeek00.ServerStatus.constants.Enums
 import com.jgeek00.ServerStatus.navigation.NavigationManager
+import com.jgeek00.ServerStatus.providers.ServerInstancesProvider
 import com.jgeek00.ServerStatus.services.DataStoreService
 import com.jgeek00.ServerStatus.ui.theme.ServerStatusTheme
-import kotlinx.coroutines.flow.Flow
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +27,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val dataStore = DataStoreService(this)
+        ServerInstancesProvider.getInstance().getServersFromDatabase(this)
 
         setContent {
             val themeValue = dataStore.getValue(DataStoreKeys.THEME_MODE as Preferences.Key<Any>).collectAsState(

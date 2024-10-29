@@ -15,6 +15,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,16 +38,21 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.Preferences
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.ListTile
 import com.jgeek00.ServerStatus.components.SectionHeader
 import com.jgeek00.ServerStatus.constants.DataStoreKeys
 import com.jgeek00.ServerStatus.constants.Enums
+import com.jgeek00.ServerStatus.providers.ServerInstancesProvider
 import com.jgeek00.ServerStatus.services.DataStoreService
+import com.jgeek00.ServerStatus.utils.createServerAddress
 import com.jgeek00.ServerStatus.utils.getAppVersion
 import kotlinx.coroutines.launch
 
@@ -84,6 +91,8 @@ fun SettingsView(navigationController: NavHostController) {
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .padding(padding)
         ) {
+            ServersSection()
+
             SectionHeader(title = stringResource(R.string.theme))
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
@@ -107,6 +116,67 @@ fun SettingsView(navigationController: NavHostController) {
                 ListTile(label = stringResource(R.string.app_version), supportingText = value)
             }
             ListTile(stringResource(R.string.created_by), "JGeek00")
+        }
+    }
+}
+
+@Composable
+fun ServersSection() {
+    val serversProvider: ServerInstancesProvider = viewModel()
+
+    SectionHeader(title = stringResource(R.string.servers))
+    if (serversProvider.servers.isEmpty()) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Image(
+                imageVector = Icons.Rounded.Dns,
+                contentDescription = stringResource(R.string.servers),
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                modifier = Modifier
+                    .size(30.dp)
+            )
+            Text(
+                text = "No saved servers",
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+    else {
+        serversProvider.servers.map { server ->
+            ListTile(
+                label = server.name,
+                supportingText = createServerAddress(server.method, server.ipDomain, server.port, server.path)
+            )
+        }
+    }
+    Row(
+        horizontalArrangement = Arrangement.End,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(end = 16.dp, top = 16.dp)
+    ) {
+        Button(
+            onClick = {
+
+            }
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(
+                    imageVector = Icons.Rounded.Add,
+                    contentDescription = stringResource(R.string.create_server),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.surfaceContainer)
+                )
+                Text(stringResource(R.string.create_server))
+            }
         }
     }
 }

@@ -25,4 +25,6 @@
     <string name="light">Light</string>
     <string name="system">System</string>
     <string name="dark">Dark</string>
+    <string name="servers">Servers</string>
+    <string name="create_server">Create server</string>
 </resources>
