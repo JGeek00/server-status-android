@@ -1,5 +1,7 @@
 [versions]
 agp = "8.7.1"
+coilCompose = "2.7.0"
+converterGson = "2.11.0"
 hiltAndroid = "2.52"
 kotlin = "2.0.0"
 coreKtx = "1.13.1"
@@ -21,6 +23,8 @@ hiltNavigationCompose = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -45,6 +49,7 @@ androidx-animation = { group = "androidx.compose.animation", name = "animation",
 material3 = { group = "androidx.compose.material3", name = "material3", version = "1.4.0-alpha02" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "converterGson" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
