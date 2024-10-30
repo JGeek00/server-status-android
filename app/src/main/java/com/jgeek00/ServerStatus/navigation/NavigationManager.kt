@@ -26,11 +26,11 @@ fun NavigationManager() {
     val navigationController = rememberNavController()
     val navEvent by NavigationProvider.getInstance().navEvent.collectAsState()
 
-    val slideTime = 400
+    val slideTime = 500
 
     // https://cubic-bezier.com/#.55,0,0,1
-    // val easing = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f) -> md.sys.motion.easing.emphasized.decelerate
-    val easing = CubicBezierEasing(0.55f, 0.0f, 0.0f, 1f)
+    val easing = CubicBezierEasing(0.2f, 0.7f, 0.1f, 1f)
+    // val easing = CubicBezierEasing(0.55f, 0.0f, 0.0f, 1f)
 
     val enterTransition = slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(slideTime, easing = easing)) + fadeIn(animationSpec = tween(slideTime, easing = easing))
     val exitTransition = slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(slideTime, easing = easing)) + fadeOut(animationSpec = tween(slideTime, easing = easing))
