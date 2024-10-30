@@ -4,6 +4,7 @@ import com.jgeek00.ServerStatus.constants.DataStoreKeys
 import com.jgeek00.ServerStatus.models.ServerModel
 import com.jgeek00.ServerStatus.services.DataStoreService
 import com.jgeek00.ServerStatus.services.DatabaseService
+import com.jgeek00.ServerStatus.viewmodels.StatusViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
@@ -11,15 +12,27 @@ import javax.inject.Inject
 
 class ServerInstancesRepository @Inject constructor(
     private val databaseService: DatabaseService,
-    private val dataStoreService: DataStoreService
+    private val dataStoreService: DataStoreService,
+    private val apiRepository: ApiRepository,
+    private val statusRepository: StatusRepository
 ) {
+    @Inject
+    lateinit var statusViewModel: StatusViewModel
+
     private val _servers = MutableStateFlow<List<ServerModel>>(emptyList())
     val servers: StateFlow<List<ServerModel>> = _servers
 
     suspend fun getServersFromDatabase() {
-        val serversResult = databaseService.getServers()
-        if (serversResult != null) {
-            _servers.value = serversResult
+        val serversResult = databaseService.getServers() ?: return
+        _servers.value = serversResult
+
+        try {
+            val defaultServerId = dataStoreService.getInt(DataStoreKeys.DEFAULT_SERVER).first() ?: return
+            val server = serversResult.first { item -> item.id == defaultServerId }
+            apiRepository.setApiClientInstance(server)
+            statusRepository.fetchData()
+        } catch (e: Exception) {
+            println(e.localizedMessage)
         }
     }
 

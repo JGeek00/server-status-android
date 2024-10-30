@@ -8,6 +8,7 @@ coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
+kotlinxSerializationJson = "1.6.3"
 lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.3"
 composeBom = "2024.04.01"
@@ -46,6 +47,7 @@ androidx-sqlite-ktx = { group = "androidx.sqlite", name = "sqlite-ktx", version.
 androidx-material = { group = "androidx.compose.material", name = "material", version.ref = "material" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
 androidx-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "animation" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 material3 = { group = "androidx.compose.material3", name = "material3", version = "1.4.0-alpha02" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }

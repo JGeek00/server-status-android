@@ -47,17 +47,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.Gauge
 import com.jgeek00.ServerStatus.constants.gaugeColors
+import com.jgeek00.ServerStatus.di.ServerInstancesRepositoryEntryPoint
+import com.jgeek00.ServerStatus.di.StatusRepositoryEntryPoint
 import com.jgeek00.ServerStatus.navigation.NavigationManager
 import com.jgeek00.ServerStatus.navigation.Routes
+import com.jgeek00.ServerStatus.viewmodels.StatusViewModel
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -66,6 +71,14 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatusView() {
+    val context = LocalContext.current
+
+    val statusRepository = remember {
+        EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            StatusRepositoryEntryPoint::class.java
+        ).statusRepository
+    }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     var refreshing by remember { mutableStateOf(false) }
