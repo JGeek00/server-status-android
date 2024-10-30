@@ -22,8 +22,10 @@ import com.jgeek00.ServerStatus.providers.ServerInstancesProvider
 import com.jgeek00.ServerStatus.services.DataStoreService
 import com.jgeek00.ServerStatus.services.DatabaseService
 import com.jgeek00.ServerStatus.ui.theme.ServerStatusTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
