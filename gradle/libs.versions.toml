@@ -17,6 +17,7 @@ datastorePreferences = "1.1.1"
 animation = "1.7.4"
 material3 = "1.4.0-alpha02"
 materialIconsExtended = "1.7.4"
+hiltNavigationCompose = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,6 +44,7 @@ androidx-datastore-preferences = { group = "androidx.datastore", name = "datasto
 androidx-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "animation" }
 material3 = { group = "androidx.compose.material3", name = "material3", version = "1.4.0-alpha02" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
+androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

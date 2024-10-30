@@ -6,15 +6,20 @@ import androidx.lifecycle.viewModelScope
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.constants.Enums
 import com.jgeek00.ServerStatus.constants.RegExps
-import com.jgeek00.ServerStatus.providers.NavigationProvider
-import com.jgeek00.ServerStatus.providers.ServerInstancesProvider
+import com.jgeek00.ServerStatus.navigation.NavigationManager
+import com.jgeek00.ServerStatus.repository.ServerInstancesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ServerFormViewModel: ViewModel() {
+@HiltViewModel
+class ServerFormViewModel @Inject constructor(
+    private val serverInstancesProvider: ServerInstancesRepository
+) : ViewModel() {
     var editingId = mutableStateOf<Int?>(null)
 
     fun setServerData(serverId: Int) {
-        val server = ServerInstancesProvider.getInstance().servers.value.find { item -> item.id == serverId }
+        val server = serverInstancesProvider.servers.value.find { item -> item.id == serverId }
         if (server == null) return
 
         serverName.value = server.name
@@ -118,7 +123,7 @@ class ServerFormViewModel: ViewModel() {
         viewModelScope.launch {
             saving.value = true
             if (editingId.value != null) {
-                val result = ServerInstancesProvider.getInstance().editServer(
+                val result = serverInstancesProvider.editServer(
                     id = editingId.value!!,
                     name = serverName.value,
                     method = connectionMethod.value.toString().lowercase(),
@@ -132,11 +137,11 @@ class ServerFormViewModel: ViewModel() {
                 savingError.value = !result
                 saving.value = false
                 if (result) {
-                    NavigationProvider.getInstance().popBack()
+                    NavigationManager.getInstance().popBack()
                 }
             }
             else {
-                val result = ServerInstancesProvider.getInstance().createServer(
+                val result = serverInstancesProvider.createServer(
                     name = serverName.value,
                     method = connectionMethod.value.toString().lowercase(),
                     ipDomain = ipDomain.value,
@@ -149,7 +154,7 @@ class ServerFormViewModel: ViewModel() {
                 savingError.value = !result
                 saving.value = false
                 if (result) {
-                    NavigationProvider.getInstance().popBack()
+                    NavigationManager.getInstance().popBack()
                 }
             }
         }

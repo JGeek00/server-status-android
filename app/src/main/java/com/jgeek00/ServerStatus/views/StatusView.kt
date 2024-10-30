@@ -56,6 +56,7 @@ import androidx.navigation.NavHostController
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.Gauge
 import com.jgeek00.ServerStatus.constants.gaugeColors
+import com.jgeek00.ServerStatus.navigation.NavigationManager
 import com.jgeek00.ServerStatus.navigation.Routes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -64,7 +65,7 @@ import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatusView(navigationController: NavHostController) {
+fun StatusView() {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     var refreshing by remember { mutableStateOf(false) }
@@ -106,7 +107,7 @@ fun StatusView(navigationController: NavHostController) {
                         state = rememberTooltipState(),
                     ) {
                         IconButton(
-                            onClick = { navigationController.navigate(Routes.ROUTE_SETTINGS) },
+                            onClick = { NavigationManager.getInstance().navigateTo(Routes.ROUTE_SETTINGS) },
                             modifier = Modifier
                         ) {
                             Icon(
