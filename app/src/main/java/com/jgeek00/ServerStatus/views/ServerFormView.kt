@@ -85,7 +85,7 @@ fun ServerFormView(editServerId: String? = null) {
                     ) {
                         Image(
                             imageVector = Icons.Rounded.Save,
-                            contentDescription = "Save"
+                            contentDescription = stringResource(R.string.save)
                         )
                     }
                 }
@@ -103,7 +103,7 @@ fun ServerFormView(editServerId: String? = null) {
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
                 SectionHeader(
-                    title = "Server information",
+                    title = stringResource(R.string.server_information),
                     modifier = Modifier
                         .padding(horizontal = 0.dp)
                         .padding(bottom = 16.dp, top = 8.dp)
@@ -114,18 +114,18 @@ fun ServerFormView(editServerId: String? = null) {
                         viewModel.serverNameError.value = null
                         viewModel.serverName.value = it
                     },
-                    label = { Text("Server Name") },
+                    label = { Text(stringResource(R.string.server_name)) },
                     modifier = Modifier.fillMaxWidth(),
                     isError = viewModel.serverNameError.value != null,
                     supportingText = {
                         if (viewModel.serverNameError.value != null) {
-                            Text(viewModel.serverNameError.value!!, color = MaterialTheme.colorScheme.error)
+                            Text(stringResource(viewModel.serverNameError.value!!), color = MaterialTheme.colorScheme.error)
                         }
                     },
                     enabled = !viewModel.saving.value
                 )
                 SectionHeader(
-                    title = "Connection details",
+                    title = stringResource(R.string.connection_details),
                     modifier = Modifier
                         .padding(horizontal = 0.dp)
                         .padding(bottom = 16.dp, top = 36.dp)
@@ -155,7 +155,7 @@ fun ServerFormView(editServerId: String? = null) {
                 }
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextField(
-                    label = { Text("IP address or domain") },
+                    label = { Text(stringResource(R.string.ip_address_or_domain)) },
                     value = viewModel.ipDomain.value,
                     onValueChange = {
                         viewModel.ipDomainError.value = null
@@ -166,7 +166,7 @@ fun ServerFormView(editServerId: String? = null) {
                     isError = viewModel.ipDomainError.value != null,
                     supportingText = {
                         if (viewModel.ipDomainError.value != null) {
-                            Text(viewModel.ipDomainError.value!!, color = MaterialTheme.colorScheme.error)
+                            Text(stringResource(viewModel.ipDomainError.value!!), color = MaterialTheme.colorScheme.error)
                         }
                     },
                     enabled = !viewModel.saving.value
@@ -178,16 +178,16 @@ fun ServerFormView(editServerId: String? = null) {
                         viewModel.portError.value = null
                         viewModel.port.value = it
                     },
-                    label = { Text("Port") },
+                    label = { Text(stringResource(R.string.port)) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     isError = viewModel.portError.value != null,
                     supportingText = {
                         if (viewModel.portError.value != null) {
-                            Text(viewModel.portError.value!!, color = MaterialTheme.colorScheme.error)
+                            Text(stringResource(viewModel.portError.value!!), color = MaterialTheme.colorScheme.error)
                         }
                         else {
-                            Text("Optional")
+                            Text(stringResource(R.string.optional))
                         }
                     },
                     enabled = !viewModel.saving.value
@@ -199,30 +199,30 @@ fun ServerFormView(editServerId: String? = null) {
                         viewModel.pathError.value = null
                         viewModel.path.value = it
                     },
-                    label = { Text("Path") },
-                    placeholder = { Text("Example: /status") },
+                    label = { Text(stringResource(R.string.path)) },
+                    placeholder = { Text(stringResource(R.string.example_status)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
                     modifier = Modifier.fillMaxWidth(),
                     isError = viewModel.pathError.value != null,
                     supportingText = {
                         if (viewModel.pathError.value != null) {
-                            Text(viewModel.pathError.value!!, color = MaterialTheme.colorScheme.error)
+                            Text(stringResource(viewModel.pathError.value!!), color = MaterialTheme.colorScheme.error)
                         }
                         else {
-                            Text("Optional")
+                            Text(stringResource(R.string.optional))
                         }
                     },
                     enabled = !viewModel.saving.value
                 )
                 SectionHeader(
-                    title = "Basic authentication",
+                    title = stringResource(R.string.basic_authentication),
                     modifier = Modifier
                         .padding(horizontal = 0.dp)
                         .padding(bottom = 8.dp, top = 36.dp)
                 )
             }
             SwitchListTile(
-                label = "Use basic authentication",
+                label = stringResource(R.string.use_basic_authentication),
                 checked = viewModel.useBasicAuth.value,
                 onCheckedChange = { viewModel.useBasicAuth.value = it},
                 enabled = !viewModel.saving.value
@@ -238,12 +238,12 @@ fun ServerFormView(editServerId: String? = null) {
                             viewModel.basicAuthUsernameError.value = null
                             viewModel.basicAuthUsername.value = it
                         },
-                        label = { Text("Username") },
+                        label = { Text(stringResource(R.string.username)) },
                         modifier = Modifier.fillMaxWidth(),
                         isError = viewModel.basicAuthUsernameError.value != null,
                         supportingText = {
                             if (viewModel.basicAuthUsernameError.value != null) {
-                                Text(viewModel.basicAuthUsernameError.value!!, color = MaterialTheme.colorScheme.error)
+                                Text(stringResource(viewModel.basicAuthUsernameError.value!!), color = MaterialTheme.colorScheme.error)
                             }
                         },
                         enabled = !viewModel.saving.value
@@ -255,14 +255,14 @@ fun ServerFormView(editServerId: String? = null) {
                             viewModel.basicAuthPasswordError.value = null
                             viewModel.basicAuthPassword.value = it
                         },
-                        label = { Text("Password") },
+                        label = { Text(stringResource(R.string.password)) },
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         visualTransformation = PasswordVisualTransformation(),
                         isError = viewModel.basicAuthPasswordError.value != null,
                         supportingText = {
                             if (viewModel.basicAuthPasswordError.value != null) {
-                                Text(viewModel.basicAuthPasswordError.value!!, color = MaterialTheme.colorScheme.error)
+                                Text(stringResource(viewModel.basicAuthPasswordError.value!!), color = MaterialTheme.colorScheme.error)
                             }
                         },
                         enabled = !viewModel.saving.value
@@ -275,17 +275,17 @@ fun ServerFormView(editServerId: String? = null) {
                 icon = {
                     Icon(
                         imageVector = Icons.Rounded.Error,
-                        contentDescription = "Error",
+                        contentDescription = stringResource(R.string.error),
                     )
                 },
                 title = {
                     Text(
-                        text = "Couldn't create server connection",
+                        text = stringResource(R.string.couldn_t_create_server_connection),
                         textAlign = TextAlign.Center
                     )
                 },
                 text = {
-                    Text(text = "An error occurred while trying to create a server connection.")
+                    Text(text = stringResource(R.string.an_error_occurred_while_trying_to_create_a_server_connection))
                 },
                 onDismissRequest = {},
                 confirmButton = {},
@@ -293,7 +293,7 @@ fun ServerFormView(editServerId: String? = null) {
                     TextButton(
                         onClick = { viewModel.savingError.value = false }
                     ) {
-                        Text("Close")
+                        Text(stringResource(R.string.close))
                     }
                 }
             )

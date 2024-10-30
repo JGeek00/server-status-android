@@ -3,6 +3,7 @@ package com.jgeek00.ServerStatus.viewmodels
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.constants.Enums
 import com.jgeek00.ServerStatus.constants.RegExps
 import com.jgeek00.ServerStatus.providers.NavigationProvider
@@ -28,26 +29,26 @@ class ServerFormViewModel: ViewModel() {
     }
 
     var serverName = mutableStateOf("")
-    var serverNameError = mutableStateOf<String?>(null)
+    var serverNameError = mutableStateOf<Int?>(null)
 
     var connectionMethod = mutableStateOf(Enums.ConnectionMethod.HTTP)
 
     var ipDomain = mutableStateOf("")
-    var ipDomainError = mutableStateOf<String?>(null)
+    var ipDomainError = mutableStateOf<Int?>(null)
 
     var port = mutableStateOf("")
-    var portError = mutableStateOf<String?>(null)
+    var portError = mutableStateOf<Int?>(null)
 
     var path = mutableStateOf("")
-    var pathError = mutableStateOf<String?>(null)
+    var pathError = mutableStateOf<Int?>(null)
 
     var useBasicAuth = mutableStateOf(false)
 
     var basicAuthUsername = mutableStateOf("")
-    var basicAuthUsernameError = mutableStateOf<String?>(null)
+    var basicAuthUsernameError = mutableStateOf<Int?>(null)
 
     var basicAuthPassword = mutableStateOf("")
-    var basicAuthPasswordError = mutableStateOf<String?>(null)
+    var basicAuthPasswordError = mutableStateOf<Int?>(null)
 
     var saving = mutableStateOf(false)
     var savingError = mutableStateOf(false)
@@ -57,7 +58,7 @@ class ServerFormViewModel: ViewModel() {
 
         if (serverName.value.isEmpty()) {
             ret = false
-            serverNameError.value = "Server name cannot be empty"
+            serverNameError.value = R.string.server_name_cannot_be_empty
         }
         else {
             serverNameError.value = null
@@ -65,11 +66,11 @@ class ServerFormViewModel: ViewModel() {
 
         if (ipDomain.value.isEmpty()) {
             ret = false
-            ipDomainError.value = "IP address or domain cannot be empty"
+            ipDomainError.value = R.string.ip_address_or_domain_cannot_be_empty
         }
         else if (!RegExps.ipv4Address.matches(ipDomain.value) && !RegExps.ipv6Address.matches(ipDomain.value) && !RegExps.domain.matches(ipDomain.value)) {
             ret = false
-            ipDomainError.value = "Invalid IP address or domain"
+            ipDomainError.value = R.string.invalid_ip_address_or_domain
         }
         else {
             ipDomainError.value = null
@@ -77,7 +78,7 @@ class ServerFormViewModel: ViewModel() {
 
         if (port.value.isNotEmpty() && !RegExps.port.matches(port.value)) {
             ret = false
-            portError.value = "Invalid port"
+            portError.value = R.string.invalid_port
         }
         else {
             portError.value = null
@@ -85,7 +86,7 @@ class ServerFormViewModel: ViewModel() {
 
         if (path.value.isNotEmpty() && !RegExps.path.matches(path.value)) {
             ret = false
-            pathError.value = "Invalid path"
+            pathError.value = R.string.invalid_path
         }
         else {
             pathError.value = null
@@ -93,7 +94,7 @@ class ServerFormViewModel: ViewModel() {
 
         if (useBasicAuth.value && basicAuthUsername.value.isEmpty()) {
             ret = false
-            basicAuthUsernameError.value = "Username cannot be empty"
+            basicAuthUsernameError.value = R.string.username_cannot_be_empty
         }
         else {
             basicAuthUsernameError.value = null
@@ -101,7 +102,7 @@ class ServerFormViewModel: ViewModel() {
 
         if (useBasicAuth.value && basicAuthPassword.value.isEmpty()) {
             ret = false
-            basicAuthPasswordError.value = "Password cannot be empty"
+            basicAuthPasswordError.value = R.string.password_cannot_be_empty
         }
         else {
             basicAuthPasswordError.value = null

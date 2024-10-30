@@ -30,15 +30,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         DatabaseService.init(this)  // Init database
-        val dataStore = DataStoreService(this)  // Init datastore
+        DataStoreService.initialize(this) // Init datastore
 
         lifecycleScope.launch {
             ServerInstancesProvider.getInstance().getServersFromDatabase() // Load servers from database
         }
 
         setContent {
-            val themeValue = dataStore.getValue(DataStoreKeys.THEME_MODE as Preferences.Key<Any>).collectAsState(
-                Enums.Theme.SYSTEM_DEFINED.name).value as String? ?: Enums.Theme.SYSTEM_DEFINED.name
+            val themeValue = DataStoreService.getInstance().getString(DataStoreKeys.THEME_MODE).collectAsState(
+                Enums.Theme.SYSTEM_DEFINED.name).value ?: Enums.Theme.SYSTEM_DEFINED.name
 
             @Composable
             fun getDarkModeEnabled(themeValue: Enums.Theme): Boolean {

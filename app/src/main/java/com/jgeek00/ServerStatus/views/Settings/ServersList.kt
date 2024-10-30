@@ -80,7 +80,7 @@ fun ServersSection(navigationController: NavHostController) {
                     .size(30.dp)
             )
             Text(
-                text = "No saved servers",
+                text = stringResource(R.string.no_saved_servers),
                 fontWeight = FontWeight.Medium,
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -135,14 +135,14 @@ fun ServerItem(server: ServerModel) {
     )
     if (showOptionsDialog) {
         NoPaddingAlertDialog(
-            title = "Options",
+            title = stringResource(R.string.options),
             content = {
                 Column(
                     Modifier.padding(0.dp)
                 ) {
                     ListTile(
-                        label = "Edit",
-                        supportingText = "Edit this server instance",
+                        label = stringResource(R.string.edit),
+                        supportingText = stringResource(R.string.edit_this_server_instance),
                         leadingIcon = Icons.Rounded.Edit,
                         onClick = {
                             showOptionsDialog = false
@@ -151,8 +151,8 @@ fun ServerItem(server: ServerModel) {
                         padding = PaddingValues(horizontal = 24.dp, vertical = 8.dp)
                     )
                     ListTile(
-                        label = "Delete",
-                        supportingText = "Delete this server instance",
+                        label = stringResource(R.string.delete),
+                        supportingText = stringResource(R.string.delete_this_server_instance),
                         leadingIcon = Icons.Rounded.Delete,
                         onClick = {
                             showOptionsDialog = false
@@ -168,7 +168,7 @@ fun ServerItem(server: ServerModel) {
                 TextButton(
                     onClick = { showOptionsDialog = false }
                 ) {
-                    Text("Close")
+                    Text(stringResource(R.string.close))
                 }
             }
         )
@@ -178,17 +178,17 @@ fun ServerItem(server: ServerModel) {
             icon = {
                 Icon(
                     imageVector = Icons.Rounded.Delete,
-                    contentDescription = "Delete",
+                    contentDescription = stringResource(R.string.delete),
                 )
             },
             title = {
                 Text(
-                    text = "Delete server",
+                    text = stringResource(R.string.delete_server),
                     textAlign = TextAlign.Center
                 )
             },
             text = {
-                Text(text = "Are you sure you want to delete this server connection? This action cannot be reverted.")
+                Text(text = stringResource(R.string.are_you_sure_you_want_to_delete_this_server_connection_this_action_cannot_be_reverted))
             },
             onDismissRequest = {},
             confirmButton = {
@@ -203,14 +203,14 @@ fun ServerItem(server: ServerModel) {
                         }
                     }
                 ) {
-                    Text("Delete")
+                    Text(stringResource(R.string.delete))
                 }
             },
             dismissButton = {
                 TextButton(
                     onClick = { showDeleteAlert = false }
                 ) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -219,12 +219,12 @@ fun ServerItem(server: ServerModel) {
         AlertDialog(
             title = {
                 Text(
-                    text = "Error when deleting server",
+                    text = stringResource(R.string.error_when_deleting_server),
                     textAlign = TextAlign.Center
                 )
             },
             text = {
-                Text(text = "The server connection could not be deleted due to an error.")
+                Text(text = stringResource(R.string.the_server_connection_could_not_be_deleted_due_to_an_error))
             },
             onDismissRequest = {},
             confirmButton = {},
@@ -232,7 +232,7 @@ fun ServerItem(server: ServerModel) {
                 TextButton(
                     onClick = { errorDeleteServerAlert = false }
                 ) {
-                    Text("Close")
+                    Text(stringResource(R.string.close))
                 }
             }
         )

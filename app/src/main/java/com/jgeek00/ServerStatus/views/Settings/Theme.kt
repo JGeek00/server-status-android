@@ -33,9 +33,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun ThemeBox(theme: Enums.Theme) {
     val scope = rememberCoroutineScope()
-    val dataStore = DataStoreService(LocalContext.current)
+    val dataStore = DataStoreService.getInstance()
 
-    val darkModeValue = dataStore.getValue(DataStoreKeys.THEME_MODE as Preferences.Key<Any>).collectAsState(
+    val darkModeValue = dataStore.getString(DataStoreKeys.THEME_MODE).collectAsState(
         Enums.Theme.SYSTEM_DEFINED.name).value as String?
 
     when(theme) {
@@ -46,7 +46,7 @@ fun ThemeBox(theme: Enums.Theme) {
                 isEnabled = if (darkModeValue !== null) Enums.Theme.valueOf(darkModeValue) == Enums.Theme.SYSTEM_DEFINED else true
             ) {
                 scope.launch {
-                    dataStore.setValue(DataStoreKeys.THEME_MODE, Enums.Theme.SYSTEM_DEFINED.name)
+                    dataStore.setString(DataStoreKeys.THEME_MODE, Enums.Theme.SYSTEM_DEFINED.name)
                 }
             }
         }
@@ -57,7 +57,7 @@ fun ThemeBox(theme: Enums.Theme) {
                 isEnabled = if (darkModeValue !== null) Enums.Theme.valueOf(darkModeValue) == Enums.Theme.LIGHT else false
             ) {
                 scope.launch {
-                    dataStore.setValue(DataStoreKeys.THEME_MODE, Enums.Theme.LIGHT.name)
+                    dataStore.setString(DataStoreKeys.THEME_MODE, Enums.Theme.LIGHT.name)
                 }
             }
         }
@@ -68,7 +68,7 @@ fun ThemeBox(theme: Enums.Theme) {
                 isEnabled = if (darkModeValue !== null) Enums.Theme.valueOf(darkModeValue) == Enums.Theme.DARK else false
             ) {
                 scope.launch {
-                    dataStore.setValue(DataStoreKeys.THEME_MODE, Enums.Theme.DARK.name)
+                    dataStore.setString(DataStoreKeys.THEME_MODE, Enums.Theme.DARK.name)
                 }
             }
         }
