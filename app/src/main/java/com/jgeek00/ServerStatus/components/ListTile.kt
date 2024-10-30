@@ -1,8 +1,6 @@
 package com.jgeek00.ServerStatus.components
 
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -24,8 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -34,7 +29,7 @@ import androidx.compose.ui.unit.sp
 fun ListTile(
     label: String,
     supportingText: String,
-    leadingIcon: ImageVector? = null,
+    leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
@@ -69,18 +64,14 @@ fun ListTile(
                 .fillMaxWidth()
                 .padding(paddingValues = padding ?: PaddingValues(horizontal = 16.dp, vertical = 8.dp))
         ) {
-            if (leadingIcon != null) {
-                Image(
-                    imageVector = leadingIcon,
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
-                )
+            if (leading != null) {
+                leading.invoke()
                 Spacer(modifier = Modifier.width(16.dp))
             }
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalAlignment = Alignment.Start,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = label)
                 Text(

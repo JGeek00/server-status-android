@@ -1,11 +1,15 @@
 package com.jgeek00.ServerStatus.providers
 
 import android.content.Context
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
+import com.jgeek00.ServerStatus.constants.DataStoreKeys
 import com.jgeek00.ServerStatus.models.ServerModel
+import com.jgeek00.ServerStatus.services.DataStoreService
 import com.jgeek00.ServerStatus.services.DatabaseService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 
 class ServerInstancesProvider: ViewModel() {
     companion object {
@@ -36,6 +40,9 @@ class ServerInstancesProvider: ViewModel() {
         val newServers = DatabaseService.getInstance().getServers()
         if (newServers != null) {
             _servers.value = newServers
+            if (newServers.size == 1) {
+                setAsDefaultServer(serverId = newServers[0].id)
+            }
             return true
         } else {
             return false
@@ -56,10 +63,25 @@ class ServerInstancesProvider: ViewModel() {
     suspend fun deleteServer(serverId: Int): Boolean {
         val result = DatabaseService.getInstance().deleteServer(serverId)
         if (result) {
-             _servers.value = _servers.value.filter { item -> item.id != serverId }
+             val newServers = _servers.value.filter { item -> item.id != serverId }
+            _servers.value = newServers
+
+            val defaultServer = DataStoreService.getInstance().getInt(DataStoreKeys.DEFAULT_SERVER).first()
+            if (defaultServer == serverId) {
+                if (newServers.isNotEmpty()) {
+                    setAsDefaultServer(serverId = newServers[0].id)
+                } else {
+                    DataStoreService.getInstance().removeInt(DataStoreKeys.DEFAULT_SERVER)
+                }
+            }
             return true
+
         } else {
             return false
         }
+    }
+
+    suspend fun setAsDefaultServer(serverId: Int) {
+        DataStoreService.getInstance().setInt(DataStoreKeys.DEFAULT_SERVER, serverId)
     }
 }

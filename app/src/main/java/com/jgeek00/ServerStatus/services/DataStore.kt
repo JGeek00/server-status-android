@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import com.jgeek00.ServerStatus.constants.AppConfig
+import com.jgeek00.ServerStatus.constants.DataStoreKeys
 import com.jgeek00.ServerStatus.providers.NavigationProvider
 import com.jgeek00.ServerStatus.services.DatabaseService.Companion
 import kotlinx.coroutines.flow.Flow
@@ -42,9 +43,28 @@ class DataStoreService private constructor(context: Context) {
             }
     }
 
+    fun getInt(key: Preferences.Key<Int>): Flow<Int?> {
+        return dataStore.data
+            .map { preferences ->
+                preferences[key]
+            }
+    }
+
     suspend fun setString(key: Preferences.Key<String>, value: String) {
         dataStore.edit { preferences ->
             preferences[key] = value
+        }
+    }
+
+    suspend fun setInt(key: Preferences.Key<Int>, value: Int) {
+        dataStore.edit { preferences ->
+            preferences[key] = value
+        }
+    }
+
+    suspend fun removeInt(key: Preferences.Key<Int>) {
+        dataStore.edit { preferences ->
+            preferences.remove(key)
         }
     }
 }

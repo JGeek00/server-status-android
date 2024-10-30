@@ -1,19 +1,26 @@
 package com.jgeek00.ServerStatus.views.Settings
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Error
+import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -32,6 +39,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,10 +53,12 @@ import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.ListTile
 import com.jgeek00.ServerStatus.components.NoPaddingAlertDialog
 import com.jgeek00.ServerStatus.components.SectionHeader
+import com.jgeek00.ServerStatus.constants.DataStoreKeys
 import com.jgeek00.ServerStatus.models.ServerModel
 import com.jgeek00.ServerStatus.navigation.Routes
 import com.jgeek00.ServerStatus.providers.NavigationProvider
 import com.jgeek00.ServerStatus.providers.ServerInstancesProvider
+import com.jgeek00.ServerStatus.services.DataStoreService
 import com.jgeek00.ServerStatus.utils.createServerAddress
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -126,12 +137,47 @@ fun ServerItem(server: ServerModel) {
 
     val coroutineScope = rememberCoroutineScope()
 
+    val defaultServer = DataStoreService.getInstance().getInt(DataStoreKeys.DEFAULT_SERVER).collectAsState(initial = null).value
+
     ListTile(
         label = server.name,
         supportingText = createServerAddress(server.method, server.ipDomain, server.port, server.path),
-        leadingIcon = Icons.Rounded.Dns,
+        leading = {
+            Box(
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                Image(
+                    imageVector = Icons.Rounded.Dns,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
+                )
+                if (defaultServer == server.id) {
+                    Box(
+                        contentAlignment = Alignment.BottomEnd,
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primaryContainer)
+                            .offset(x = (-4).dp, y = (-4).dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Star,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .padding(1.dp)
+                                .size(10.dp)
+                                .offset(x = (4).dp, y = (4).dp),
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        )
+                    }
+                }
+            }
+        },
         onClick = {},
-        onLongClick = { showOptionsDialog = true }
+        onLongClick = { showOptionsDialog = true },
+        trailing = {
+
+        }
     )
     if (showOptionsDialog) {
         NoPaddingAlertDialog(
@@ -140,10 +186,38 @@ fun ServerItem(server: ServerModel) {
                 Column(
                     Modifier.padding(0.dp)
                 ) {
+                    if (defaultServer != server.id) {
+                        ListTile(
+                            label = stringResource(R.string.set_as_default_server),
+                            supportingText = stringResource(R.string.connect_to_this_server_when_the_app_is_started),
+                            leading = {
+                                Image(
+                                    imageVector = Icons.Rounded.Star,
+                                    contentDescription = stringResource(R.string.default_server),
+                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            },
+                            onClick = {
+                                showOptionsDialog = false
+                                coroutineScope.launch {
+                                    ServerInstancesProvider.getInstance().setAsDefaultServer(server.id)
+                                }
+                            },
+                            padding = PaddingValues(horizontal = 24.dp, vertical = 8.dp)
+                        )
+                    }
                     ListTile(
                         label = stringResource(R.string.edit),
                         supportingText = stringResource(R.string.edit_this_server_instance),
-                        leadingIcon = Icons.Rounded.Edit,
+                        leading = {
+                            Image(
+                                imageVector = Icons.Rounded.Edit,
+                                contentDescription = stringResource(R.string.delete),
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
+                                modifier = Modifier.size(24.dp)
+                            )
+                        },
                         onClick = {
                             showOptionsDialog = false
                             NavigationProvider.getInstance().navigateTo("${Routes.ROUTE_SERVER_FORM}?${server.id}")
@@ -153,7 +227,14 @@ fun ServerItem(server: ServerModel) {
                     ListTile(
                         label = stringResource(R.string.delete),
                         supportingText = stringResource(R.string.delete_this_server_instance),
-                        leadingIcon = Icons.Rounded.Delete,
+                        leading = {
+                            Image(
+                                imageVector = Icons.Rounded.Delete,
+                                contentDescription = stringResource(R.string.delete),
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
+                                modifier = Modifier.size(24.dp)
+                            )
+                        },
                         onClick = {
                             showOptionsDialog = false
                             showDeleteAlert = true
