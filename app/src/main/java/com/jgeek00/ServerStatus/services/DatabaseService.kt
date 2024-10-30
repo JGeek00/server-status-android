@@ -8,21 +8,11 @@ import com.jgeek00.ServerStatus.constants.AppConfig
 import com.jgeek00.ServerStatus.models.ServerModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 private const val DB_VERSION = 1
 
-class DatabaseService(context: Context?): SQLiteOpenHelper(context, AppConfig.DATABASE_NAME, null, DB_VERSION) {
-    companion object {
-        private var INSTANCE: DatabaseService? = null
-
-        fun init(context: Context) {
-            INSTANCE = DatabaseService(context)
-        }
-
-        fun getInstance(): DatabaseService {
-            return INSTANCE!!
-        }
-    }
+class DatabaseService @Inject constructor(context: Context): SQLiteOpenHelper(context, AppConfig.DATABASE_NAME, null, DB_VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
         val query = ("CREATE TABLE servers ("

@@ -38,19 +38,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.SectionHeader
 import com.jgeek00.ServerStatus.components.SwitchListTile
 import com.jgeek00.ServerStatus.constants.Enums
-import com.jgeek00.ServerStatus.providers.NavigationProvider
+import com.jgeek00.ServerStatus.navigation.NavigationManager
 import com.jgeek00.ServerStatus.viewmodels.ServerFormViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServerFormView(editServerId: String? = null) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    val viewModel: ServerFormViewModel = viewModel()
+    val viewModel: ServerFormViewModel = hiltViewModel()
 
     LaunchedEffect(Unit) {
         if (editServerId != null && editServerId.split("?").size == 2) {
@@ -69,7 +69,7 @@ fun ServerFormView(editServerId: String? = null) {
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            NavigationProvider.getInstance().popBack()
+                            NavigationManager.getInstance().popBack()
                         }
                     ) {
                         Icon(

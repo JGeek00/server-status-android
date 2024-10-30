@@ -1,90 +1,38 @@
 package com.jgeek00.ServerStatus.navigation
 
-import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.jgeek00.ServerStatus.providers.NavigationProvider
-import com.jgeek00.ServerStatus.providers.ServerInstancesProvider
-import com.jgeek00.ServerStatus.views.ServerFormView
-import com.jgeek00.ServerStatus.views.Settings.SettingsView
-import com.jgeek00.ServerStatus.views.StatusView
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
-@Composable
-fun NavigationManager() {
-    val navigationController = rememberNavController()
-    val navEvent by NavigationProvider.getInstance().navEvent.collectAsState()
+class NavigationManager {
+    companion object {
+        private var INSTANCE: NavigationManager? = null
 
-    val slideTime = 500
-
-    // https://cubic-bezier.com/#.55,0,0,1
-    val easing = CubicBezierEasing(0.2f, 0.7f, 0.1f, 1f)
-    // val easing = CubicBezierEasing(0.55f, 0.0f, 0.0f, 1f)
-
-    val enterTransition = slideInHorizontally(initialOffsetX = { it }, animationSpec = tween(slideTime, easing = easing)) + fadeIn(animationSpec = tween(slideTime, easing = easing))
-    val exitTransition = slideOutHorizontally(targetOffsetX = { -it }, animationSpec = tween(slideTime, easing = easing)) + fadeOut(animationSpec = tween(slideTime, easing = easing))
-
-    val popExitTransition = slideOutHorizontally(targetOffsetX = { it }, animationSpec = tween(slideTime, easing = easing)) + fadeOut(animationSpec = tween(slideTime, easing = easing))
-    val popEnterTransition = slideInHorizontally(initialOffsetX = { -it }, animationSpec = tween(slideTime, easing = easing)) + fadeIn(animationSpec = tween(slideTime, easing = easing))
-
-    LaunchedEffect(navEvent) {
-        when (val event = navEvent) {
-            is NavigationProvider.NavEvent.Navigate -> {
-                navigationController.navigate(event.destination)
-                NavigationProvider.getInstance().clearNavEvent()
+        fun getInstance(): NavigationManager {
+            if (INSTANCE == null) {
+                INSTANCE = NavigationManager()
             }
-            is NavigationProvider.NavEvent.PopBack -> {
-                navigationController.popBackStack()
-                NavigationProvider.getInstance().clearNavEvent()
-            }
-            else -> Unit
+            return INSTANCE!!
         }
     }
 
-    NavHost(
-        navController = navigationController,
-        startDestination = Routes.ROUTE_STATUS
-    ) {
-        composable(
-            route = Routes.ROUTE_STATUS,
-            enterTransition = { enterTransition },
-            exitTransition = { exitTransition },
-            popEnterTransition = { popEnterTransition },
-            popExitTransition = { popExitTransition }
-        ) {
-            StatusView(navigationController)
-        }
-        composable(
-            route = Routes.ROUTE_SETTINGS,
-            enterTransition = { enterTransition },
-            exitTransition = { exitTransition },
-            popEnterTransition = { popEnterTransition },
-            popExitTransition = { popExitTransition }
-        ) {
-            SettingsView(navigationController)
-        }
-        composable(
-            route = Routes.ROUTE_SERVER_FORM,
-            enterTransition = { enterTransition },
-            exitTransition = { exitTransition },
-            popEnterTransition = { popEnterTransition },
-            popExitTransition = { popExitTransition },
-            arguments = listOf(
-                navArgument(name = Routes.ARG_SERVER_ID) { type = NavType.StringType; nullable = true },
-            )
-        ) {
-            ServerFormView(editServerId = it.arguments?.getString(Routes.ARG_SERVER_ID))
-        }
+
+    private val _navEvent = MutableStateFlow<NavEvent?>(null)
+    val navEvent: StateFlow<NavEvent?> = _navEvent
+
+    fun navigateTo(destination: String) {
+        _navEvent.value = NavEvent.Navigate(destination)
+    }
+
+    fun popBack() {
+        _navEvent.value = NavEvent.PopBack
+    }
+
+    fun clearNavEvent() {
+        _navEvent.value = null
+    }
+
+    sealed class NavEvent {
+        data class Navigate(val destination: String) : NavEvent()
+        object PopBack : NavEvent()
     }
 }

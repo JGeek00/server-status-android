@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,19 +24,26 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.datastore.preferences.core.Preferences
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.constants.DataStoreKeys
 import com.jgeek00.ServerStatus.constants.Enums
-import com.jgeek00.ServerStatus.services.DataStoreService
+import com.jgeek00.ServerStatus.di.DataStoreServiceEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.launch
 
 @Composable
 fun ThemeBox(theme: Enums.Theme) {
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val dataStore = DataStoreService.getInstance()
 
-    val darkModeValue = dataStore.getString(DataStoreKeys.THEME_MODE).collectAsState(
+    val dataStoreService = remember {
+        EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            DataStoreServiceEntryPoint::class.java
+        ).dataStoreService
+    }
+
+    val darkModeValue = dataStoreService.getString(DataStoreKeys.THEME_MODE).collectAsState(
         Enums.Theme.SYSTEM_DEFINED.name).value as String?
 
     when(theme) {
@@ -46,7 +54,7 @@ fun ThemeBox(theme: Enums.Theme) {
                 isEnabled = if (darkModeValue !== null) Enums.Theme.valueOf(darkModeValue) == Enums.Theme.SYSTEM_DEFINED else true
             ) {
                 scope.launch {
-                    dataStore.setString(DataStoreKeys.THEME_MODE, Enums.Theme.SYSTEM_DEFINED.name)
+                    dataStoreService.setString(DataStoreKeys.THEME_MODE, Enums.Theme.SYSTEM_DEFINED.name)
                 }
             }
         }
@@ -57,7 +65,7 @@ fun ThemeBox(theme: Enums.Theme) {
                 isEnabled = if (darkModeValue !== null) Enums.Theme.valueOf(darkModeValue) == Enums.Theme.LIGHT else false
             ) {
                 scope.launch {
-                    dataStore.setString(DataStoreKeys.THEME_MODE, Enums.Theme.LIGHT.name)
+                    dataStoreService.setString(DataStoreKeys.THEME_MODE, Enums.Theme.LIGHT.name)
                 }
             }
         }
@@ -68,7 +76,7 @@ fun ThemeBox(theme: Enums.Theme) {
                 isEnabled = if (darkModeValue !== null) Enums.Theme.valueOf(darkModeValue) == Enums.Theme.DARK else false
             ) {
                 scope.launch {
-                    dataStore.setString(DataStoreKeys.THEME_MODE, Enums.Theme.DARK.name)
+                    dataStoreService.setString(DataStoreKeys.THEME_MODE, Enums.Theme.DARK.name)
                 }
             }
         }
