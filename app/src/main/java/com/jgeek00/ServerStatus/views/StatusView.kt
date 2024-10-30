@@ -106,7 +106,7 @@ fun StatusView(navigationController: NavHostController) {
                         state = rememberTooltipState(),
                     ) {
                         IconButton(
-                            onClick = { navigationController.navigate(Routes.SETTINGS) },
+                            onClick = { navigationController.navigate(Routes.ROUTE_SETTINGS) },
                             modifier = Modifier
                         ) {
                             Icon(

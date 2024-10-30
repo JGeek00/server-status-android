@@ -10,9 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.jgeek00.ServerStatus.providers.NavigationProvider
 import com.jgeek00.ServerStatus.providers.ServerInstancesProvider
 import com.jgeek00.ServerStatus.views.ServerFormView
@@ -52,10 +54,10 @@ fun NavigationManager() {
 
     NavHost(
         navController = navigationController,
-        startDestination = Routes.STATUS
+        startDestination = Routes.ROUTE_STATUS
     ) {
         composable(
-            route = Routes.STATUS,
+            route = Routes.ROUTE_STATUS,
             enterTransition = { enterTransition },
             exitTransition = { exitTransition },
             popEnterTransition = { popEnterTransition },
@@ -64,7 +66,7 @@ fun NavigationManager() {
             StatusView(navigationController)
         }
         composable(
-            route = Routes.SETTINGS,
+            route = Routes.ROUTE_SETTINGS,
             enterTransition = { enterTransition },
             exitTransition = { exitTransition },
             popEnterTransition = { popEnterTransition },
@@ -73,13 +75,16 @@ fun NavigationManager() {
             SettingsView(navigationController)
         }
         composable(
-            route = Routes.SERVER_FORM,
+            route = Routes.ROUTE_SERVER_FORM,
             enterTransition = { enterTransition },
             exitTransition = { exitTransition },
             popEnterTransition = { popEnterTransition },
-            popExitTransition = { popExitTransition }
+            popExitTransition = { popExitTransition },
+            arguments = listOf(
+                navArgument(name = Routes.ARG_SERVER_ID) { type = NavType.StringType; nullable = true },
+            )
         ) {
-            ServerFormView(navigationController)
+            ServerFormView(editServerId = it.arguments?.getString(Routes.ARG_SERVER_ID))
         }
     }
 }

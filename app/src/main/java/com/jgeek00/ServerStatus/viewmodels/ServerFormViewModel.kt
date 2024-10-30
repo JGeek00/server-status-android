@@ -10,6 +10,23 @@ import com.jgeek00.ServerStatus.providers.ServerInstancesProvider
 import kotlinx.coroutines.launch
 
 class ServerFormViewModel: ViewModel() {
+    var editingId = mutableStateOf<Int?>(null)
+
+    fun setServerData(serverId: Int) {
+        val server = ServerInstancesProvider.getInstance().servers.value.find { item -> item.id == serverId }
+        if (server == null) return
+
+        serverName.value = server.name
+        ipDomain.value = server.ipDomain
+        port.value = if (server.port != null) server.port.toString() else ""
+        path.value = server.path ?: ""
+        useBasicAuth.value = server.useBasicAuth
+        basicAuthUsername.value = server.basicAuthUser ?: ""
+        basicAuthPassword.value = server.basicAuthPassword ?: ""
+
+        editingId.value = serverId
+    }
+
     var serverName = mutableStateOf("")
     var serverNameError = mutableStateOf<String?>(null)
 
@@ -99,20 +116,40 @@ class ServerFormViewModel: ViewModel() {
 
         viewModelScope.launch {
             saving.value = true
-            val result = ServerInstancesProvider.getInstance().createServer(
-                name = serverName.value,
-                method = connectionMethod.value.toString().lowercase(),
-                ipDomain = ipDomain.value,
-                port = port.value.toIntOrNull(),
-                path = path.value,
-                useBasicAuth = useBasicAuth.value,
-                basicAuthUser = basicAuthUsername.value,
-                basicAuthPassword = basicAuthPassword.value
-            )
-            savingError.value = !result
-            saving.value = false
-            if (result) {
-                NavigationProvider.getInstance().popBack()
+            if (editingId.value != null) {
+                val result = ServerInstancesProvider.getInstance().editServer(
+                    id = editingId.value!!,
+                    name = serverName.value,
+                    method = connectionMethod.value.toString().lowercase(),
+                    ipDomain = ipDomain.value,
+                    port = port.value.toIntOrNull(),
+                    path = path.value,
+                    useBasicAuth = useBasicAuth.value,
+                    basicAuthUser = basicAuthUsername.value,
+                    basicAuthPassword = basicAuthPassword.value
+                )
+                savingError.value = !result
+                saving.value = false
+                if (result) {
+                    NavigationProvider.getInstance().popBack()
+                }
+            }
+            else {
+                val result = ServerInstancesProvider.getInstance().createServer(
+                    name = serverName.value,
+                    method = connectionMethod.value.toString().lowercase(),
+                    ipDomain = ipDomain.value,
+                    port = port.value.toIntOrNull(),
+                    path = path.value,
+                    useBasicAuth = useBasicAuth.value,
+                    basicAuthUser = basicAuthUsername.value,
+                    basicAuthPassword = basicAuthPassword.value
+                )
+                savingError.value = !result
+                saving.value = false
+                if (result) {
+                    NavigationProvider.getInstance().popBack()
+                }
             }
         }
     }

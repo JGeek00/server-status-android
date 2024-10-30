@@ -56,7 +56,7 @@ class DatabaseService(context: Context?): SQLiteOpenHelper(context, AppConfig.DA
                                 name = cursor.getString(cursor.getColumnIndexOrThrow("name")),
                                 method = cursor.getString(cursor.getColumnIndexOrThrow("method")),
                                 ipDomain = cursor.getString(cursor.getColumnIndexOrThrow("ipDomain")),
-                                port = cursor.getInt(cursor.getColumnIndexOrThrow("port")),
+                                port = if (cursor.getInt(cursor.getColumnIndexOrThrow("port")) == 0) null else cursor.getInt(cursor.getColumnIndexOrThrow("port")),
                                 path = cursor.getString(cursor.getColumnIndexOrThrow("path")),
                                 useBasicAuth = cursor.getInt(cursor.getColumnIndexOrThrow("useBasicAuth")) == 1,
                                 basicAuthUser = cursor.getString(cursor.getColumnIndexOrThrow("basicAuthUser")),
@@ -90,6 +90,30 @@ class DatabaseService(context: Context?): SQLiteOpenHelper(context, AppConfig.DA
                     if (basicAuthPassword != null) put("basicAuthPassword", basicAuthPassword)
                 }
                 val query = db.insert("servers", null, contentValues)
+                db.close()
+                query
+            } catch (e: Exception) {
+                println(e.localizedMessage)
+                null
+            }
+        }
+    }
+
+    suspend fun updateServer(id: Int, name: String, method: String, ipDomain: String, port: Int?, path: String?, useBasicAuth: Boolean, basicAuthUser: String?, basicAuthPassword: String?): Int? {
+        val db = this.writableDatabase
+        return withContext(Dispatchers.IO) {
+            try {
+                val contentValues = ContentValues().apply {
+                    put("name", name)
+                    put("method", method)
+                    put("ipDomain", ipDomain)
+                    if (port != null) put("port", port)
+                    if (path != null) put("path", path)
+                    put("useBasicAuth", if (useBasicAuth) 1 else 0)
+                    if (basicAuthUser != null) put("basicAuthUser", basicAuthUser)
+                    if (basicAuthPassword != null) put("basicAuthPassword", basicAuthPassword)
+                }
+                val query = db.update("servers", contentValues, "id = ?", arrayOf(id.toString()))
                 db.close()
                 query
             } catch (e: Exception) {

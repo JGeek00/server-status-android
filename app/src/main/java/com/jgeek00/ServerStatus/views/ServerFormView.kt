@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,7 +16,6 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,12 +28,10 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -43,19 +39,25 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.SectionHeader
 import com.jgeek00.ServerStatus.components.SwitchListTile
 import com.jgeek00.ServerStatus.constants.Enums
+import com.jgeek00.ServerStatus.providers.NavigationProvider
 import com.jgeek00.ServerStatus.viewmodels.ServerFormViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ServerFormView(navigationController: NavController) {
+fun ServerFormView(editServerId: String? = null) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-
     val viewModel: ServerFormViewModel = viewModel()
+
+    LaunchedEffect(Unit) {
+        if (editServerId != null && editServerId.split("?").size == 2) {
+            val id = editServerId.split("?")[1]
+            viewModel.setServerData(serverId = id.toInt())
+        }
+    }
 
     Scaffold(
         modifier = Modifier
@@ -63,11 +65,11 @@ fun ServerFormView(navigationController: NavController) {
         topBar = {
             LargeTopAppBar(
                 scrollBehavior = scrollBehavior,
-                title = { Text("Server Form") },
+                title = { Text(text = if (viewModel.editingId.value != null) "Edit server" else "Create server") },
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            navigationController.popBackStack()
+                            NavigationProvider.getInstance().popBack()
                         }
                     ) {
                         Icon(

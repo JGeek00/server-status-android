@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Dns
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -45,6 +46,7 @@ import com.jgeek00.ServerStatus.components.NoPaddingAlertDialog
 import com.jgeek00.ServerStatus.components.SectionHeader
 import com.jgeek00.ServerStatus.models.ServerModel
 import com.jgeek00.ServerStatus.navigation.Routes
+import com.jgeek00.ServerStatus.providers.NavigationProvider
 import com.jgeek00.ServerStatus.providers.ServerInstancesProvider
 import com.jgeek00.ServerStatus.utils.createServerAddress
 import kotlinx.coroutines.coroutineScope
@@ -98,7 +100,7 @@ fun ServersSection(navigationController: NavHostController) {
     ) {
         Button(
             onClick = {
-                navigationController.navigate(Routes.SERVER_FORM)
+                navigationController.navigate(Routes.ROUTE_SERVER_FORM)
             }
         ) {
             Row(
@@ -138,6 +140,16 @@ fun ServerItem(server: ServerModel) {
                 Column(
                     Modifier.padding(0.dp)
                 ) {
+                    ListTile(
+                        label = "Edit",
+                        supportingText = "Edit this server instance",
+                        leadingIcon = Icons.Rounded.Edit,
+                        onClick = {
+                            showOptionsDialog = false
+                            NavigationProvider.getInstance().navigateTo("${Routes.ROUTE_SERVER_FORM}?${server.id}")
+                        },
+                        padding = PaddingValues(horizontal = 24.dp, vertical = 8.dp)
+                    )
                     ListTile(
                         label = "Delete",
                         supportingText = "Delete this server instance",

@@ -30,8 +30,27 @@ class ServerInstancesProvider: ViewModel() {
     }
 
     suspend fun createServer(name: String, method: String, ipDomain: String, port: Int?, path: String?, useBasicAuth: Boolean, basicAuthUser: String?, basicAuthPassword: String?): Boolean {
-        val result = DatabaseService.getInstance().createServer(name, method, ipDomain, port, path, useBasicAuth, basicAuthUser, basicAuthPassword)
-        return result != null
+        DatabaseService.getInstance().createServer(name, method, ipDomain, port, path, useBasicAuth, basicAuthUser, basicAuthPassword)
+            ?: return false
+
+        val newServers = DatabaseService.getInstance().getServers()
+        if (newServers != null) {
+            _servers.value = newServers
+            return true
+        } else {
+            return false
+        }
+    }
+
+    suspend fun editServer(id: Int, name: String, method: String, ipDomain: String, port: Int?, path: String?, useBasicAuth: Boolean, basicAuthUser: String?, basicAuthPassword: String?): Boolean {
+        val result = DatabaseService.getInstance().updateServer(id, name, method, ipDomain, port, path, useBasicAuth, basicAuthUser, basicAuthPassword)
+        if (result != null && result > 0) {
+            val index = _servers.value.indexOfFirst { item -> item.id == id }
+            val newServer = ServerModel(id, name, method, ipDomain, port, path, useBasicAuth, basicAuthUser, basicAuthPassword)
+            _servers.value = _servers.value.toMutableList().apply { set(index, newServer) }
+            return true
+        }
+        return false
     }
 
     suspend fun deleteServer(serverId: Int): Boolean {
