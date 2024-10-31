@@ -1,6 +1,9 @@
 package com.jgeek00.ServerStatus.components
 
+import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
@@ -25,10 +28,17 @@ fun Gauge(
     colors: List<Color>,
     size: Dp
 ) {
-    var startAngle by remember { mutableStateOf(minimumAngle) }
+    val startAngle by remember { mutableFloatStateOf(minimumAngle) }
     val perc = percentage.coerceIn(0.0, 100.0)
     val percAngle = ((maximumAngle - minimumAngle) * perc / 100) + minimumAngle
-    val animatedEndAngle by animateFloatAsState(targetValue = percAngle.toFloat())
+    val animatedEndAngle by animateFloatAsState(
+        targetValue = percAngle.toFloat(),
+        label = "GaugeArcAnimation",
+        animationSpec = tween(
+            durationMillis = 300,
+            easing = EaseOut
+        ),
+    )
 
     val color = getColor(percentage, colors)
 

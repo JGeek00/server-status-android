@@ -82,7 +82,7 @@ fun ServerFormView(editServerId: String? = null) {
         }
     }
 
-    val isActiveServer = statusRepository.selectedServer.value?.id == viewModel.editingId.value
+    val isActiveServer = if (viewModel.editingId.value != null) statusRepository.selectedServer.value?.id == viewModel.editingId.value else false
 
     Scaffold(
         modifier = Modifier
@@ -120,7 +120,7 @@ fun ServerFormView(editServerId: String? = null) {
                             onClick = { viewModel.save() },
                             enabled = !viewModel.saving.value
                         ) {
-                            Image(
+                            Icon(
                                 imageVector = Icons.Rounded.Save,
                                 contentDescription = stringResource(R.string.save)
                             )

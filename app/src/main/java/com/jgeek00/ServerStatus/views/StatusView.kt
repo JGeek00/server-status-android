@@ -328,9 +328,9 @@ fun CpuCard(values: CPU) {
             ) {
                 values.utilisation?.let {
                     Gauge(
-                        value = "${it.toInt()}%",
+                        value = "${(it*100).toInt()}%",
                         colors = gaugeColors,
-                        percentage = it,
+                        percentage = it*100,
                         size = 100.dp,
                         icon = {
                             Icon(
@@ -674,7 +674,7 @@ fun NetworkCard(current: Network, previous: Network?) {
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = if (previous != null) formatBytes(previous.tx?.let { current.tx?.minus(it) }) else "0 Bit/s"
+                        text = if (previous != null) formatBits(previous.tx?.let { current.tx?.minus(it) }) else "0 Bit/s"
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
