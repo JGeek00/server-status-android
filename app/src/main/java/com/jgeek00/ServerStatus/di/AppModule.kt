@@ -1,13 +1,11 @@
 package com.jgeek00.ServerStatus.di
 
 import android.content.Context
-import com.jgeek00.ServerStatus.repository.ApiRepository
 import com.jgeek00.ServerStatus.repository.ServerInstancesRepository
 import com.jgeek00.ServerStatus.repository.StatusRepository
 import com.jgeek00.ServerStatus.services.ApiClient
 import com.jgeek00.ServerStatus.services.DataStoreService
 import com.jgeek00.ServerStatus.services.DatabaseService
-import com.jgeek00.ServerStatus.viewmodels.StatusViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.EntryPoint
@@ -34,19 +32,19 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideServerInstancesRepository(databaseService: DatabaseService, dataStoreService: DataStoreService, apiRepository: ApiRepository, statusRepository: StatusRepository): ServerInstancesRepository {
+    fun provideServerInstancesRepository(databaseService: DatabaseService, dataStoreService: DataStoreService, apiRepository: ApiClient, statusRepository: StatusRepository): ServerInstancesRepository {
         return ServerInstancesRepository(databaseService, dataStoreService, apiRepository, statusRepository)
     }
 
     @Provides
     @Singleton
-    fun provideApiRepository(): ApiRepository {
-        return ApiRepository()
+    fun provideApiRepository(): ApiClient {
+        return ApiClient()
     }
 
     @Provides
     @Singleton
-    fun provideStatusRepository(apiRepository: ApiRepository, @ApplicationContext context: Context): StatusRepository {
+    fun provideStatusRepository(apiRepository: ApiClient, @ApplicationContext context: Context): StatusRepository {
         return StatusRepository(context, apiRepository)
     }
 }

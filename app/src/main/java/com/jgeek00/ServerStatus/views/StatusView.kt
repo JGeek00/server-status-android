@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.Memory
@@ -22,6 +24,7 @@ import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Thermostat
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,6 +41,7 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +55,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -59,13 +64,23 @@ import com.jgeek00.ServerStatus.components.Gauge
 import com.jgeek00.ServerStatus.constants.gaugeColors
 import com.jgeek00.ServerStatus.di.ServerInstancesRepositoryEntryPoint
 import com.jgeek00.ServerStatus.di.StatusRepositoryEntryPoint
+import com.jgeek00.ServerStatus.models.CPU
+import com.jgeek00.ServerStatus.models.Memory
+import com.jgeek00.ServerStatus.models.Network
+import com.jgeek00.ServerStatus.models.Storage
 import com.jgeek00.ServerStatus.navigation.NavigationManager
 import com.jgeek00.ServerStatus.navigation.Routes
-import com.jgeek00.ServerStatus.viewmodels.StatusViewModel
+import com.jgeek00.ServerStatus.utils.createServerAddress
+import com.jgeek00.ServerStatus.utils.formatBits
+import com.jgeek00.ServerStatus.utils.formatBytes
+import com.jgeek00.ServerStatus.utils.formatMemory
+import com.jgeek00.ServerStatus.utils.formatStorage
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.withContext
+import java.util.Locale
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,6 +94,7 @@ fun StatusView() {
             StatusRepositoryEntryPoint::class.java
         ).statusRepository
     }
+
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     var refreshing by remember { mutableStateOf(false) }
@@ -93,6 +109,8 @@ fun StatusView() {
         }
     }
 
+    val values = statusRepository.data.collectAsState(initial = emptyList())
+
     Scaffold(
         modifier = Modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -104,11 +122,13 @@ fun StatusView() {
                         horizontalAlignment = Alignment.Start
                     ) {
                         Text(text = stringResource(R.string.status))
-                        Text(
-                            text = "https://status.server.com",
-                            color = Color.Gray,
-                            fontSize = 13.sp,
-                        )
+                        statusRepository.selectedServer.value?.let { value ->
+                            Text(
+                                text = createServerAddress(value.method, value.ipDomain, value.port, value.path),
+                                color = Color.Gray,
+                                fontSize = 13.sp,
+                            )
+                        }
                     }
                 },
                 actions = {
@@ -133,31 +153,83 @@ fun StatusView() {
             )
         }
     ) { padding ->
-        PullToRefreshBox(
-            state = state,
-            isRefreshing = refreshing,
-            onRefresh = { refreshing = true },
-            modifier = Modifier
-                .padding(padding)
-        ) {
+        if (statusRepository.loading.value) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxSize()
-                    .nestedScroll(scrollBehavior.nestedScrollConnection)
-                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp)
             ) {
-                CpuCard()
-                MemoryCard()
-                StorageCard()
-                NetworkCard()
+                CircularProgressIndicator()
+                Spacer(modifier = Modifier.height(30.dp))
+                Text(
+                    text = "Loading status...",
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 22.sp
+                )
+            }
+        }
+        else if (statusRepository.error.value || values.value.isEmpty()) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                Image(
+                    imageVector = Icons.Rounded.Error,
+                    contentDescription = stringResource(R.string.error),
+                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                    modifier = Modifier.size(36.dp)
+                )
+                Spacer(modifier = Modifier.height(30.dp))
+                Text(
+                    text = "An error occurred when loading the status",
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 22.sp
+                )
+            }
+        }
+        else {
+            PullToRefreshBox(
+                state = state,
+                isRefreshing = refreshing,
+                onRefresh = { refreshing = true },
+                modifier = Modifier
+                    .padding(padding)
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    values.value.last().cpu?.let {
+                        CpuCard(it)
+                    }
+                    values.value.last().memory?.let {
+                        MemoryCard(it)
+                    }
+                    values.value.last().storage?.let {
+                        StorageCard(it)
+                    }
+                    values.value.last().network?.let { v1 ->
+                        val previous = if (values.value.size >= 2) values.value[values.value.size - 2].network else null
+                        NetworkCard(current = v1, previous = previous)
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-fun CpuCard() {
+fun CpuCard(values: CPU) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -182,10 +254,12 @@ fun CpuCard() {
                         fontSize = 24.sp,
                         fontWeight = FontWeight.SemiBold
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "Intel N100"
-                    )
+                    values.model?.let {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = it
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(32.dp))
@@ -194,32 +268,37 @@ fun CpuCard() {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Gauge(
-                    value = "20%",
-                    colors = gaugeColors,
-                    percentage = 20.0,
-                    size = 100.dp,
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Rounded.Memory,
-                            contentDescription = stringResource(R.string.cpu),
-                            modifier = Modifier.size(40.dp),
-                        )
-                    }
-                )
-                Gauge(
-                    value = "50ºC",
-                    colors = gaugeColors,
-                    percentage = 50.0,
-                    size = 100.dp,
-                    icon = {
-                        Icon(
-                            imageVector = Icons.Rounded.Thermostat,
-                            contentDescription = stringResource(R.string.temperature),
-                            modifier = Modifier.size(40.dp),
-                        )
-                    }
-                )
+                values.utilisation?.let {
+                    Gauge(
+                        value = "${it.toInt()}%",
+                        colors = gaugeColors,
+                        percentage = it,
+                        size = 100.dp,
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Rounded.Memory,
+                                contentDescription = stringResource(R.string.cpu),
+                                modifier = Modifier.size(40.dp),
+                            )
+                        }
+                    )
+                }
+                values.cpuCores?.let {
+                    val maxTemp = ((it.map { core -> core.temperatures?.first() }.filter { temp -> temp != null }) as List<Long>).max()
+                    Gauge(
+                        value = "$maxTemp ºC",
+                        colors = gaugeColors,
+                        percentage = maxTemp.toDouble(),
+                        size = 100.dp,
+                        icon = {
+                            Icon(
+                                imageVector = Icons.Rounded.Thermostat,
+                                contentDescription = stringResource(R.string.temperature),
+                                modifier = Modifier.size(40.dp),
+                            )
+                        }
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(16.dp))
             Row(
@@ -247,7 +326,7 @@ fun CpuCard() {
 }
 
 @Composable
-fun MemoryCard() {
+fun MemoryCard(values: Memory) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -274,10 +353,12 @@ fun MemoryCard() {
                         fontSize = 24.sp,
                         fontWeight = FontWeight.SemiBold
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "16 GB"
-                    )
+                    values.total?.let {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "${formatMemory(it)} GB"
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(32.dp))
@@ -286,42 +367,48 @@ fun MemoryCard() {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Gauge(
-                    value = "30%",
-                    colors = gaugeColors,
-                    percentage = 30.0,
-                    size = 100.dp,
-                    icon = {
-                        Image(
-                            painter = painterResource(id = R.drawable.memory_icon),
-                            contentDescription = stringResource(R.string.memory),
-                            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
-                            modifier = Modifier.size(40.dp)
-                        )
-                    }
-                )
+                if (values.total != null && values.available != null) {
+                    val used = values.total - values.available
+                    val perc = (used.toDouble()/values.total.toDouble())*100.0
+                    Gauge(
+                        value = "${perc.toInt()}%",
+                        colors = gaugeColors,
+                        percentage = perc,
+                        size = 100.dp,
+                        icon = {
+                            Image(
+                                painter = painterResource(id = R.drawable.memory_icon),
+                                contentDescription = stringResource(R.string.memory),
+                                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+                    )
+                }
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+                    val used = values.available?.let { values.total?.minus(it) }
+                    val swapUsed = values.swap_available?.let { values.swap_total?.minus(it) }
                     Row {
-                        Text("10 GB", fontWeight = FontWeight.SemiBold)
+                        Text("${formatMemory(values.available)} GB", fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.width(4.dp))
                         Text(stringResource(R.string.available))
                     }
                     Row {
-                        Text("6 GB", fontWeight = FontWeight.SemiBold)
+                        Text("${formatMemory(used)} GB", fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.width(4.dp))
                         Text(stringResource(R.string.in_use))
                     }
                     Spacer(Modifier.height(4.dp))
                     Row {
-                        Text("0 GB", fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
+                        Text("${formatMemory(swapUsed)} GB", fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
                         Spacer(Modifier.width(4.dp))
                         Text(stringResource(R.string.in_swap), fontSize = 12.sp)
                     }
                     Row {
-                        Text("8 GB", fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
+                        Text("${formatMemory(values.cached)} GB", fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
                         Spacer(Modifier.width(4.dp))
                         Text(stringResource(R.string.in_cache), fontSize = 12.sp)
                     }
@@ -353,7 +440,11 @@ fun MemoryCard() {
 }
 
 @Composable
-fun StorageCard() {
+fun StorageCard(values: List<Storage>) {
+    val total = values.mapNotNull { v -> v.total }.sum()
+    val available = values.mapNotNull { v -> v.available }.sum()
+    val used = total - available
+    val perc = (used/total)*100.0
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -382,7 +473,7 @@ fun StorageCard() {
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "500 GB"
+                        text = formatStorage(total)
                     )
                 }
             }
@@ -393,9 +484,9 @@ fun StorageCard() {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Gauge(
-                    value = "70%",
+                    value = "${perc.toInt()}%",
                     colors = gaugeColors,
-                    percentage = 70.0,
+                    percentage = perc,
                     size = 100.dp,
                     icon = {
                         Image(
@@ -407,16 +498,18 @@ fun StorageCard() {
                     }
                 )
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxHeight()
                 ) {
                     Row {
-                        Text("1", fontWeight = FontWeight.SemiBold)
+                        Text(values.size.toString(), fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.width(4.dp))
                         Text(stringResource(R.string.volume))
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
                     Row {
-                        Text("450 GB", fontWeight = FontWeight.SemiBold)
+                        Text(formatStorage(available.toDouble()), fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.width(4.dp))
                         Text(stringResource(R.string.available))
                     }
@@ -448,7 +541,7 @@ fun StorageCard() {
 }
 
 @Composable
-fun NetworkCard() {
+fun NetworkCard(current: Network, previous: Network?) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -477,7 +570,14 @@ fun NetworkCard() {
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "1 Gbit/s"
+                        text = if (current.speed != null) {
+                            val formatted = String.format(
+                                Locale.getDefault(),
+                                "%.1f",
+                                current.speed.toDouble() / 1000.0
+                            )
+                            "$formatted Gbit/s"
+                        } else "N/A"
                     )
                 }
             }
@@ -498,11 +598,11 @@ fun NetworkCard() {
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "10 Mbit/s"
+                        text = if (previous != null) formatBits(previous.rx?.let { current.rx?.minus(it) }) else "0 Bit/s"
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "10 MB/s"
+                        text = if (previous != null) formatBytes(previous.rx?.let { current.rx?.minus(it) }) else "0 B/s"
                     )
                 }
                 Column(
@@ -516,11 +616,11 @@ fun NetworkCard() {
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "10 Mbit/s"
+                        text = if (previous != null) formatBytes(previous.tx?.let { current.tx?.minus(it) }) else "0 Bit/s"
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "10 MB/s"
+                        text = if (previous != null) formatBytes(previous.tx?.let { current.tx?.minus(it) }) else "0 B/s"
                     )
                 }
             }

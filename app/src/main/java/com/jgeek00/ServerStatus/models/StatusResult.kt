@@ -41,8 +41,8 @@ data class Memory (
     val total: Long? = null,
     val available: Long? = null,
     val cached: Long? = null,
-    val swapTotal: Long? = null,
-    val swapAvailable: Long? = null,
+    val swap_total: Long? = null,
+    val swap_available: Long? = null,
     val processes: Long? = null
 )
 
