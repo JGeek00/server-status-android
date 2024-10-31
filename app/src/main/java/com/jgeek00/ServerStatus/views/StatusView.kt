@@ -16,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
@@ -70,6 +71,7 @@ import com.jgeek00.ServerStatus.models.Network
 import com.jgeek00.ServerStatus.models.Storage
 import com.jgeek00.ServerStatus.navigation.NavigationManager
 import com.jgeek00.ServerStatus.navigation.Routes
+import com.jgeek00.ServerStatus.repository.ServerInstancesRepository
 import com.jgeek00.ServerStatus.utils.createServerAddress
 import com.jgeek00.ServerStatus.utils.formatBits
 import com.jgeek00.ServerStatus.utils.formatBytes
@@ -91,6 +93,13 @@ import java.util.Locale
 @Composable
 fun StatusView() {
     val context = LocalContext.current
+
+    val serverInstancesRepository = remember {
+        EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            ServerInstancesRepositoryEntryPoint::class.java
+        ).serverInstancesRepository
+    }
 
     val statusRepository = remember {
         EntryPointAccessors.fromApplication(
@@ -116,7 +125,8 @@ fun StatusView() {
     }
 
     val values = statusRepository.data.collectAsState(initial = emptyList())
-
+    val servers = serverInstancesRepository.servers.collectAsState(initial = emptyList())
+println(statusRepository.selectedServer.value)
     Scaffold(
         modifier = Modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -159,74 +169,116 @@ fun StatusView() {
             )
         }
     ) { padding ->
-        if (statusRepository.loading.value) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                CircularProgressIndicator()
-                Spacer(modifier = Modifier.height(30.dp))
-                Text(
-                    text = "Loading status...",
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 22.sp
-                )
+        if (servers.value.isNotEmpty()) {
+            if (statusRepository.loading.value) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                ) {
+                    CircularProgressIndicator()
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(
+                        text = "Loading status...",
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 22.sp
+                    )
+                }
             }
-        }
-        else if (statusRepository.error.value || values.value.isEmpty()) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                Image(
-                    imageVector = Icons.Rounded.Error,
-                    contentDescription = stringResource(R.string.error),
-                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
-                    modifier = Modifier.size(36.dp)
-                )
-                Spacer(modifier = Modifier.height(30.dp))
-                Text(
-                    text = "An error occurred when loading the status",
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 22.sp
-                )
+            else if (statusRepository.error.value || values.value.isEmpty()) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                ) {
+                    Image(
+                        imageVector = Icons.Rounded.Error,
+                        contentDescription = stringResource(R.string.error),
+                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                        modifier = Modifier.size(36.dp)
+                    )
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(
+                        text = "An error occurred when loading the status",
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 22.sp
+                    )
+                }
+            }
+            else {
+                PullToRefreshBox(
+                    state = state,
+                    isRefreshing = refreshing,
+                    onRefresh = { refreshing = true },
+                    modifier = Modifier
+                        .padding(padding)
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .nestedScroll(scrollBehavior.nestedScrollConnection)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        values.value.last().cpu?.let {
+                            CpuCard(it)
+                        }
+                        values.value.last().memory?.let {
+                            MemoryCard(it)
+                        }
+                        values.value.last().storage?.let {
+                            StorageCard(it)
+                        }
+                        values.value.last().network?.let { v1 ->
+                            val previous = if (values.value.size >= 2) values.value[values.value.size - 2].network else null
+                            NetworkCard(current = v1, previous = previous)
+                        }
+                    }
+                }
             }
         }
         else {
-            PullToRefreshBox(
-                state = state,
-                isRefreshing = refreshing,
-                onRefresh = { refreshing = true },
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .padding(padding)
+                    .fillMaxSize()
+                    .padding(16.dp)
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .verticalScroll(rememberScrollState())
+                Text(
+                    text = "No server connections created",
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Create a connection to a server to begin.",
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 16.sp
+                )
+                Spacer(modifier = Modifier.height(30.dp))
+                Button(
+                    onClick = { NavigationManager.getInstance().navigateTo(Routes.ROUTE_SERVER_FORM) }
                 ) {
-                    values.value.last().cpu?.let {
-                        CpuCard(it)
-                    }
-                    values.value.last().memory?.let {
-                        MemoryCard(it)
-                    }
-                    values.value.last().storage?.let {
-                        StorageCard(it)
-                    }
-                    values.value.last().network?.let { v1 ->
-                        val previous = if (values.value.size >= 2) values.value[values.value.size - 2].network else null
-                        NetworkCard(current = v1, previous = previous)
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Dns,
+                            contentDescription = stringResource(R.string.create_server),
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(stringResource(R.string.create_server))
                     }
                 }
             }

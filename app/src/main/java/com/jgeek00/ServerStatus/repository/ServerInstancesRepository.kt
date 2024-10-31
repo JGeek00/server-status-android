@@ -64,19 +64,21 @@ class ServerInstancesRepository @Inject constructor(
     suspend fun deleteServer(serverId: Int): Boolean {
         val result = databaseService.deleteServer(serverId)
         if (result) {
-             val newServers = _servers.value.filter { item -> item.id != serverId }
+            statusRepository.selectedServer.value = null
+
+            val newServers = _servers.value.filter { item -> item.id != serverId }
             _servers.value = newServers
 
             val defaultServer = dataStoreService.getInt(DataStoreKeys.DEFAULT_SERVER).first()
             if (defaultServer == serverId) {
                 if (newServers.isNotEmpty()) {
                     setAsDefaultServer(serverId = newServers[0].id)
+                    statusRepository.selectedServer.value = newServers[0]
                 } else {
                     dataStoreService.removeInt(DataStoreKeys.DEFAULT_SERVER)
                 }
             }
             return true
-
         } else {
             return false
         }
