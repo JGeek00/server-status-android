@@ -126,7 +126,7 @@ fun StatusView() {
 
     val values = statusRepository.data.collectAsState(initial = emptyList())
     val servers = serverInstancesRepository.servers.collectAsState(initial = emptyList())
-println(statusRepository.selectedServer.value)
+
     Scaffold(
         modifier = Modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -181,7 +181,7 @@ println(statusRepository.selectedServer.value)
                     CircularProgressIndicator()
                     Spacer(modifier = Modifier.height(30.dp))
                     Text(
-                        text = "Loading status...",
+                        text = stringResource(R.string.loading_status),
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 22.sp
@@ -204,7 +204,7 @@ println(statusRepository.selectedServer.value)
                     )
                     Spacer(modifier = Modifier.height(30.dp))
                     Text(
-                        text = "An error occurred when loading the status",
+                        text = stringResource(R.string.an_error_occurred_when_loading_the_status),
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 22.sp
@@ -252,7 +252,7 @@ println(statusRepository.selectedServer.value)
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "No server connections created",
+                    text = stringResource(R.string.no_server_connections_created),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 24.sp,
@@ -260,7 +260,7 @@ println(statusRepository.selectedServer.value)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "Create a connection to a server to begin.",
+                    text = stringResource(R.string.create_a_connection_to_a_server_to_begin),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 16.sp

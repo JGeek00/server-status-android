@@ -6,15 +6,21 @@ import androidx.lifecycle.viewModelScope
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.constants.Enums
 import com.jgeek00.ServerStatus.constants.RegExps
+import com.jgeek00.ServerStatus.models.ServerModel
 import com.jgeek00.ServerStatus.navigation.NavigationManager
 import com.jgeek00.ServerStatus.repository.ServerInstancesRepository
+import com.jgeek00.ServerStatus.repository.StatusRepository
+import com.jgeek00.ServerStatus.services.ApiClient
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class ServerFormViewModel @Inject constructor(
-    private val serverInstancesProvider: ServerInstancesRepository
+    private val serverInstancesProvider: ServerInstancesRepository,
+    private val statusRepository: StatusRepository
 ) : ViewModel() {
     var editingId = mutableStateOf<Int?>(null)
 
@@ -57,6 +63,8 @@ class ServerFormViewModel @Inject constructor(
 
     var saving = mutableStateOf(false)
     var savingError = mutableStateOf(false)
+
+    var connectionError = mutableStateOf(false)
 
     private fun validateForm(): Boolean {
         var ret = true
@@ -121,40 +129,63 @@ class ServerFormViewModel @Inject constructor(
         if (!res) return
 
         viewModelScope.launch {
-            saving.value = true
-            if (editingId.value != null) {
-                val result = serverInstancesProvider.editServer(
-                    id = editingId.value!!,
-                    name = serverName.value,
-                    method = connectionMethod.value.toString().lowercase(),
-                    ipDomain = ipDomain.value,
-                    port = port.value.toIntOrNull(),
-                    path = path.value,
-                    useBasicAuth = useBasicAuth.value,
-                    basicAuthUser = basicAuthUsername.value,
-                    basicAuthPassword = basicAuthPassword.value
-                )
-                savingError.value = !result
-                saving.value = false
-                if (result) {
-                    NavigationManager.getInstance().popBack()
+            withContext(Dispatchers.IO) {
+                saving.value = true
+                if (editingId.value != null) {
+                    val result = serverInstancesProvider.editServer(
+                        id = editingId.value!!,
+                        name = serverName.value,
+                        method = connectionMethod.value.toString().lowercase(),
+                        ipDomain = ipDomain.value,
+                        port = port.value.toIntOrNull(),
+                        path = path.value,
+                        useBasicAuth = useBasicAuth.value,
+                        basicAuthUser = basicAuthUsername.value,
+                        basicAuthPassword = basicAuthPassword.value
+                    )
+                    savingError.value = !result
+                    saving.value = false
+                    if (result) {
+                        NavigationManager.getInstance().popBack()
+                    }
                 }
-            }
-            else {
-                val result = serverInstancesProvider.createServer(
-                    name = serverName.value,
-                    method = connectionMethod.value.toString().lowercase(),
-                    ipDomain = ipDomain.value,
-                    port = port.value.toIntOrNull(),
-                    path = path.value,
-                    useBasicAuth = useBasicAuth.value,
-                    basicAuthUser = basicAuthUsername.value,
-                    basicAuthPassword = basicAuthPassword.value
-                )
-                savingError.value = !result
-                saving.value = false
-                if (result) {
-                    NavigationManager.getInstance().popBack()
+                else {
+                    val apiClient = ApiClient()
+                    apiClient.setApiClientInstance(
+                        ServerModel(
+                            id = 0,
+                            name = serverName.value,
+                            method = connectionMethod.value.toString().lowercase(),
+                            ipDomain = ipDomain.value,
+                            port = port.value.toIntOrNull(),
+                            path = path.value,
+                            useBasicAuth = useBasicAuth.value,
+                            basicAuthUser = basicAuthUsername.value,
+                            basicAuthPassword = basicAuthPassword.value
+                        )
+                    )
+                    val result = apiClient.getStatus()
+                    if (result == null) {
+                        connectionError.value = true
+                        saving.value = false
+                        return@withContext
+                    }
+
+                    val saved = serverInstancesProvider.createServer(
+                        name = serverName.value,
+                        method = connectionMethod.value.toString().lowercase(),
+                        ipDomain = ipDomain.value,
+                        port = port.value.toIntOrNull(),
+                        path = path.value,
+                        useBasicAuth = useBasicAuth.value,
+                        basicAuthUser = basicAuthUsername.value,
+                        basicAuthPassword = basicAuthPassword.value
+                    )
+                    savingError.value = saved == null
+                    if (saved != null) {
+                        statusRepository.setSelectedServer(saved)
+                        NavigationManager.getInstance().popBack()
+                    }
                 }
             }
         }

@@ -61,7 +61,6 @@ dependencies {
     implementation(libs.androidx.animation)
     implementation(libs.material3)
     implementation(libs.androidx.material.icons.extended)
-    implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.coil.compose)
     testImplementation(libs.junit)

@@ -26,7 +26,13 @@ class StatusRepository @Inject constructor(
 
     private val coroutineScope = CoroutineScope(Job() + Dispatchers.IO)
 
-    fun fetchData() {
+    fun setSelectedServer(server: ServerModel) {
+        apiRepository.setApiClientInstance(server)
+        selectedServer.value = server
+        fetchData()
+    }
+
+    private fun fetchData() {
         coroutineScope.launch {
             val result = apiRepository.getStatus()
             if (result != null) {

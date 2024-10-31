@@ -2,12 +2,14 @@ package com.jgeek00.ServerStatus.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -15,13 +17,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.Save
+import androidx.compose.material.icons.rounded.SettingsEthernet
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -79,14 +84,27 @@ fun ServerFormView(editServerId: String? = null) {
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = { viewModel.save() },
-                        enabled = !viewModel.saving.value
-                    ) {
-                        Image(
-                            imageVector = Icons.Rounded.Save,
-                            contentDescription = stringResource(R.string.save)
-                        )
+                    if (viewModel.saving.value) {
+                        Box(
+                            modifier = Modifier.padding(end = 8.dp)
+                        ) {
+                            CircularProgressIndicator(
+                                strokeWidth = 3.dp,
+                                modifier = Modifier
+                                    .size(22.dp)
+                            )
+                        }
+                    }
+                    else {
+                        IconButton(
+                            onClick = { viewModel.save() },
+                            enabled = !viewModel.saving.value
+                        ) {
+                            Image(
+                                imageVector = Icons.Rounded.Save,
+                                contentDescription = stringResource(R.string.save)
+                            )
+                        }
                     }
                 }
             )
@@ -292,6 +310,34 @@ fun ServerFormView(editServerId: String? = null) {
                 dismissButton = {
                     TextButton(
                         onClick = { viewModel.savingError.value = false }
+                    ) {
+                        Text(stringResource(R.string.close))
+                    }
+                }
+            )
+        }
+        if (viewModel.connectionError.value) {
+            AlertDialog(
+                icon = {
+                    Icon(
+                        imageVector = Icons.Rounded.SettingsEthernet,
+                        contentDescription = stringResource(R.string.connection_error),
+                    )
+                },
+                title = {
+                    Text(
+                        text = stringResource(R.string.connection_error),
+                        textAlign = TextAlign.Center
+                    )
+                },
+                text = {
+                    Text(text = stringResource(R.string.cannot_establish_a_connection_to_the_server_check_the_connection_values_and_try_again_if_your_server_is_behind_a_basic_authentication_make_sure_to_have_that_section_properly_configured))
+                },
+                onDismissRequest = {},
+                confirmButton = {},
+                dismissButton = {
+                    TextButton(
+                        onClick = { viewModel.connectionError.value = false }
                     ) {
                         Text(stringResource(R.string.close))
                     }

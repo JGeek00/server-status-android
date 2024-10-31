@@ -64,4 +64,10 @@
     <string name="set_as_default_server">Set as default server</string>
     <string name="connect_to_this_server_when_the_app_is_started">Connect to this server when the app is started</string>
     <string name="default_server">Default server</string>
+    <string name="connection_error">Connection error</string>
+    <string name="cannot_establish_a_connection_to_the_server_check_the_connection_values_and_try_again_if_your_server_is_behind_a_basic_authentication_make_sure_to_have_that_section_properly_configured">Cannot establish a connection to the server. Check the connection values and try again. If your server is behind a basic authentication, make sure to have that section properly configured.</string>
+    <string name="no_server_connections_created">No server connections created</string>
+    <string name="create_a_connection_to_a_server_to_begin">Create a connection to a server to begin.</string>
+    <string name="an_error_occurred_when_loading_the_status">An error occurred when loading the status</string>
+    <string name="loading_status">Loading status...</string>
 </resources>

@@ -26,17 +26,15 @@ class ServerInstancesRepository @Inject constructor(
         try {
             val defaultServerId = dataStoreService.getInt(DataStoreKeys.DEFAULT_SERVER).first() ?: return
             val server = serversResult.first { item -> item.id == defaultServerId }
-            apiRepository.setApiClientInstance(server)
-            statusRepository.selectedServer.value = server
-            statusRepository.fetchData()
+            statusRepository.setSelectedServer(server)
         } catch (e: Exception) {
             println(e.localizedMessage)
         }
     }
 
-    suspend fun createServer(name: String, method: String, ipDomain: String, port: Int?, path: String?, useBasicAuth: Boolean, basicAuthUser: String?, basicAuthPassword: String?): Boolean {
+    suspend fun createServer(name: String, method: String, ipDomain: String, port: Int?, path: String?, useBasicAuth: Boolean, basicAuthUser: String?, basicAuthPassword: String?): ServerModel? {
         databaseService.createServer(name, method, ipDomain, port, path, useBasicAuth, basicAuthUser, basicAuthPassword)
-            ?: return false
+            ?: return null
 
         val newServers = databaseService.getServers()
         if (newServers != null) {
@@ -44,9 +42,9 @@ class ServerInstancesRepository @Inject constructor(
             if (newServers.size == 1) {
                 setAsDefaultServer(serverId = newServers[0].id)
             }
-            return true
+            return newServers.first()
         } else {
-            return false
+            return null
         }
     }
 
