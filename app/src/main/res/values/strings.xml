@@ -72,4 +72,5 @@
     <string name="loading_status">Loading status...</string>
     <string name="information">Information</string>
     <string name="you_cannot_modify_the_connection_values_of_the_active_server_connection">You cannot modify the connection values of the active server connection.</string>
+    <string name="selected_server">Selected server</string>
 </resources>

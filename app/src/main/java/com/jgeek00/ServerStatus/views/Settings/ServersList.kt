@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Dns
 import androidx.compose.material.icons.rounded.Edit
@@ -48,6 +49,7 @@ import com.jgeek00.ServerStatus.components.SectionHeader
 import com.jgeek00.ServerStatus.constants.DataStoreKeys
 import com.jgeek00.ServerStatus.di.DataStoreServiceEntryPoint
 import com.jgeek00.ServerStatus.di.ServerInstancesRepositoryEntryPoint
+import com.jgeek00.ServerStatus.di.StatusRepositoryEntryPoint
 import com.jgeek00.ServerStatus.models.ServerModel
 import com.jgeek00.ServerStatus.navigation.NavigationManager
 import com.jgeek00.ServerStatus.navigation.Routes
@@ -136,6 +138,13 @@ fun ServerItem(server: ServerModel) {
         ).serverInstancesRepository
     }
 
+    val statusRepository = remember {
+        EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            StatusRepositoryEntryPoint::class.java
+        ).statusRepository
+    }
+
     val dataStoreService = remember {
         EntryPointAccessors.fromApplication(
             context.applicationContext,
@@ -185,10 +194,15 @@ fun ServerItem(server: ServerModel) {
                 }
             }
         },
-        onClick = {},
+        onClick = { statusRepository.setSelectedServer(server) },
         onLongClick = { showOptionsDialog = true },
         trailing = {
-
+            Icon(
+                imageVector = Icons.Rounded.Check,
+                contentDescription = context.getString(R.string.selected_server),
+                modifier = Modifier.size(24.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
         }
     )
     if (showOptionsDialog) {

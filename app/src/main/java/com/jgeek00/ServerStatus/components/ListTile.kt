@@ -64,23 +64,30 @@ fun ListTile(
                 .fillMaxWidth()
                 .padding(paddingValues = padding ?: PaddingValues(horizontal = 16.dp, vertical = 8.dp))
         ) {
-            if (leading != null) {
-                leading.invoke()
-                Spacer(modifier = Modifier.width(16.dp))
-            }
-            Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier.fillMaxWidth()
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(text = label)
-                Text(
-                    text = supportingText,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 14.sp
-                )
+                if (leading != null) {
+                    leading.invoke()
+                    Spacer(modifier = Modifier.width(16.dp))
+                }
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalAlignment = Alignment.Start,
+                ) {
+                    Text(text = label)
+                    Text(
+                        text = supportingText,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 14.sp
+                    )
+                }
             }
-            trailing ?: Box(modifier = Modifier.fillMaxWidth()){}
+            if (trailing != null) {
+                Spacer(modifier = Modifier.width(16.dp))
+                trailing.invoke()
+            }
         }
     }
 }
