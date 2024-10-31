@@ -71,4 +71,6 @@
     <string name="create_a_connection_to_a_server_to_begin">Crea una conexión a un servidor para comenzar.</string>
     <string name="an_error_occurred_when_loading_the_status">Ocurrió un error al cargar el estado</string>
     <string name="loading_status">Cargando estado...</string>
+    <string name="information">Información</string>
+    <string name="you_cannot_modify_the_connection_values_of_the_active_server_connection">No puedes modificar los valores de conexión de la conexión al servidor activa.</string>
 </resources>

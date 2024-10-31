@@ -10,15 +10,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Error
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.SettingsEthernet
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,26 +39,41 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.SectionHeader
 import com.jgeek00.ServerStatus.components.SwitchListTile
 import com.jgeek00.ServerStatus.constants.Enums
+import com.jgeek00.ServerStatus.di.StatusRepositoryEntryPoint
 import com.jgeek00.ServerStatus.navigation.NavigationManager
 import com.jgeek00.ServerStatus.viewmodels.ServerFormViewModel
+import dagger.hilt.android.EntryPointAccessors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServerFormView(editServerId: String? = null) {
+    val context = LocalContext.current
+
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val viewModel: ServerFormViewModel = hiltViewModel()
+
+    val statusRepository = remember {
+        EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            StatusRepositoryEntryPoint::class.java
+        ).statusRepository
+    }
 
     LaunchedEffect(Unit) {
         if (editServerId != null && editServerId.split("?").size == 2) {
@@ -63,6 +81,8 @@ fun ServerFormView(editServerId: String? = null) {
             viewModel.setServerData(serverId = id.toInt())
         }
     }
+
+    val isActiveServer = statusRepository.selectedServer.value?.id == viewModel.editingId.value
 
     Scaffold(
         modifier = Modifier
@@ -120,6 +140,31 @@ fun ServerFormView(editServerId: String? = null) {
             Column(
                 modifier = Modifier.padding(horizontal = 16.dp)
             ) {
+                if (isActiveServer) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .padding(16.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Info,
+                                contentDescription = stringResource(R.string.information),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Text(
+                                text = stringResource(R.string.you_cannot_modify_the_connection_values_of_the_active_server_connection),
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
                 SectionHeader(
                     title = stringResource(R.string.server_information),
                     modifier = Modifier
@@ -157,7 +202,7 @@ fun ServerFormView(editServerId: String? = null) {
                             selected = viewModel.connectionMethod.value === Enums.ConnectionMethod.HTTP,
                             onClick = { viewModel.connectionMethod.value = Enums.ConnectionMethod.HTTP },
                             shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
-                            enabled = !viewModel.saving.value
+                            enabled = !viewModel.saving.value && !isActiveServer
                         ) {
                             Text("HTTP")
                         }
@@ -165,7 +210,7 @@ fun ServerFormView(editServerId: String? = null) {
                             selected = viewModel.connectionMethod.value === Enums.ConnectionMethod.HTTPS,
                             onClick = { viewModel.connectionMethod.value = Enums.ConnectionMethod.HTTPS },
                             shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
-                            enabled = !viewModel.saving.value
+                            enabled = !viewModel.saving.value && !isActiveServer
                         ) {
                             Text("HTTPS")
                         }
@@ -187,7 +232,7 @@ fun ServerFormView(editServerId: String? = null) {
                             Text(stringResource(viewModel.ipDomainError.value!!), color = MaterialTheme.colorScheme.error)
                         }
                     },
-                    enabled = !viewModel.saving.value
+                    enabled = !viewModel.saving.value && !isActiveServer
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextField(
@@ -208,7 +253,7 @@ fun ServerFormView(editServerId: String? = null) {
                             Text(stringResource(R.string.optional))
                         }
                     },
-                    enabled = !viewModel.saving.value
+                    enabled = !viewModel.saving.value && !isActiveServer
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextField(
@@ -230,7 +275,7 @@ fun ServerFormView(editServerId: String? = null) {
                             Text(stringResource(R.string.optional))
                         }
                     },
-                    enabled = !viewModel.saving.value
+                    enabled = !viewModel.saving.value && !isActiveServer
                 )
                 SectionHeader(
                     title = stringResource(R.string.basic_authentication),
@@ -243,7 +288,7 @@ fun ServerFormView(editServerId: String? = null) {
                 label = stringResource(R.string.use_basic_authentication),
                 checked = viewModel.useBasicAuth.value,
                 onCheckedChange = { viewModel.useBasicAuth.value = it},
-                enabled = !viewModel.saving.value
+                enabled = !viewModel.saving.value && !isActiveServer
             )
             if (viewModel.useBasicAuth.value) {
                 Column(
@@ -264,7 +309,7 @@ fun ServerFormView(editServerId: String? = null) {
                                 Text(stringResource(viewModel.basicAuthUsernameError.value!!), color = MaterialTheme.colorScheme.error)
                             }
                         },
-                        enabled = !viewModel.saving.value
+                        enabled = !viewModel.saving.value && !isActiveServer
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     OutlinedTextField(
@@ -283,7 +328,7 @@ fun ServerFormView(editServerId: String? = null) {
                                 Text(stringResource(viewModel.basicAuthPasswordError.value!!), color = MaterialTheme.colorScheme.error)
                             }
                         },
-                        enabled = !viewModel.saving.value
+                        enabled = !viewModel.saving.value && !isActiveServer
                     )
                 }
             }

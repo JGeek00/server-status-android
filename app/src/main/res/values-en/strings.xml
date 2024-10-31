@@ -71,4 +71,6 @@
     <string name="create_a_connection_to_a_server_to_begin">Create a connection to a server to begin.</string>
     <string name="an_error_occurred_when_loading_the_status">An error occurred when loading the status</string>
     <string name="loading_status">Loading status...</string>
+    <string name="information">Information</string>
+    <string name="you_cannot_modify_the_connection_values_of_the_active_server_connection">You cannot modify the connection values of the active server connection.</string>
 </resources>
