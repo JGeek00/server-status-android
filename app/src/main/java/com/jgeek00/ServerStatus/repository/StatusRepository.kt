@@ -41,4 +41,18 @@ class StatusRepository @Inject constructor(
             loading.value = false
         }
     }
+
+    suspend fun refresh() {
+        val result = apiRepository.getStatus()
+        if (result != null) {
+            val newList = _data.value.toMutableList()
+            newList += result
+            _data.value = newList
+            error.value = false
+        }
+        else {
+            error.value = true
+        }
+        loading.value = false
+    }
 }

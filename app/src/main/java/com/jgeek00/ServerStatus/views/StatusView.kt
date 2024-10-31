@@ -76,9 +76,13 @@ import com.jgeek00.ServerStatus.utils.formatBytes
 import com.jgeek00.ServerStatus.utils.formatMemory
 import com.jgeek00.ServerStatus.utils.formatStorage
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
@@ -100,10 +104,12 @@ fun StatusView() {
     var refreshing by remember { mutableStateOf(false) }
     val state = rememberPullToRefreshState()
 
+    val coroutineScope = CoroutineScope(Job() + Dispatchers.IO)
+
     LaunchedEffect(refreshing) {
         if (refreshing) {
-            withContext(Dispatchers.IO) {
-                delay(1500) // Fake network delay
+            coroutineScope.launch {
+                statusRepository.refresh()
                 refreshing = false
             }
         }
