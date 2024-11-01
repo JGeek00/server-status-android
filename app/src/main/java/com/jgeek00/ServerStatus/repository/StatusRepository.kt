@@ -9,9 +9,11 @@ import com.jgeek00.ServerStatus.services.ApiClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
@@ -28,7 +30,7 @@ class StatusRepository @Inject constructor(
     val loading = mutableStateOf(true)
     val error = mutableStateOf(false)
 
-    private val timerScope = CoroutineScope(Job() + Dispatchers.IO)
+    private var timerScope: CoroutineScope? = null
 
     fun setSelectedServer(server: ServerModel) {
         if (server == selectedServer.value) return
@@ -36,11 +38,14 @@ class StatusRepository @Inject constructor(
         _data.value = emptyList()
         apiRepository.setApiClientInstance(server)
         selectedServer.value = server
+
         startTimer()
     }
 
     private fun startTimer() {
-        timerScope.launch {
+        if (timerScope != null && timerScope!!.isActive) timerScope!!.cancel()
+        timerScope = CoroutineScope(Job() + Dispatchers.IO)
+        timerScope!!.launch {
             while (selectedServer.value != null) {
                 val start = LocalDateTime.now()
 
