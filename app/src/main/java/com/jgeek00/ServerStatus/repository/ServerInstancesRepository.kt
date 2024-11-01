@@ -67,11 +67,14 @@ class ServerInstancesRepository @Inject constructor(
             val newServers = _servers.value.filter { item -> item.id != serverId }
             _servers.value = newServers
 
+            if (newServers.isNotEmpty()) {
+                statusRepository.setSelectedServer(newServers[0])
+            }
+
             val defaultServer = dataStoreService.getInt(DataStoreKeys.DEFAULT_SERVER).first()
             if (defaultServer == serverId) {
                 if (newServers.isNotEmpty()) {
                     setAsDefaultServer(serverId = newServers[0].id)
-                    statusRepository.selectedServer.value = newServers[0]
                 } else {
                     dataStoreService.removeInt(DataStoreKeys.DEFAULT_SERVER)
                 }
