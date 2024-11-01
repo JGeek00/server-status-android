@@ -33,6 +33,7 @@ class StatusRepository @Inject constructor(
     fun setSelectedServer(server: ServerModel) {
         if (server == selectedServer.value) return
 
+        _data.value = emptyList()
         apiRepository.setApiClientInstance(server)
         selectedServer.value = server
         startTimer()
@@ -55,7 +56,9 @@ class StatusRepository @Inject constructor(
     }
 
     private suspend fun fetchData() {
+        val server = selectedServer.value
         val result = apiRepository.getStatus()
+        if (selectedServer.value != server) return
         if (result != null) {
             val newList = _data.value.toMutableList()
             newList += result

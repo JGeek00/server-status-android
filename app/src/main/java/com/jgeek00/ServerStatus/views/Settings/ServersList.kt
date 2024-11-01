@@ -197,12 +197,14 @@ fun ServerItem(server: ServerModel) {
         onClick = { statusRepository.setSelectedServer(server) },
         onLongClick = { showOptionsDialog = true },
         trailing = {
-            Icon(
-                imageVector = Icons.Rounded.Check,
-                contentDescription = context.getString(R.string.selected_server),
-                modifier = Modifier.size(24.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
+            if (statusRepository.selectedServer.value == server) {
+                Icon(
+                    imageVector = Icons.Rounded.Check,
+                    contentDescription = context.getString(R.string.selected_server),
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     )
     if (showOptionsDialog) {
