@@ -48,10 +48,10 @@ fun NetworkCard(current: Network, previous: Network?) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
+                Icon(
                     painter = painterResource(id = R.drawable.network_icon),
                     contentDescription = stringResource(R.string.network),
-                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
                         .size(50.dp)
                 )
@@ -88,7 +88,8 @@ fun NetworkCard(current: Network, previous: Network?) {
                     Icon(
                         imageVector = Icons.Rounded.KeyboardArrowDown,
                         contentDescription = stringResource(R.string.download_traffic),
-                        modifier = Modifier.size(50.dp)
+                        modifier = Modifier.size(50.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
@@ -106,7 +107,8 @@ fun NetworkCard(current: Network, previous: Network?) {
                     Icon(
                         imageVector = Icons.Rounded.KeyboardArrowUp,
                         contentDescription = stringResource(R.string.upload_traffic),
-                        modifier = Modifier.size(50.dp)
+                        modifier = Modifier.size(50.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(

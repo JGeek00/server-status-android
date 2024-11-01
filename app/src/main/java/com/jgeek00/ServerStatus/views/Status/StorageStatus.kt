@@ -51,10 +51,10 @@ fun StorageCard(values: List<Storage>) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
+                Icon(
                     painter = painterResource(id = R.drawable.storage_icon),
                     contentDescription = stringResource(R.string.storage),
-                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
                         .size(50.dp)
                 )
@@ -83,10 +83,10 @@ fun StorageCard(values: List<Storage>) {
                     percentage = perc,
                     size = 100.dp,
                     icon = {
-                        Image(
+                        Icon(
                             painter = painterResource(id = R.drawable.storage_icon),
                             contentDescription = stringResource(R.string.storage),
-                            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.size(40.dp)
                         )
                     }

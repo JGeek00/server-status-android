@@ -46,10 +46,10 @@ fun MemoryCard(values: Memory) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
+                Icon(
                     painter = painterResource(id = R.drawable.memory_icon),
                     contentDescription = stringResource(R.string.memory),
-                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
                         .size(50.dp)
                 )
@@ -83,10 +83,10 @@ fun MemoryCard(values: Memory) {
                         percentage = perc,
                         size = 100.dp,
                         icon = {
-                            Image(
+                            Icon(
                                 painter = painterResource(id = R.drawable.memory_icon),
                                 contentDescription = stringResource(R.string.memory),
-                                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(40.dp)
                             )
                         }

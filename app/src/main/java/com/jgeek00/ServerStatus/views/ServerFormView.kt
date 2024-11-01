@@ -1,6 +1,5 @@
 package com.jgeek00.ServerStatus.views
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -29,7 +29,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -136,7 +135,7 @@ fun ServerFormView(editServerId: String? = null) {
                 .verticalScroll(rememberScrollState())
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .padding(padding)
-                .padding(bottom = 16.dp)
+                .imePadding()
         ) {
             Column(
                 modifier = Modifier
@@ -181,6 +180,7 @@ fun ServerFormView(editServerId: String? = null) {
                     },
                     label = { Text(stringResource(R.string.server_name)) },
                     modifier = Modifier.fillMaxWidth(),
+                    maxLines = 1,
                     isError = viewModel.serverNameError.value != null,
                     supportingText = {
                         if (viewModel.serverNameError.value != null) {
@@ -228,6 +228,7 @@ fun ServerFormView(editServerId: String? = null) {
                     },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
+                    maxLines = 1,
                     isError = viewModel.ipDomainError.value != null,
                     supportingText = {
                         if (viewModel.ipDomainError.value != null) {
@@ -246,6 +247,7 @@ fun ServerFormView(editServerId: String? = null) {
                     label = { Text(stringResource(R.string.port)) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    maxLines = 1,
                     isError = viewModel.portError.value != null,
                     supportingText = {
                         if (viewModel.portError.value != null) {
@@ -267,6 +269,7 @@ fun ServerFormView(editServerId: String? = null) {
                     label = { Text(stringResource(R.string.path)) },
                     placeholder = { Text(stringResource(R.string.example_status)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
+                    maxLines = 1,
                     modifier = Modifier.fillMaxWidth(),
                     isError = viewModel.pathError.value != null,
                     supportingText = {
@@ -305,6 +308,7 @@ fun ServerFormView(editServerId: String? = null) {
                         },
                         label = { Text(stringResource(R.string.username)) },
                         modifier = Modifier.fillMaxWidth(),
+                        maxLines = 1,
                         isError = viewModel.basicAuthUsernameError.value != null,
                         supportingText = {
                             if (viewModel.basicAuthUsernameError.value != null) {
@@ -323,6 +327,7 @@ fun ServerFormView(editServerId: String? = null) {
                         label = { Text(stringResource(R.string.password)) },
                         modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        maxLines = 1,
                         visualTransformation = PasswordVisualTransformation(),
                         isError = viewModel.basicAuthPasswordError.value != null,
                         supportingText = {

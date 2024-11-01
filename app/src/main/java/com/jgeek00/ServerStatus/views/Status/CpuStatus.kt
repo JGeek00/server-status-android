@@ -16,6 +16,7 @@ import androidx.compose.material.icons.rounded.Thermostat
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -47,6 +48,7 @@ fun CpuCard(values: CPU) {
                     imageVector = Icons.Rounded.Memory,
                     contentDescription = stringResource(R.string.cpu),
                     modifier = Modifier.size(50.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
@@ -80,6 +82,7 @@ fun CpuCard(values: CPU) {
                                 imageVector = Icons.Rounded.Memory,
                                 contentDescription = stringResource(R.string.cpu),
                                 modifier = Modifier.size(40.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     )
@@ -96,6 +99,7 @@ fun CpuCard(values: CPU) {
                                 imageVector = Icons.Rounded.Thermostat,
                                 contentDescription = stringResource(R.string.temperature),
                                 modifier = Modifier.size(40.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     )
