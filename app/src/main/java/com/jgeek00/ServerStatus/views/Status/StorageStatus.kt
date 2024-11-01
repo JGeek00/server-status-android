@@ -109,7 +109,7 @@ fun StorageCard(values: List<Storage>) {
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            /*Spacer(modifier = Modifier.height(16.dp))
             Row(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier
@@ -129,7 +129,7 @@ fun StorageCard(values: List<Storage>) {
                         )
                     }
                 }
-            }
+            }*/
         }
     }
 }

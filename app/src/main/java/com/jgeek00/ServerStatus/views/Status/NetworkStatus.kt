@@ -118,7 +118,7 @@ fun NetworkCard(current: Network, previous: Network?) {
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(24.dp))
+            /*Spacer(modifier = Modifier.height(24.dp))
             Row(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier
@@ -138,7 +138,7 @@ fun NetworkCard(current: Network, previous: Network?) {
                         )
                     }
                 }
-            }
+            }*/
         }
     }
 }

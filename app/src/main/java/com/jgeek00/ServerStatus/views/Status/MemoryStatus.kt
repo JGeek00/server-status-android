@@ -121,27 +121,27 @@ fun MemoryCard(values: Memory) {
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                horizontalArrangement = Arrangement.End,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Button(
-                    onClick = {}
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(stringResource(R.string.view_more))
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
-                            contentDescription = stringResource(R.string.view_more)
-                        )
-                    }
-                }
-            }
+//            Spacer(modifier = Modifier.height(16.dp))
+//            Row(
+//                horizontalArrangement = Arrangement.End,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//            ) {
+//                Button(
+//                    onClick = {}
+//                ) {
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//                        Text(stringResource(R.string.view_more))
+//                        Spacer(modifier = Modifier.width(6.dp))
+//                        Icon(
+//                            imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+//                            contentDescription = stringResource(R.string.view_more)
+//                        )
+//                    }
+//                }
+//            }
         }
     }
 }

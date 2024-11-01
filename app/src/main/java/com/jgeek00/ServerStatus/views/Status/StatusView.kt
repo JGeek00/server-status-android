@@ -219,6 +219,7 @@ fun StatusView() {
                             .fillMaxSize()
                             .nestedScroll(scrollBehavior.nestedScrollConnection)
                             .verticalScroll(rememberScrollState())
+                            .padding(bottom = 8.dp)
                     ) {
                         values.value.last().cpu?.let {
                             CpuCard(it)

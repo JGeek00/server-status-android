@@ -136,9 +136,11 @@ fun ServerFormView(editServerId: String? = null) {
                 .verticalScroll(rememberScrollState())
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .padding(padding)
+                .padding(bottom = 16.dp)
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
             ) {
                 if (isActiveServer) {
                     Spacer(modifier = Modifier.height(8.dp))
