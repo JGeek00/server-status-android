@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jgeek00.ServerStatus.R
@@ -53,14 +54,16 @@ fun NetworkCard(current: Network, previous: Network?) {
                     contentDescription = stringResource(R.string.network),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
-                        .size(50.dp)
+                        .size(40.dp)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(
                         text = stringResource(R.string.network),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
@@ -71,7 +74,8 @@ fun NetworkCard(current: Network, previous: Network?) {
                                 current.speed.toDouble() / 1000.0
                             )
                             "$formatted Gbit/s"
-                        } else "N/A"
+                        } else "N/A",
+                        fontSize = 14.sp
                     )
                 }
             }
@@ -88,16 +92,18 @@ fun NetworkCard(current: Network, previous: Network?) {
                     Icon(
                         imageVector = Icons.Rounded.KeyboardArrowDown,
                         contentDescription = stringResource(R.string.download_traffic),
-                        modifier = Modifier.size(50.dp),
+                        modifier = Modifier.size(40.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = if (previous != null) formatBits(previous.rx?.let { current.rx?.minus(it) }) else "0 Bit/s"
+                        text = if (previous != null) formatBits(previous.rx?.let { current.rx?.minus(it) }) else "0 Bit/s",
+                        fontSize = 14.sp
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = if (previous != null) formatBytes(previous.rx?.let { current.rx?.minus(it) }) else "0 B/s"
+                        text = if (previous != null) formatBytes(previous.rx?.let { current.rx?.minus(it) }) else "0 B/s",
+                        fontSize = 14.sp
                     )
                 }
                 Column(
@@ -107,16 +113,18 @@ fun NetworkCard(current: Network, previous: Network?) {
                     Icon(
                         imageVector = Icons.Rounded.KeyboardArrowUp,
                         contentDescription = stringResource(R.string.upload_traffic),
-                        modifier = Modifier.size(50.dp),
+                        modifier = Modifier.size(40.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = if (previous != null) formatBits(previous.tx?.let { current.tx?.minus(it) }) else "0 Bit/s"
+                        text = if (previous != null) formatBits(previous.tx?.let { current.tx?.minus(it) }) else "0 Bit/s",
+                        fontSize = 14.sp
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = if (previous != null) formatBytes(previous.tx?.let { current.tx?.minus(it) }) else "0 B/s"
+                        text = if (previous != null) formatBytes(previous.tx?.let { current.tx?.minus(it) }) else "0 B/s",
+                        fontSize = 14.sp
                     )
                 }
             }

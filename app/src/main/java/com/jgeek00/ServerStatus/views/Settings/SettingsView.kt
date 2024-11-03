@@ -41,6 +41,7 @@ fun SettingsView() {
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
+                scrollBehavior = scrollBehavior,
                 title = {
                     Text(stringResource(R.string.settings))
                 },

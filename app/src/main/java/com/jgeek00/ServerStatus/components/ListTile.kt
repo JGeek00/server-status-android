@@ -126,6 +126,7 @@ fun SwitchListTile(label: String, supportingText: String? = null, checked: Boole
                     )
                 }
             }
+            Spacer(Modifier.width(16.dp))
             Switch(
                 checked,
                 onCheckedChange,

@@ -70,7 +70,7 @@ fun Gauge(
         }
         Text(
             text = value,
-            fontSize = (size.value * 0.16f).sp,
+            fontSize = (size.value * 0.14f).sp,
             fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .offset(x = 0.dp, y = -16.dp)

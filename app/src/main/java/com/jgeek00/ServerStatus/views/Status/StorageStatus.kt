@@ -22,9 +22,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jgeek00.ServerStatus.R
@@ -35,10 +37,14 @@ import com.jgeek00.ServerStatus.utils.formatStorage
 
 @Composable
 fun StorageCard(values: List<Storage>) {
+    val configuration = LocalConfiguration.current
+    val screenWidthDp = configuration.screenWidthDp.dp
+
     val total = values.mapNotNull { v -> v.total }.sum()
     val available = values.mapNotNull { v -> v.available }.sum()
     val used = total - available
     val perc = (used/total)*100.0
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -56,18 +62,21 @@ fun StorageCard(values: List<Storage>) {
                     contentDescription = stringResource(R.string.storage),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
-                        .size(50.dp)
+                        .size(40.dp)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(
                         text = stringResource(R.string.storage),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = formatStorage(total)
+                        text = formatStorage(total),
+                        fontSize = 14.sp
                     )
                 }
             }
@@ -81,31 +90,32 @@ fun StorageCard(values: List<Storage>) {
                     value = "${perc.toInt()}%",
                     colors = gaugeColors,
                     percentage = perc,
-                    size = 100.dp,
+                    size = if ((screenWidthDp/2 - 64.dp) <= 100.dp) screenWidthDp/2 - 64.dp else 100.dp,
                     icon = {
                         Icon(
                             painter = painterResource(id = R.drawable.storage_icon),
                             contentDescription = stringResource(R.string.storage),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier.size(36.dp)
                         )
                     }
                 )
+                Spacer(Modifier.width(24.dp))
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxHeight()
                 ) {
                     Row {
-                        Text(values.size.toString(), fontWeight = FontWeight.SemiBold)
+                        Text(values.size.toString(), fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                         Spacer(Modifier.width(4.dp))
-                        Text(stringResource(R.string.volume))
+                        Text(stringResource(R.string.volume), fontSize = 14.sp)
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Row {
-                        Text(formatStorage(available.toDouble()), fontWeight = FontWeight.SemiBold)
+                        Text(formatStorage(available.toDouble()), fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                         Spacer(Modifier.width(4.dp))
-                        Text(stringResource(R.string.available))
+                        Text(stringResource(R.string.available), fontSize = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     }
                 }
             }

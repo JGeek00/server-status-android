@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -198,12 +199,16 @@ fun ServerItem(server: ServerModel) {
         onLongClick = { showOptionsDialog = true },
         trailing = {
             if (statusRepository.selectedServer.value == server) {
-                Icon(
-                    imageVector = Icons.Rounded.Check,
-                    contentDescription = context.getString(R.string.selected_server),
-                    modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                Box(
+                    modifier = Modifier.width(30.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Check,
+                        contentDescription = context.getString(R.string.selected_server),
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         }
     )

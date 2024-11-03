@@ -21,8 +21,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jgeek00.ServerStatus.R
@@ -32,6 +34,10 @@ import com.jgeek00.ServerStatus.models.CPU
 
 @Composable
 fun CpuCard(values: CPU) {
+    val configuration = LocalConfiguration.current
+    val screenWidthDp = configuration.screenWidthDp.dp
+    val gaugeWidth = if ((screenWidthDp/2 - 64.dp) <= 100.dp) screenWidthDp/2 - 64.dp else 100.dp
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -47,20 +53,23 @@ fun CpuCard(values: CPU) {
                 Icon(
                     imageVector = Icons.Rounded.Memory,
                     contentDescription = stringResource(R.string.cpu),
-                    modifier = Modifier.size(50.dp),
+                    modifier = Modifier.size(40.dp),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(
                         text = stringResource(R.string.cpu),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     values.model?.let {
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = it
+                            text = it,
+                            fontSize = 14.sp
                         )
                     }
                 }
@@ -76,12 +85,12 @@ fun CpuCard(values: CPU) {
                         value = "${(it*100).toInt()}%",
                         colors = gaugeColors,
                         percentage = it*100,
-                        size = 100.dp,
+                        size = gaugeWidth,
                         icon = {
                             Icon(
                                 imageVector = Icons.Rounded.Memory,
                                 contentDescription = stringResource(R.string.cpu),
-                                modifier = Modifier.size(40.dp),
+                                modifier = Modifier.size(36.dp),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
@@ -93,12 +102,12 @@ fun CpuCard(values: CPU) {
                         value = "$maxTemp ºC",
                         colors = gaugeColors,
                         percentage = maxTemp.toDouble(),
-                        size = 100.dp,
+                        size = gaugeWidth,
                         icon = {
                             Icon(
                                 imageVector = Icons.Rounded.Thermostat,
                                 contentDescription = stringResource(R.string.temperature),
-                                modifier = Modifier.size(40.dp),
+                                modifier = Modifier.size(36.dp),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }

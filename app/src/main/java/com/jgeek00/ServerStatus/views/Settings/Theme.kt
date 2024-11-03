@@ -19,9 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jgeek00.ServerStatus.R
@@ -85,6 +87,9 @@ fun ThemeBox(theme: Enums.Theme) {
 
 @Composable
 fun ThemeButton(iconId: Int, text: String, isEnabled: Boolean, onClick: () -> Unit) {
+    val configuration = LocalConfiguration.current
+    val screenWidthDp = configuration.screenWidthDp.dp
+
     Button(
         onClick,
         shape = RoundedCornerShape(8.dp),
@@ -93,7 +98,10 @@ fun ThemeButton(iconId: Int, text: String, isEnabled: Boolean, onClick: () -> Un
             contentColor = if (isEnabled) MaterialTheme.colorScheme.surfaceContainer else Color.Gray,
         ),
         modifier = Modifier
-            .size(width = 120.dp, height = 100.dp)
+            .size(
+                width = if (screenWidthDp < 400.dp) (screenWidthDp/3) - 16.dp else 120.dp,
+                height = 100.dp
+            )
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -106,7 +114,11 @@ fun ThemeButton(iconId: Int, text: String, isEnabled: Boolean, onClick: () -> Un
                 modifier = Modifier.size(24.dp)
             )
             Spacer(Modifier.height(16.dp))
-            Text(text)
+            Text(
+                text,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
