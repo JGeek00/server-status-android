@@ -9,6 +9,17 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 kotlinxSerializationJson = "1.6.3"
+ktorClientAndroid = "2.3.0"
+ktorClientAuth = "2.x.x"
+ktorClientAuthVersion = "2.3.0"
+ktorClientCio = "3.0.1"
+ktorClientContentNegotiation = "2.x.x"
+ktorClientContentNegotiationVersion = "2.3.0"
+ktorClientCore = "3.0.1"
+ktorClientCoreVersion = "2.3.0"
+ktorClientSerialization = "3.0.1"
+ktorSerializationGson = "2.x.x"
+ktorSerializationGsonVersion = "2.3.0"
 lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.3"
 composeBom = "2024.04.01"
@@ -48,6 +59,17 @@ androidx-material = { group = "androidx.compose.material", name = "material", ve
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
 androidx-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "animation" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktorClientAndroid" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorClientAuth" }
+ktor-client-auth-v230 = { module = "io.ktor:ktor-client-auth", version.ref = "ktorClientAuthVersion" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorClientCio" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClientContentNegotiation" }
+ktor-client-content-negotiation-v230 = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClientContentNegotiationVersion" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorClientCore" }
+ktor-client-core-v230 = { module = "io.ktor:ktor-client-core", version.ref = "ktorClientCoreVersion" }
+ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktorClientSerialization" }
+ktor-serialization-gson = { module = "io.ktor:ktor-serialization-gson", version.ref = "ktorSerializationGson" }
+ktor-serialization-gson-v230 = { module = "io.ktor:ktor-serialization-gson", version.ref = "ktorSerializationGsonVersion" }
 material3 = { group = "androidx.compose.material3", name = "material3", version = "1.4.0-alpha02" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }

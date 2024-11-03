@@ -2,10 +2,7 @@
 <network-security-config>
     <base-config cleartextTrafficPermitted="true">
         <trust-anchors>
-            <certificates src="user"/>
+            <certificates src="system" />
         </trust-anchors>
     </base-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">*</domain>
-    </domain-config>
 </network-security-config>

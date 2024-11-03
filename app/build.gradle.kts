@@ -14,8 +14,8 @@ android {
         applicationId = "com.jgeek00.ServerStatus"
         minSdk = 30
         targetSdk = 35
-        versionCode = 7
-        versionName = "0.1.6"
+        versionCode = 8
+        versionName = "0.1.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -63,6 +63,11 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.converter.gson)
     implementation(libs.coil.compose)
+    implementation(libs.ktor.client.core.v230)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.content.negotiation.v230)
+    implementation(libs.ktor.serialization.gson.v230)
+    implementation(libs.ktor.client.auth.v230)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
