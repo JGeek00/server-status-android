@@ -86,8 +86,13 @@ fun ServerFormView(editServerId: String? = null) {
     Scaffold(
         modifier = Modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
             LargeTopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest
+                ),
                 scrollBehavior = scrollBehavior,
                 title = { Text(text = if (viewModel.editingId.value != null) stringResource(R.string.edit_server) else stringResource(R.string.create_server)) },
                 navigationIcon = {

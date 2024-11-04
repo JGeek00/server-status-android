@@ -26,7 +26,9 @@ import androidx.compose.material.icons.rounded.Thermostat
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
@@ -124,8 +126,13 @@ fun StatusView() {
     Scaffold(
         modifier = Modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
             LargeTopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest
+                ),
                 scrollBehavior = scrollBehavior,
                 title = {
                     Column(
@@ -223,12 +230,24 @@ fun StatusView() {
                     ) {
                         values.value.last().cpu?.let {
                             CpuCard(it)
+                            HorizontalDivider(
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            )
                         }
                         values.value.last().memory?.let {
                             MemoryCard(it)
+                            HorizontalDivider(
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            )
                         }
                         values.value.last().storage?.let {
                             StorageCard(it)
+                            HorizontalDivider(
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            )
                         }
                         values.value.last().network?.let { v1 ->
                             val previous = if (values.value.size >= 2) values.value[values.value.size - 2].network else null
