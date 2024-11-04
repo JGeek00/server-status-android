@@ -9,10 +9,6 @@ import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.safeGesturesPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -38,12 +34,16 @@ import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.ListTile
 import com.jgeek00.ServerStatus.components.SectionHeader
 import com.jgeek00.ServerStatus.constants.Enums
+import com.jgeek00.ServerStatus.constants.Urls
 import com.jgeek00.ServerStatus.navigation.NavigationManager
 import com.jgeek00.ServerStatus.utils.getAppVersion
+import com.jgeek00.ServerStatus.utils.openUrl
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsView() {
+    val context = LocalContext.current
+
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
@@ -80,7 +80,11 @@ fun SettingsView() {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .windowInsetsPadding(if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) WindowInsets.displayCutout else WindowInsets(0.dp))
+                .windowInsetsPadding(
+                    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) WindowInsets.displayCutout else WindowInsets(
+                        0.dp
+                    )
+                )
                 .padding(padding)
         ) {
             ServersSection()
@@ -104,7 +108,12 @@ fun SettingsView() {
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 8.dp)
             )
-            getAppVersion(LocalContext.current)?.also { value ->
+            ListTile(
+                label = stringResource(R.string.contact_the_developer),
+                supportingText = stringResource(R.string.contact_form),
+                onClick = { openUrl(context, Urls.APP_SUPPORT) }
+            )
+            getAppVersion(LocalContext.current)?.let { value ->
                 ListTile(label = stringResource(R.string.app_version), supportingText = value)
             }
             ListTile(stringResource(R.string.created_by), "JGeek00")
