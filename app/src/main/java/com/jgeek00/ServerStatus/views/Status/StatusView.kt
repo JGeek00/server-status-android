@@ -1,17 +1,25 @@
 package com.jgeek00.ServerStatus.views.Status
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -54,6 +62,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -170,14 +179,16 @@ fun StatusView() {
             )
         }
     ) { padding ->
+        val displayCutout = if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) WindowInsets.displayCutout else WindowInsets(0.dp)
         if (servers.value.isNotEmpty()) {
             if (statusRepository.loading.value) {
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
+                        .padding(padding)
+                        .windowInsetsPadding(displayCutout)
                         .fillMaxSize()
-                        .padding(16.dp)
                 ) {
                     CircularProgressIndicator()
                     Spacer(modifier = Modifier.height(30.dp))
@@ -194,8 +205,9 @@ fun StatusView() {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
+                        .padding(padding)
+                        .windowInsetsPadding(displayCutout)
                         .fillMaxSize()
-                        .padding(16.dp)
                 ) {
                     Image(
                         imageVector = Icons.Rounded.Error,
@@ -223,10 +235,10 @@ fun StatusView() {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier
-                            .fillMaxSize()
                             .nestedScroll(scrollBehavior.nestedScrollConnection)
                             .verticalScroll(rememberScrollState())
                             .padding(bottom = 8.dp)
+                            .windowInsetsPadding(displayCutout)
                     ) {
                         values.value.last().cpu?.let {
                             CpuCard(it)
@@ -262,8 +274,9 @@ fun StatusView() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
+                    .padding(padding)
+                    .windowInsetsPadding(displayCutout)
                     .fillMaxSize()
-                    .padding(16.dp)
             ) {
                 Text(
                     text = stringResource(R.string.no_server_connections_created),
