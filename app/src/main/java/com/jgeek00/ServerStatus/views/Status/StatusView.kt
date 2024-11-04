@@ -102,7 +102,7 @@ fun StatusView() {
         ).statusRepository
     }
 
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     var refreshing by remember { mutableStateOf(false) }
     val state = rememberPullToRefreshState()

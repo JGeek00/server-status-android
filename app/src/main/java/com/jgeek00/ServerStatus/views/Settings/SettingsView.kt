@@ -34,7 +34,7 @@ import com.jgeek00.ServerStatus.utils.getAppVersion
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsView() {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
         modifier = Modifier

@@ -64,7 +64,7 @@ import dagger.hilt.android.EntryPointAccessors
 fun ServerFormView(editServerId: String? = null) {
     val context = LocalContext.current
 
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val viewModel: ServerFormViewModel = hiltViewModel()
 
     val statusRepository = remember {
@@ -89,7 +89,7 @@ fun ServerFormView(editServerId: String? = null) {
         topBar = {
             LargeTopAppBar(
                 scrollBehavior = scrollBehavior,
-                title = { Text(text = if (viewModel.editingId.value != null) "Edit server" else "Create server") },
+                title = { Text(text = if (viewModel.editingId.value != null) stringResource(R.string.edit_server) else stringResource(R.string.create_server)) },
                 navigationIcon = {
                     IconButton(
                         onClick = {
@@ -299,7 +299,7 @@ fun ServerFormView(editServerId: String? = null) {
                 Column(
                     modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = viewModel.basicAuthUsername.value,
                         onValueChange = {
@@ -317,7 +317,7 @@ fun ServerFormView(editServerId: String? = null) {
                         },
                         enabled = !viewModel.saving.value && !isActiveServer
                     )
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
                         value = viewModel.basicAuthPassword.value,
                         onValueChange = {

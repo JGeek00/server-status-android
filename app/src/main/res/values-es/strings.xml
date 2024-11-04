@@ -74,4 +74,5 @@
     <string name="information">Información</string>
     <string name="you_cannot_modify_the_connection_values_of_the_active_server_connection">No puedes modificar los valores de conexión de la conexión al servidor activa.</string>
     <string name="selected_server">Servidor seleccionado</string>
+    <string name="edit_server">Editar servidor</string>
 </resources>
