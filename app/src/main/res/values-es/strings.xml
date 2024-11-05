@@ -85,5 +85,5 @@
     <string name="an_error_occurred_while_the_purchase_was_being_processed_or_it_has_been_cancelled_by_the_user">Ocurrió un error cuando se procesaba la compra, o ha sido cancelada por el usuario.</string>
     <string name="success">Satisfactorio</string>
     <string name="purchase_completed_successfully">Compra completada correctamente</string>
-    <string name="the_purchase_was_completed_successfully_thank_you_for_your_support">La compra se completó correctamente. ¡Gracias por tu apoyo!</string>
+    <string name="the_purchase_was_completed_successfully_thank_you_for_your_support">The purchase was completed successfully. Thank you for your support!</string>
 </resources>
