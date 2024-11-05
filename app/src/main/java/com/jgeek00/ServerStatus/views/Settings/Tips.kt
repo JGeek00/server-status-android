@@ -1,7 +1,11 @@
 package com.jgeek00.ServerStatus.views.Settings
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -10,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -37,6 +42,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,6 +59,13 @@ fun TipsView() {
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
+    fun findActivity(): Activity {
+        while (context is ContextWrapper) {
+            if (context is Activity) return context
+        }
+        throw IllegalStateException("no activity")
+    }
+
     val billingRepository = remember {
         EntryPointAccessors.fromApplication(
             context.applicationContext,
@@ -61,6 +74,7 @@ fun TipsView() {
     }
 
     val products = billingRepository.products.collectAsState(initial = emptyList()).value
+    val sortedProducts = products.sortedBy { it.oneTimePurchaseOfferDetails?.priceAmountMicros }
 
     Scaffold(
         modifier = Modifier
@@ -92,7 +106,7 @@ fun TipsView() {
         }
     ) { padding ->
         val displayCutout = if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) WindowInsets.displayCutout else WindowInsets(0.dp)
-        if (products.isNotEmpty()) {
+        if (sortedProducts.isNotEmpty()) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -101,21 +115,31 @@ fun TipsView() {
                     .windowInsetsPadding(displayCutout)
                     .padding(padding)
             ) {
-                products.map { product ->
+                sortedProducts.map { product ->
                     ListTile(
-                        label = product.title,
-                        supportingText = product.name,
+                        label = product.name,
+                        supportingText = product.description,
                         trailing = {
                             product.oneTimePurchaseOfferDetails?.formattedPrice?.let {
-                                Text(
-                                    text = "$it ${product.oneTimePurchaseOfferDetails?.priceCurrencyCode}",
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    fontSize = 16.sp
-                                )
+                                Box(
+                                    contentAlignment = Alignment.CenterEnd,
+                                    modifier = Modifier
+                                        .width(100.dp)
+                                ) {
+                                    Text(
+                                        text = "$it ${product.oneTimePurchaseOfferDetails?.priceCurrencyCode}",
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 16.sp,
+                                        textAlign = TextAlign.End
+                                    )
+                                }
                             }
                         },
                         onClick = {
-                            billingRepository.launchPurchaseFlow(product)
+                            if (product.oneTimePurchaseOfferDetails?.formattedPrice != null) {
+                                billingRepository.launchPurchaseFlow(findActivity(), product)
+                            }
                         }
                     )
                 }

@@ -187,6 +187,7 @@ fun StatusView() {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .padding(padding)
+                        .padding(horizontal = 16.dp)
                         .windowInsetsPadding(displayCutout)
                         .fillMaxSize()
                 ) {
@@ -206,6 +207,7 @@ fun StatusView() {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .padding(padding)
+                        .padding(horizontal = 16.dp)
                         .windowInsetsPadding(displayCutout)
                         .fillMaxSize()
                 ) {
@@ -275,6 +277,7 @@ fun StatusView() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .padding(padding)
+                    .padding(horizontal = 16.dp)
                     .windowInsetsPadding(displayCutout)
                     .fillMaxSize()
             ) {

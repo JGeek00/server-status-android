@@ -16,9 +16,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
-class BillingRepository @Inject constructor(private val context: Context) {
-    private val activity : Activity = Activity()
-
+class BillingRepository @Inject constructor(
+    private val context: Context
+) {
     private val _products = MutableStateFlow<List<ProductDetails>>(emptyList())
     var products = _products.asStateFlow()
 
@@ -81,7 +81,7 @@ class BillingRepository @Inject constructor(private val context: Context) {
         }
     }
 
-    fun launchPurchaseFlow(productDetails: ProductDetails) {
+    fun launchPurchaseFlow(activity: Activity, productDetails: ProductDetails) {
         val billingFlowParams = BillingFlowParams.newBuilder()
             .setProductDetailsParamsList(
                 listOf(

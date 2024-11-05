@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ListTile(
     label: String,
-    supportingText: String,
+    supportingText: String? = null,
     leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
     onClick: (() -> Unit)? = null,
@@ -77,11 +77,13 @@ fun ListTile(
                     horizontalAlignment = Alignment.Start,
                 ) {
                     Text(text = label)
-                    Text(
-                        text = supportingText,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 14.sp
-                    )
+                    supportingText?.let {
+                        Text(
+                            text = it,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 14.sp
+                        )
+                    }
                 }
             }
             if (trailing != null) {
