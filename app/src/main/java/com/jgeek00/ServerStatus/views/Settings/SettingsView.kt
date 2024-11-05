@@ -109,20 +109,15 @@ fun SettingsView() {
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 8.dp)
             )
-            ListTile(
-                label = stringResource(R.string.give_a_tip_tp_the_developer),
-                supportingText = stringResource(R.string.contribute_with_the_development_of_the_app),
-                onClick = {
-                    // NavigationManager.getInstance().navigateTo(Routes.ROUTE_TIPS)
-
-                    if (context.packageManager.getInstallSourceInfo(context.packageName).installingPackageName == "com.android.vending") {
-                        NavigationManager.getInstance().navigateTo(Routes.ROUTE_TIPS)
-                    }
-                    else {
+            if (context.packageManager.getInstallSourceInfo(context.packageName).installingPackageName != "com.android.vending") {
+                ListTile(
+                    label = stringResource(R.string.give_a_tip_tp_the_developer),
+                    supportingText = stringResource(R.string.contribute_with_the_development_of_the_app),
+                    onClick = {
                         openUrl(context, Urls.PAYPAL_DONATIONS)
                     }
-                }
-            )
+                )
+            }
             ListTile(
                 label = stringResource(R.string.contact_the_developer),
                 supportingText = stringResource(R.string.contact_form),

@@ -17,7 +17,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jgeek00.ServerStatus.views.ServerFormView
 import com.jgeek00.ServerStatus.views.Settings.SettingsView
-import com.jgeek00.ServerStatus.views.Settings.TipsView
 import com.jgeek00.ServerStatus.views.Status.StatusView
 
 @Composable
@@ -84,15 +83,6 @@ fun AppNavigation() {
             )
         ) {
             ServerFormView(editServerId = it.arguments?.getString(Routes.ARG_SERVER_ID))
-        }
-        composable(
-            route = Routes.ROUTE_TIPS,
-            enterTransition = { enterTransition },
-            exitTransition = { exitTransition },
-            popEnterTransition = { popEnterTransition },
-            popExitTransition = { popExitTransition },
-        ) {
-            TipsView()
         }
     }
 }

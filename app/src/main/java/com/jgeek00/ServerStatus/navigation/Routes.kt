@@ -8,7 +8,5 @@ class Routes {
 
         const val ROUTE_SERVER_FORM = "server-form?{serverId}"
         const val ARG_SERVER_ID = "serverId"
-
-        const val ROUTE_TIPS = "tips"
     }
 }

@@ -48,12 +48,6 @@ object AppModule {
     fun provideStatusRepository(apiRepository: ApiClient, @ApplicationContext context: Context): StatusRepository {
         return StatusRepository(context, apiRepository)
     }
-
-    @Provides
-    @Singleton
-    fun provideBillingRepository(@ApplicationContext context: Context): BillingRepository {
-        return BillingRepository(context)
-    }
 }
 
 @EntryPoint
@@ -72,10 +66,4 @@ interface ServerInstancesRepositoryEntryPoint {
 @InstallIn(SingletonComponent::class)
 interface StatusRepositoryEntryPoint {
     val statusRepository: StatusRepository
-}
-
-@EntryPoint
-@InstallIn(SingletonComponent::class)
-interface BillingRepositoryEntryPoint {
-    val billingRepository: BillingRepository
 }
