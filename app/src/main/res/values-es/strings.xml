@@ -77,4 +77,13 @@
     <string name="edit_server">Editar servidor</string>
     <string name="contact_the_developer">Contactar con el desarrollador</string>
     <string name="contact_form">Formulario de contacto</string>
+    <string name="give_a_tip_tp_the_developer">Darle una propina al desarrollador</string>
+    <string name="contribute_with_the_development_of_the_app">Contribuye con el desarrollo de la aplicación</string>
+    <string name="tips">Propinas</string>
+    <string name="no_tip_options_available_right_now">No hay opciones de propina disponibles ahora mismo.</string>
+    <string name="purchase_failed">Compra fallida</string>
+    <string name="an_error_occurred_while_the_purchase_was_being_processed_or_it_has_been_cancelled_by_the_user">Ocurrió un error cuando se procesaba la compra, o ha sido cancelada por el usuario.</string>
+    <string name="success">Satisfactorio</string>
+    <string name="purchase_completed_successfully">Compra completada correctamente</string>
+    <string name="the_purchase_was_completed_successfully_thank_you_for_your_support">La compra se completó correctamente. ¡Gracias por tu apoyo!</string>
 </resources>

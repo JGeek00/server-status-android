@@ -1,6 +1,7 @@
 package com.jgeek00.ServerStatus.di
 
 import android.content.Context
+import com.jgeek00.ServerStatus.repository.BillingRepository
 import com.jgeek00.ServerStatus.repository.ServerInstancesRepository
 import com.jgeek00.ServerStatus.repository.StatusRepository
 import com.jgeek00.ServerStatus.services.ApiClient
@@ -47,6 +48,12 @@ object AppModule {
     fun provideStatusRepository(apiRepository: ApiClient, @ApplicationContext context: Context): StatusRepository {
         return StatusRepository(context, apiRepository)
     }
+
+    @Provides
+    @Singleton
+    fun provideBillingRepository(@ApplicationContext context: Context): BillingRepository {
+        return BillingRepository(context)
+    }
 }
 
 @EntryPoint
@@ -65,4 +72,10 @@ interface ServerInstancesRepositoryEntryPoint {
 @InstallIn(SingletonComponent::class)
 interface StatusRepositoryEntryPoint {
     val statusRepository: StatusRepository
+}
+
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface BillingRepositoryEntryPoint {
+    val billingRepository: BillingRepository
 }
