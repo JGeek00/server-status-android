@@ -43,11 +43,16 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -63,11 +68,18 @@ import com.jgeek00.ServerStatus.di.StatusRepositoryEntryPoint
 import com.jgeek00.ServerStatus.navigation.NavigationManager
 import com.jgeek00.ServerStatus.viewmodels.ServerFormViewModel
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.time.delay
+import java.time.Duration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServerFormView(editServerId: String? = null) {
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
+    val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val viewModel: ServerFormViewModel = hiltViewModel()
@@ -142,11 +154,11 @@ fun ServerFormView(editServerId: String? = null) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .padding(padding)
-                .windowInsetsPadding(if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) WindowInsets.displayCutout else WindowInsets(0.dp))
                 .imePadding()
+                .windowInsetsPadding(if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) WindowInsets.displayCutout else WindowInsets(0.dp))
         ) {
             Column(
                 modifier = Modifier
@@ -190,7 +202,6 @@ fun ServerFormView(editServerId: String? = null) {
                         viewModel.serverName.value = it
                     },
                     label = { Text(stringResource(R.string.server_name)) },
-                    modifier = Modifier.fillMaxWidth(),
                     maxLines = 1,
                     isError = viewModel.serverNameError.value != null,
                     supportingText = {
@@ -198,7 +209,18 @@ fun ServerFormView(editServerId: String? = null) {
                             Text(stringResource(viewModel.serverNameError.value!!), color = MaterialTheme.colorScheme.error)
                         }
                     },
-                    enabled = !viewModel.saving.value
+                    enabled = !viewModel.saving.value,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester)
+                        .onFocusChanged { focusState ->
+                            if (focusState.isFocused) {
+                                coroutineScope.launch {
+                                    delay(Duration.ofMillis(200))
+                                    scrollState.animateScrollTo(0)
+                                }
+                            }
+                        }
                 )
                 SectionHeader(
                     title = stringResource(R.string.connection_details),
@@ -237,7 +259,6 @@ fun ServerFormView(editServerId: String? = null) {
                         viewModel.ipDomainError.value = null
                         viewModel.ipDomain.value = it
                     },
-                    modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
                     maxLines = 1,
                     isError = viewModel.ipDomainError.value != null,
@@ -246,7 +267,18 @@ fun ServerFormView(editServerId: String? = null) {
                             Text(stringResource(viewModel.ipDomainError.value!!), color = MaterialTheme.colorScheme.error)
                         }
                     },
-                    enabled = !viewModel.saving.value && !isActiveServer
+                    enabled = !viewModel.saving.value && !isActiveServer,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester)
+                        .onFocusChanged { focusState ->
+                            if (focusState.isFocused) {
+                                coroutineScope.launch {
+                                    delay(Duration.ofMillis(200))
+                                    scrollState.animateScrollTo(400)
+                                }
+                            }
+                        },
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextField(
@@ -256,7 +288,6 @@ fun ServerFormView(editServerId: String? = null) {
                         viewModel.port.value = it
                     },
                     label = { Text(stringResource(R.string.port)) },
-                    modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     maxLines = 1,
                     isError = viewModel.portError.value != null,
@@ -268,7 +299,18 @@ fun ServerFormView(editServerId: String? = null) {
                             Text(stringResource(R.string.optional))
                         }
                     },
-                    enabled = !viewModel.saving.value && !isActiveServer
+                    enabled = !viewModel.saving.value && !isActiveServer,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester)
+                        .onFocusChanged { focusState ->
+                            if (focusState.isFocused) {
+                                coroutineScope.launch {
+                                    delay(Duration.ofMillis(200))
+                                    scrollState.animateScrollTo(500)
+                                }
+                            }
+                        },
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextField(
@@ -281,7 +323,6 @@ fun ServerFormView(editServerId: String? = null) {
                     placeholder = { Text(stringResource(R.string.example_status)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
                     maxLines = 1,
-                    modifier = Modifier.fillMaxWidth(),
                     isError = viewModel.pathError.value != null,
                     supportingText = {
                         if (viewModel.pathError.value != null) {
@@ -291,7 +332,18 @@ fun ServerFormView(editServerId: String? = null) {
                             Text(stringResource(R.string.optional))
                         }
                     },
-                    enabled = !viewModel.saving.value && !isActiveServer
+                    enabled = !viewModel.saving.value && !isActiveServer,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester)
+                        .onFocusChanged { focusState ->
+                            if (focusState.isFocused) {
+                                coroutineScope.launch {
+                                    delay(Duration.ofMillis(200))
+                                    scrollState.animateScrollTo(600)
+                                }
+                            }
+                        },
                 )
                 SectionHeader(
                     title = stringResource(R.string.basic_authentication),
@@ -318,7 +370,6 @@ fun ServerFormView(editServerId: String? = null) {
                             viewModel.basicAuthUsername.value = it
                         },
                         label = { Text(stringResource(R.string.username)) },
-                        modifier = Modifier.fillMaxWidth(),
                         maxLines = 1,
                         isError = viewModel.basicAuthUsernameError.value != null,
                         supportingText = {
@@ -326,7 +377,18 @@ fun ServerFormView(editServerId: String? = null) {
                                 Text(stringResource(viewModel.basicAuthUsernameError.value!!), color = MaterialTheme.colorScheme.error)
                             }
                         },
-                        enabled = !viewModel.saving.value && !isActiveServer
+                        enabled = !viewModel.saving.value && !isActiveServer,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester)
+                            .onFocusChanged { focusState ->
+                                if (focusState.isFocused) {
+                                    coroutineScope.launch {
+                                        delay(Duration.ofMillis(200))
+                                        scrollState.animateScrollTo(1200)
+                                    }
+                                }
+                            },
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
@@ -336,7 +398,6 @@ fun ServerFormView(editServerId: String? = null) {
                             viewModel.basicAuthPassword.value = it
                         },
                         label = { Text(stringResource(R.string.password)) },
-                        modifier = Modifier.fillMaxWidth(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         maxLines = 1,
                         visualTransformation = PasswordVisualTransformation(),
@@ -346,7 +407,18 @@ fun ServerFormView(editServerId: String? = null) {
                                 Text(stringResource(viewModel.basicAuthPasswordError.value!!), color = MaterialTheme.colorScheme.error)
                             }
                         },
-                        enabled = !viewModel.saving.value && !isActiveServer
+                        enabled = !viewModel.saving.value && !isActiveServer,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester)
+                            .onFocusChanged { focusState ->
+                                if (focusState.isFocused) {
+                                    coroutineScope.launch {
+                                        delay(Duration.ofMillis(200))
+                                        scrollState.animateScrollTo(1200)
+                                    }
+                                }
+                            },
                     )
                 }
             }
