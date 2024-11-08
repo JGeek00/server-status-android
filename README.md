@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="readme_assets/banner.png" />
+  <img src="readme_assets/banner.png"  alt="banner"/>
 </h1>
 <h5 align="center">
   Server Status is a client for <a href="https://github.com/dani3l0/Status">Status</a>, a server monitoring tool. This is the Android version created with Jetpack Compose. I also have created an <a href="https://github.com/JGeek00/server-status">iOS version</a>.
