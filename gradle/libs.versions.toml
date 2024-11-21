@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.1"
+agp = "8.7.2"
 browser = "1.8.0"
 coilCompose = "2.7.0"
 converterGson = "2.11.0"
