@@ -31,6 +31,13 @@ class DataStoreService @Inject constructor(context: Context) {
             }
     }
 
+    fun getBoolean(key: Preferences.Key<Boolean>): Flow<Boolean?> {
+        return dataStore.data
+            .map { preferences ->
+                preferences[key]
+            }
+    }
+
     suspend fun setString(key: Preferences.Key<String>, value: String) {
         dataStore.edit { preferences ->
             preferences[key] = value
@@ -38,6 +45,12 @@ class DataStoreService @Inject constructor(context: Context) {
     }
 
     suspend fun setInt(key: Preferences.Key<Int>, value: Int) {
+        dataStore.edit { preferences ->
+            preferences[key] = value
+        }
+    }
+
+    suspend fun setBoolean(key: Preferences.Key<Boolean>, value: Boolean) {
         dataStore.edit { preferences ->
             preferences[key] = value
         }

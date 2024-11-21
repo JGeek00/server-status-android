@@ -111,8 +111,8 @@ fun SettingsView() {
             )
             if (context.packageManager.getInstallSourceInfo(context.packageName).installingPackageName != "com.android.vending") {
                 ListTile(
-                    label = stringResource(R.string.give_a_tip_tp_the_developer),
-                    supportingText = stringResource(R.string.contribute_with_the_development_of_the_app),
+                    label = stringResource(R.string.give_a_tip_to_the_developer),
+                    supportingText = stringResource(R.string.contribute_with_the_development_of_the_application),
                     onClick = {
                         openUrl(context, Urls.PAYPAL_DONATIONS)
                     }

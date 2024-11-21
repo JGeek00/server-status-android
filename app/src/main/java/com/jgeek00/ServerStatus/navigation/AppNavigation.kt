@@ -10,17 +10,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.jgeek00.ServerStatus.constants.DataStoreKeys
+import com.jgeek00.ServerStatus.di.DataStoreServiceEntryPoint
+import com.jgeek00.ServerStatus.views.Onboarding.OnboardingView
 import com.jgeek00.ServerStatus.views.ServerFormView
 import com.jgeek00.ServerStatus.views.Settings.SettingsView
 import com.jgeek00.ServerStatus.views.Status.StatusView
+import dagger.hilt.android.EntryPointAccessors
 
 @Composable
 fun AppNavigation() {
+    val context = LocalContext.current
+
     val navigationController = rememberNavController()
     val navEvent by NavigationManager.getInstance().navEvent.collectAsState()
 
@@ -46,13 +54,28 @@ fun AppNavigation() {
                 navigationController.popBackStack()
                 NavigationManager.getInstance().clearNavEvent()
             }
+            is NavigationManager.NavEvent.Replace -> {
+                navigationController.popBackStack(event.origin, true)
+                navigationController.navigate(event.destination)
+                NavigationManager.getInstance().clearNavEvent()
+            }
             else -> Unit
         }
     }
 
+    val dataStoreService = remember {
+        EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            DataStoreServiceEntryPoint::class.java
+        ).dataStoreService
+    }
+
+    val onboardingCompleted = dataStoreService.getBoolean(DataStoreKeys.ONBOARDING_COMPLETED).collectAsState(initial = false).value
+
+
     NavHost(
         navController = navigationController,
-        startDestination = Routes.ROUTE_STATUS
+        startDestination = if (onboardingCompleted == true) Routes.ROUTE_STATUS else Routes.ONBOARDING
     ) {
         composable(
             route = Routes.ROUTE_STATUS,
@@ -83,6 +106,11 @@ fun AppNavigation() {
             )
         ) {
             ServerFormView(editServerId = it.arguments?.getString(Routes.ARG_SERVER_ID))
+        }
+        composable(
+            route = Routes.ONBOARDING,
+        ) {
+            OnboardingView()
         }
     }
 }

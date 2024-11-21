@@ -77,13 +77,12 @@
     <string name="edit_server">Edit server</string>
     <string name="contact_the_developer">Contact the developer</string>
     <string name="contact_form">Contact form</string>
-    <string name="give_a_tip_tp_the_developer">Give a tip tp the developer</string>
-    <string name="contribute_with_the_development_of_the_app">Contribute with the development of the app</string>
-    <string name="tips">Tips</string>
-    <string name="no_tip_options_available_right_now">No tip options available right now.</string>
-    <string name="purchase_failed">Purchase failed</string>
-    <string name="an_error_occurred_while_the_purchase_was_being_processed_or_it_has_been_cancelled_by_the_user">An error occurred while the purchase was being processed, or it has been cancelled by the user.</string>
-    <string name="success">Success</string>
-    <string name="purchase_completed_successfully">Purchase completed successfully</string>
-    <string name="the_purchase_was_completed_successfully_thank_you_for_your_support">The purchase was completed successfully. Thank you for your support!</string>
+    <string name="welcome_to_server_status">Welcome to Server Status</string>
+    <string name="an_app_to_check_the_status_of_your_home_server_hardware">An app to check the status of your home server hardware.</string>
+    <string name="get_stated">Get stated</string>
+    <string name="server_status_does_not_work_as_a_standalone_app_it_relies_on_a_service_that_is_deployed_the_server_to_get_the_data_in_order_to_use_this_application_you_must_deploy_status_a_server_monitoring_service_to_your_server_check_the_instructions_by_tapping_on_the_button_below">Server Status does not work as a standalone app, it relies on a service that is deployed the server to get the data. In order to use this application, you must deploy Status, a server monitoring service, to your server. Check the instructions by tapping on the button below.</string>
+    <string name="status_deployment_instructions">Status deployment instructions</string>
+    <string name="finish">Finish</string>
+    <string name="give_a_tip_to_the_developer">Give a tip to the developer</string>
+    <string name="contribute_with_the_development_of_the_application">Contribute with the development of the application</string>
 </resources>

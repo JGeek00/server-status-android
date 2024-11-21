@@ -77,13 +77,12 @@
     <string name="edit_server">Editar servidor</string>
     <string name="contact_the_developer">Contactar con el desarrollador</string>
     <string name="contact_form">Formulario de contacto</string>
-    <string name="give_a_tip_tp_the_developer">Darle una propina al desarrollador</string>
-    <string name="contribute_with_the_development_of_the_app">Contribuye con el desarrollo de la aplicación</string>
-    <string name="tips">Propinas</string>
-    <string name="no_tip_options_available_right_now">No hay opciones de propina disponibles ahora mismo.</string>
-    <string name="purchase_failed">Compra fallida</string>
-    <string name="an_error_occurred_while_the_purchase_was_being_processed_or_it_has_been_cancelled_by_the_user">Ocurrió un error cuando se procesaba la compra, o ha sido cancelada por el usuario.</string>
-    <string name="success">Satisfactorio</string>
-    <string name="purchase_completed_successfully">Compra completada correctamente</string>
-    <string name="the_purchase_was_completed_successfully_thank_you_for_your_support">The purchase was completed successfully. Thank you for your support!</string>
+    <string name="welcome_to_server_status">Bienvenido a Server Status</string>
+    <string name="an_app_to_check_the_status_of_your_home_server_hardware">Una aplicación para comprobar el estado del hardware de tu servidor doméstico.</string>
+    <string name="get_stated">Empezar</string>
+    <string name="server_status_does_not_work_as_a_standalone_app_it_relies_on_a_service_that_is_deployed_the_server_to_get_the_data_in_order_to_use_this_application_you_must_deploy_status_a_server_monitoring_service_to_your_server_check_the_instructions_by_tapping_on_the_button_below">Server Status no funciona como una aplicación independiente, sino que depende de un servicio desplegado en el servidor para obtener los datos. Para utilizar esta aplicación, debe desplegar Status, un servicio de monitorización de servidores, en su servidor. Consulte las instrucciones pulsando en el botón de abajo.</string>
+    <string name="status_deployment_instructions">Instrucciones de despliegue de Status</string>
+    <string name="finish">Finalizar</string>
+    <string name="give_a_tip_to_the_developer">Darle una propina al desarrollador</string>
+    <string name="contribute_with_the_development_of_the_application">Contribuye con el desarrollo de la aplicación</string>
 </resources>

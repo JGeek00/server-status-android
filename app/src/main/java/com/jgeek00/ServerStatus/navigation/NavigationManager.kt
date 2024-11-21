@@ -31,8 +31,13 @@ class NavigationManager {
         _navEvent.value = null
     }
 
+    fun navigateReplace(origin: String, destination: String) {
+        _navEvent.value = NavEvent.Replace(origin, destination)
+    }
+
     sealed class NavEvent {
         data class Navigate(val destination: String) : NavEvent()
         object PopBack : NavEvent()
+        data class Replace(val origin: String, val destination: String) : NavEvent()
     }
 }
