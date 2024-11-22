@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import com.jgeek00.ServerStatus.constants.AppConfig
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -36,6 +37,13 @@ class DataStoreService @Inject constructor(context: Context) {
             .map { preferences ->
                 preferences[key]
             }
+    }
+
+    suspend fun getBooleanValue(key: Preferences.Key<Boolean>): Boolean? {
+        return dataStore.data
+            .map { preferences ->
+                preferences[key]
+            }.firstOrNull()
     }
 
     suspend fun setString(key: Preferences.Key<String>, value: String) {

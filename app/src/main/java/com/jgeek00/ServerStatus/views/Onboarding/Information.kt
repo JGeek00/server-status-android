@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.constants.Urls
@@ -37,7 +38,7 @@ import com.jgeek00.ServerStatus.viewmodels.OnboardingViewModel
 fun Information() {
     val context = LocalContext.current
 
-    val onboardingViewModel = viewModel<OnboardingViewModel>()
+    val onboardingViewModel = hiltViewModel<OnboardingViewModel>()
 
     Column(
         modifier = Modifier

@@ -6,11 +6,14 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -27,8 +30,6 @@ import dagger.hilt.android.EntryPointAccessors
 
 @Composable
 fun AppNavigation() {
-    val context = LocalContext.current
-
     val navigationController = rememberNavController()
     val navEvent by NavigationManager.getInstance().navEvent.collectAsState()
 
@@ -63,19 +64,9 @@ fun AppNavigation() {
         }
     }
 
-    val dataStoreService = remember {
-        EntryPointAccessors.fromApplication(
-            context.applicationContext,
-            DataStoreServiceEntryPoint::class.java
-        ).dataStoreService
-    }
-
-    val onboardingCompleted = dataStoreService.getBoolean(DataStoreKeys.ONBOARDING_COMPLETED).collectAsState(initial = false).value
-
-
     NavHost(
         navController = navigationController,
-        startDestination = if (onboardingCompleted == true) Routes.ROUTE_STATUS else Routes.ONBOARDING
+        startDestination = if (NavigationManager.getInstance().onboardingCompleted.value) Routes.ROUTE_STATUS else Routes.ONBOARDING
     ) {
         composable(
             route = Routes.ROUTE_STATUS,
@@ -109,6 +100,10 @@ fun AppNavigation() {
         }
         composable(
             route = Routes.ONBOARDING,
+            enterTransition = { enterTransition },
+            exitTransition = { exitTransition },
+            popEnterTransition = { popEnterTransition },
+            popExitTransition = { popExitTransition },
         ) {
             OnboardingView()
         }

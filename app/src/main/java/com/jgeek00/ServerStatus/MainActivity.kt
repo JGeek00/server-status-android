@@ -24,9 +24,13 @@ import com.jgeek00.ServerStatus.constants.Enums
 import com.jgeek00.ServerStatus.di.DataStoreServiceEntryPoint
 import com.jgeek00.ServerStatus.di.ServerInstancesRepositoryEntryPoint
 import com.jgeek00.ServerStatus.navigation.AppNavigation
+import com.jgeek00.ServerStatus.navigation.NavigationManager
+import com.jgeek00.ServerStatus.services.DataStoreService
 import com.jgeek00.ServerStatus.ui.theme.ServerStatusTheme
+import com.jgeek00.ServerStatus.viewmodels.OnboardingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.runBlocking
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -35,6 +39,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+        val dataStoreService = (application as ServerStatusApplication).dataStoreService
+
+        runBlocking {
+            val onboardingCompleted = dataStoreService.getBooleanValue(DataStoreKeys.ONBOARDING_COMPLETED)
+            NavigationManager.getInstance().onboardingCompleted.value = onboardingCompleted ?: false
+        }
 
         setContent {
             val context = LocalContext.current
@@ -45,15 +56,9 @@ class MainActivity : ComponentActivity() {
                     ServerInstancesRepositoryEntryPoint::class.java
                 ).serverInstancesRepository
             }
+
             LaunchedEffect(key1 = Unit) {
                 serverInstancesProvider.getServersFromDatabase()
-            }
-
-            val dataStoreService = remember {
-                EntryPointAccessors.fromApplication(
-                    context.applicationContext,
-                    DataStoreServiceEntryPoint::class.java
-                ).dataStoreService
             }
 
             val themeValue = dataStoreService.getString(DataStoreKeys.THEME_MODE).collectAsState(

@@ -1,5 +1,6 @@
 package com.jgeek00.ServerStatus.navigation
 
+import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -18,6 +19,8 @@ class NavigationManager {
 
     private val _navEvent = MutableStateFlow<NavEvent?>(null)
     val navEvent: StateFlow<NavEvent?> = _navEvent
+
+    var onboardingCompleted = mutableStateOf(false)
 
     fun navigateTo(destination: String) {
         _navEvent.value = NavEvent.Navigate(destination)

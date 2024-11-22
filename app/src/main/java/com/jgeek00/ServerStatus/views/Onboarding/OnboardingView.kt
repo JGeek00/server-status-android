@@ -8,12 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jgeek00.ServerStatus.viewmodels.OnboardingViewModel
 
 @Composable
 fun OnboardingView() {
-    val onboardingViewModel = viewModel<OnboardingViewModel>()
+    val onboardingViewModel = hiltViewModel<OnboardingViewModel>()
 
     val currentPage = onboardingViewModel.currentPage.collectAsState(initial = 0).value
 
