@@ -14,8 +14,8 @@ android {
         applicationId = "com.jgeek00.ServerStatus"
         minSdk = 30
         targetSdk = 35
-        versionCode = 14
-        versionName = "0.2.0"
+        versionCode = 15
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
