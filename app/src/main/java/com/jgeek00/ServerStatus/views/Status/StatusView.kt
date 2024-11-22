@@ -151,7 +151,7 @@ fun StatusView() {
                         statusRepository.selectedServer.value?.let { value ->
                             Text(
                                 text = createServerAddress(value.method, value.ipDomain, value.port, value.path),
-                                color = Color.Gray,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 fontSize = 13.sp,
                             )
                         }

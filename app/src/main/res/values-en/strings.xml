@@ -85,4 +85,10 @@
     <string name="finish">Finish</string>
     <string name="give_a_tip_to_the_developer">Give a tip to the developer</string>
     <string name="contribute_with_the_development_of_the_application">Contribute with the development of the application</string>
+    <string name="about_the_developer">About the developer</string>
+    <string name="check_out_my_other_apps">Check out my other apps</string>
+    <string name="i_build_apps_for_android_and_ios">I build apps for Android and iOS</string>
+    <string name="more_information_about_this_app">More information about this app</string>
+    <string name="available_versions_source_code_and_more">Available versions, source code, and more</string>
+    <string name="contact_from_give_a_tip_and_more">Contact from, give a tip, and more</string>
 </resources>

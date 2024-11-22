@@ -103,7 +103,7 @@ fun SettingsView() {
             }
 
             SectionHeader(
-                title = stringResource(R.string.about_the_app),
+                title = stringResource(R.string.about_the_developer),
                 modifier = Modifier
                     .padding(top = 32.dp)
                     .padding(horizontal = 16.dp)
@@ -119,14 +119,26 @@ fun SettingsView() {
                 )
             }
             ListTile(
-                label = stringResource(R.string.contact_the_developer),
-                supportingText = stringResource(R.string.contact_form),
-                onClick = { openUrl(context, Urls.APP_SUPPORT) }
+                label = stringResource(R.string.check_out_my_other_apps),
+                supportingText = stringResource(R.string.contact_from_give_a_tip_and_more),
+                onClick = { openUrl(context, Urls.JGEEK00_APPS) }
+            )
+
+            SectionHeader(
+                title = stringResource(R.string.about_the_app),
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 8.dp)
+            )
+            ListTile(
+                label = stringResource(R.string.more_information_about_this_app),
+                supportingText = stringResource(R.string.available_versions_source_code_and_more),
+                onClick = { openUrl(context, Urls.APP_INFO) }
             )
             getAppVersion(LocalContext.current)?.let { value ->
                 ListTile(label = stringResource(R.string.app_version), supportingText = value)
             }
-            ListTile(stringResource(R.string.created_by), "JGeek00")
         }
     }
 }

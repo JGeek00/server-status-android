@@ -85,4 +85,10 @@
     <string name="finish">Finalizar</string>
     <string name="give_a_tip_to_the_developer">Darle una propina al desarrollador</string>
     <string name="contribute_with_the_development_of_the_application">Contribuye con el desarrollo de la aplicación</string>
+    <string name="about_the_developer">Sobre el desarrollador</string>
+    <string name="check_out_my_other_apps">Comprueba mis otras aplicaciones</string>
+    <string name="i_build_apps_for_android_and_ios">Desarrollo aplicaciones para Android e iOS</string>
+    <string name="more_information_about_this_app">Más información sobre esta app</string>
+    <string name="available_versions_source_code_and_more">Versiones disponibles, código fuente, y más</string>
+    <string name="contact_from_give_a_tip_and_more">Formulario de contacto, dejar una propina, y más</string>
 </resources>
