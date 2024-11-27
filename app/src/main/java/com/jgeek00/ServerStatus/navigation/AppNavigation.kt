@@ -6,27 +6,20 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.jgeek00.ServerStatus.constants.DataStoreKeys
-import com.jgeek00.ServerStatus.di.DataStoreServiceEntryPoint
 import com.jgeek00.ServerStatus.views.Onboarding.OnboardingView
 import com.jgeek00.ServerStatus.views.ServerFormView
 import com.jgeek00.ServerStatus.views.Settings.SettingsView
+import com.jgeek00.ServerStatus.views.Status.Details.CpuDetails
 import com.jgeek00.ServerStatus.views.Status.StatusView
-import dagger.hilt.android.EntryPointAccessors
 
 @Composable
 fun AppNavigation() {
@@ -106,6 +99,15 @@ fun AppNavigation() {
             popExitTransition = { popExitTransition },
         ) {
             OnboardingView()
+        }
+        composable(
+            route = Routes.ROUTE_CPU_DETAILS,
+            enterTransition = { enterTransition },
+            exitTransition = { exitTransition },
+            popEnterTransition = { popEnterTransition },
+            popExitTransition = { popExitTransition },
+        ) {
+            CpuDetails()
         }
     }
 }

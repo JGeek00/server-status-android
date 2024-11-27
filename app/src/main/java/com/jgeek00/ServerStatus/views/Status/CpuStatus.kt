@@ -32,6 +32,8 @@ import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.Gauge
 import com.jgeek00.ServerStatus.constants.gaugeColors
 import com.jgeek00.ServerStatus.models.CPU
+import com.jgeek00.ServerStatus.navigation.NavigationManager
+import com.jgeek00.ServerStatus.navigation.Routes
 
 @Composable
 fun CpuCard(values: CPU) {
@@ -110,14 +112,16 @@ fun CpuCard(values: CPU) {
                 )
             }
         }
-        /*Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Row(
             horizontalArrangement = Arrangement.End,
             modifier = Modifier
                 .fillMaxWidth()
         ) {
             Button(
-                onClick = {}
+                onClick = {
+                    NavigationManager.getInstance().navigateTo(Routes.ROUTE_CPU_DETAILS)
+                }
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -130,6 +134,6 @@ fun CpuCard(values: CPU) {
                     )
                 }
             }
-        }*/
+        }
     }
 }

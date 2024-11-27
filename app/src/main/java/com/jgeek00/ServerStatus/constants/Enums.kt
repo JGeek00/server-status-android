@@ -8,4 +8,8 @@ class Enums {
     enum class ConnectionMethod {
         HTTP, HTTPS
     }
+
+    enum class HardwareType {
+        CPU, MEMORY, STORAGE, NETWORK
+    }
 }

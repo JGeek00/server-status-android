@@ -10,5 +10,10 @@ class Routes {
         const val ARG_SERVER_ID = "serverId"
 
         const val ONBOARDING = "onboarding"
+
+        const val ROUTE_CPU_DETAILS = "cpu-details"
+        const val ROUTE_MEMORY_DETAILS = "memory-details"
+        const val ROUTE_STORAGE_DETAILS = "storage-details"
+        const val ROUTE_NETWORK_DETAILS = "network-details"
     }
 }

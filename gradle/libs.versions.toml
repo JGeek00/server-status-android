@@ -1,8 +1,13 @@
 [versions]
 agp = "8.7.2"
 browser = "1.8.0"
+charts = "1.3.1"
 coilCompose = "2.7.0"
+compose = "1.15.0"
+composeM2 = "1.15.0"
+composeM3 = "1.15.0"
 converterGson = "2.11.0"
+core = "1.15.0"
 hiltAndroid = "2.52"
 kotlin = "2.0.0"
 coreKtx = "1.13.1"
@@ -34,14 +39,21 @@ material3 = "1.4.0-alpha02"
 materialIconsExtended = "1.7.4"
 hiltNavigationCompose = "1.2.0"
 billingKtx = "7.1.1"
+views = "1.15.0"
 
 [libraries]
 androidx-browser = { module = "androidx.browser:browser", version.ref = "browser" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 billing = { module = "com.android.billingclient:billing" }
 billing-ktx = { module = "com.android.billingclient:billing-ktx" }
+charts = { module = "io.github.dautovicharis:charts" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+compose = { module = "com.patrykandpatrick.vico:compose", version = "2.0.0-beta.3" }
+compose-m2 = { module = "com.patrykandpatrick.vico:compose-m2", version = "2.0.0-beta.3" }
+compose-m3 = { module = "com.patrykandpatrick.vico:compose-m3", version = "2.0.0-beta.3" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+core = { module = "com.patrykandpatrick.vico:core", version = "2.0.0-beta.3" }
+dautovicharis-charts = { module = "io.github.dautovicharis:charts", version.ref = "charts" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -80,6 +92,7 @@ androidx-material-icons-extended = { group = "androidx.compose.material", name =
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "converterGson" }
 billingclient-billing-ktx = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "billingKtx" }
+views = { module = "com.patrykandpatrick.vico:views", version = "2.0.0-beta.3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

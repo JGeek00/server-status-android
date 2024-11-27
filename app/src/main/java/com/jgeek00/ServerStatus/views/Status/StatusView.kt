@@ -105,13 +105,13 @@ fun StatusView() {
             ServerInstancesRepositoryEntryPoint::class.java
         ).serverInstancesRepository
     }
-
     val statusRepository = remember {
         EntryPointAccessors.fromApplication(
             context.applicationContext,
             StatusRepositoryEntryPoint::class.java
         ).statusRepository
     }
+
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 

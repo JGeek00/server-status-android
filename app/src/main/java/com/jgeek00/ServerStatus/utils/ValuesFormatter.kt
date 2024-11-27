@@ -40,3 +40,9 @@ fun formatBytes(value: Long?): String {
         else -> "N/A"
     }
 }
+
+fun cacheValue(value: Long?): String {
+    val v = value ?: return "N/A"
+    val calculated = v.toDouble()/1000.0
+    return "${String.format(Locale.getDefault(), "%.2f", calculated)} MB"
+}
