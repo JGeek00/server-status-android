@@ -19,6 +19,7 @@ import com.jgeek00.ServerStatus.views.Onboarding.OnboardingView
 import com.jgeek00.ServerStatus.views.ServerFormView
 import com.jgeek00.ServerStatus.views.Settings.SettingsView
 import com.jgeek00.ServerStatus.views.Status.Details.CpuDetails
+import com.jgeek00.ServerStatus.views.Status.Details.MemoryDetails
 import com.jgeek00.ServerStatus.views.Status.StatusView
 
 @Composable
@@ -108,6 +109,15 @@ fun AppNavigation() {
             popExitTransition = { popExitTransition },
         ) {
             CpuDetails()
+        }
+        composable(
+            route = Routes.ROUTE_MEMORY_DETAILS,
+            enterTransition = { enterTransition },
+            exitTransition = { exitTransition },
+            popEnterTransition = { popEnterTransition },
+            popExitTransition = { popExitTransition },
+        ) {
+            MemoryDetails()
         }
     }
 }

@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,6 +30,8 @@ import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.Gauge
 import com.jgeek00.ServerStatus.constants.gaugeColors
 import com.jgeek00.ServerStatus.models.Memory
+import com.jgeek00.ServerStatus.navigation.NavigationManager
+import com.jgeek00.ServerStatus.navigation.Routes
 import com.jgeek00.ServerStatus.utils.formatMemory
 
 @Composable
@@ -120,26 +125,28 @@ fun MemoryCard(values: Memory) {
                 }
             }
         }
-//            Spacer(modifier = Modifier.height(16.dp))
-//            Row(
-//                horizontalArrangement = Arrangement.End,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//            ) {
-//                Button(
-//                    onClick = {}
-//                ) {
-//                    Row(
-//                        verticalAlignment = Alignment.CenterVertically
-//                    ) {
-//                        Text(stringResource(R.string.view_more))
-//                        Spacer(modifier = Modifier.width(6.dp))
-//                        Icon(
-//                            imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
-//                            contentDescription = stringResource(R.string.view_more)
-//                        )
-//                    }
-//                }
-//            }
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            horizontalArrangement = Arrangement.End,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Button(
+                onClick = {
+                    NavigationManager.getInstance().navigateTo(Routes.ROUTE_MEMORY_DETAILS)
+                }
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(stringResource(R.string.view_more))
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+                        contentDescription = stringResource(R.string.view_more)
+                    )
+                }
+            }
+        }
     }
 }

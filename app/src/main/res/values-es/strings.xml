@@ -100,4 +100,12 @@
     <string name="physical_cores_execution_threads">%1$s núcleos físicos, %2$s hilos de ejecución</string>
     <string name="general_status">Estado general</string>
     <string name="load">Carga</string>
+    <string name="total">Total</string>
+    <string name="swap_total">Total de swap</string>
+    <string name="swap_available">Swap disponible</string>
+    <string name="usage">Uso</string>
+    <string name="memory_gb">Memoria (GB)</string>
+    <string name="In_use">En uso</string>
+    <string name="Available">Disponible</string>
+    <string name="In_cache">En caché</string>
 </resources>
