@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,6 +31,8 @@ import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.Gauge
 import com.jgeek00.ServerStatus.constants.gaugeColors
 import com.jgeek00.ServerStatus.models.Storage
+import com.jgeek00.ServerStatus.navigation.NavigationManager
+import com.jgeek00.ServerStatus.navigation.Routes
 import com.jgeek00.ServerStatus.utils.formatStorage
 
 @Composable
@@ -109,14 +114,16 @@ fun StorageCard(values: List<Storage>) {
                 }
             }
         }
-        /*Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Row(
             horizontalArrangement = Arrangement.End,
             modifier = Modifier
                 .fillMaxWidth()
         ) {
             Button(
-                onClick = {}
+                onClick = {
+                    NavigationManager.getInstance().navigateTo(Routes.ROUTE_STORAGE_DETAILS)
+                }
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -129,6 +136,6 @@ fun StorageCard(values: List<Storage>) {
                     )
                 }
             }
-        }*/
+        }
     }
 }

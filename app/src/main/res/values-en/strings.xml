@@ -108,4 +108,5 @@
     <string name="In_use">In use</string>
     <string name="Available">Available</string>
     <string name="In_cache">In cache</string>
+    <string name="in_use_gb">In use (GB)</string>
 </resources>
