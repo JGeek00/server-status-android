@@ -91,4 +91,13 @@
     <string name="more_information_about_this_app">Más información sobre esta app</string>
     <string name="available_versions_source_code_and_more">Versiones disponibles, código fuente, y más</string>
     <string name="contact_from_give_a_tip_and_more">Formulario de contacto, dejar una propina, y más</string>
+    <string name="core">Núcleo %1$s</string>
+    <string name="frequency_mhz">Frecuencia (MHz)</string>
+    <string name="temperature_c">Temperatura (ºC)</string>
+    <string name="model">Modelo</string>
+    <string name="cores">Núcleos</string>
+    <string name="cache">Caché</string>
+    <string name="physical_cores_execution_threads">%1$s núcleos físicos, %2$s hilos de ejecución</string>
+    <string name="general_status">Estado general</string>
+    <string name="load">Carga</string>
 </resources>

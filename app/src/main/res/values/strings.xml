@@ -90,4 +90,13 @@
     <string name="more_information_about_this_app">More information about this app</string>
     <string name="available_versions_source_code_and_more">Available versions, source code, and more</string>
     <string name="contact_from_give_a_tip_and_more">Contact from, give a tip, and more</string>
+    <string name="core">Core %1$s</string>
+    <string name="frequency_mhz">Frequency (MHz)</string>
+    <string name="temperature_c">Temperature (ºC)</string>
+    <string name="model">Model</string>
+    <string name="cores">Cores</string>
+    <string name="cache">Cache</string>
+    <string name="physical_cores_execution_threads">%1$s physical cores, %2$s execution threads</string>
+    <string name="general_status">General status</string>
+    <string name="load">Load</string>
 </resources>
