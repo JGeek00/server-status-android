@@ -1,6 +1,5 @@
 package com.jgeek00.ServerStatus.components
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,18 +27,27 @@ import com.patrykandpatrick.vico.core.common.component.Shadow
 import com.patrykandpatrick.vico.core.common.component.ShapeComponent
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
 
+class ChartRange {
+    val min: Double
+    val max: Double
+
+    constructor(min: Double, max: Double) {
+        this.min = min
+        this.max = max
+    }
+}
+
 @Composable
 fun LineChart(
     modelProducer: CartesianChartModelProducer,
-    rangeMin: Double,
-    rangeMax: Double,
+    range: ChartRange? = null,
     modifier: Modifier = Modifier
 ) {
     CartesianChartHost(
         chart = rememberCartesianChart(
             layers = arrayOf(
                 rememberLineCartesianLayer(
-                    rangeProvider = CartesianLayerRangeProvider.fixed(minY = rangeMin, maxY = rangeMax),
+                    rangeProvider = if (range != null) CartesianLayerRangeProvider.fixed(minY = range.min, maxY = range.max) else CartesianLayerRangeProvider.auto(),
                     lineProvider = LineCartesianLayer.LineProvider.series(
                         LineCartesianLayer.rememberLine(
                             fill = LineCartesianLayer.LineFill.single(fill(MaterialTheme.colorScheme.primary)),

@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.models.Network
+import com.jgeek00.ServerStatus.navigation.NavigationManager
+import com.jgeek00.ServerStatus.navigation.Routes
 import com.jgeek00.ServerStatus.utils.formatBits
 import com.jgeek00.ServerStatus.utils.formatBytes
 import java.util.Locale
@@ -124,14 +128,16 @@ fun NetworkCard(current: Network, previous: Network?) {
                     )
                 }
             }
-            /*Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             Row(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
                 Button(
-                    onClick = {}
+                    onClick = {
+                        NavigationManager.getInstance().navigateTo(Routes.ROUTE_NETWORK_DETAILS)
+                    }
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
@@ -144,7 +150,7 @@ fun NetworkCard(current: Network, previous: Network?) {
                         )
                     }
                 }
-            }*/
+            }
         }
     }
 }

@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jgeek00.ServerStatus.R
+import com.jgeek00.ServerStatus.components.ChartRange
 import com.jgeek00.ServerStatus.components.LineChart
 import com.jgeek00.ServerStatus.components.ListTile
 import com.jgeek00.ServerStatus.components.SectionHeader
@@ -174,8 +175,7 @@ private fun StorageChart(data: List<StatusResult>, index: Int) {
 
     LineChart(
         modelProducer = usageModelProducer,
-        rangeMin = 0.0,
-        rangeMax = maxValue/1073741824,
+        range = ChartRange(min = 0.0, max = maxValue/1073741824),
         modifier = Modifier
             .padding(horizontal = 16.dp)
     )

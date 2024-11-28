@@ -20,6 +20,7 @@ import com.jgeek00.ServerStatus.views.ServerFormView
 import com.jgeek00.ServerStatus.views.Settings.SettingsView
 import com.jgeek00.ServerStatus.views.Status.Details.CpuDetails
 import com.jgeek00.ServerStatus.views.Status.Details.MemoryDetails
+import com.jgeek00.ServerStatus.views.Status.Details.NetworkDetails
 import com.jgeek00.ServerStatus.views.Status.Details.StorageDetails
 import com.jgeek00.ServerStatus.views.Status.StatusView
 
@@ -128,6 +129,15 @@ fun AppNavigation() {
             popExitTransition = { popExitTransition },
         ) {
             StorageDetails()
+        }
+        composable(
+            route = Routes.ROUTE_NETWORK_DETAILS,
+            enterTransition = { enterTransition },
+            exitTransition = { exitTransition },
+            popEnterTransition = { popEnterTransition },
+            popExitTransition = { popExitTransition },
+        ) {
+            NetworkDetails()
         }
     }
 }

@@ -109,4 +109,7 @@
     <string name="Available">Available</string>
     <string name="In_cache">In cache</string>
     <string name="in_use_gb">In use (GB)</string>
+    <string name="speed">Speed</string>
+    <string name="iface">Interface</string>
+    <string name="data_transfer">Data transfer</string>
 </resources>

@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
 import com.jgeek00.ServerStatus.R
+import com.jgeek00.ServerStatus.components.ChartRange
 import com.jgeek00.ServerStatus.components.LineChart
 import com.jgeek00.ServerStatus.components.ListTile
 import com.jgeek00.ServerStatus.components.SectionHeader
@@ -234,8 +235,7 @@ private fun CpuCoreCharts(data: List<StatusResult>, coreIndex: Int) {
             }
             LineChart(
                 modelProducer = freqsModelProducer,
-                rangeMin = 0.0,
-                rangeMax = maxFreq ?: 0.0,
+                range = ChartRange(min = 0.0, max = maxFreq ?: 0.0),
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
             )
@@ -254,8 +254,7 @@ private fun CpuCoreCharts(data: List<StatusResult>, coreIndex: Int) {
             }
             LineChart(
                 modelProducer = tempsModelProducer,
-                rangeMin = 0.0,
-                rangeMax = maxTemp ?: 0.0,
+                range = ChartRange(min = 0.0, max = maxTemp ?: 0.0),
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
             )
