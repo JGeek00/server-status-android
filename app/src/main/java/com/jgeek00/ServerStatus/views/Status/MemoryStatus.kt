@@ -35,7 +35,7 @@ import com.jgeek00.ServerStatus.navigation.Routes
 import com.jgeek00.ServerStatus.utils.formatMemory
 
 @Composable
-fun MemoryCard(values: Memory) {
+fun MemoryCard(values: Memory, viewDetails: () -> Unit) {
     val configuration = LocalConfiguration.current
     val screenWidthDp = configuration.screenWidthDp.dp
 
@@ -133,7 +133,7 @@ fun MemoryCard(values: Memory) {
         ) {
             Button(
                 onClick = {
-                    NavigationManager.getInstance().navigateTo(Routes.ROUTE_MEMORY_DETAILS)
+                    viewDetails()
                 }
             ) {
                 Row(

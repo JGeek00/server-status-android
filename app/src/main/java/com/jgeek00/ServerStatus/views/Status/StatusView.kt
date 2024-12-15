@@ -4,6 +4,8 @@ import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -70,6 +72,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.Gauge
 import com.jgeek00.ServerStatus.constants.gaugeColors
@@ -81,16 +86,25 @@ import com.jgeek00.ServerStatus.models.Network
 import com.jgeek00.ServerStatus.models.Storage
 import com.jgeek00.ServerStatus.navigation.NavigationManager
 import com.jgeek00.ServerStatus.navigation.Routes
+import com.jgeek00.ServerStatus.navigation.enterTransition
+import com.jgeek00.ServerStatus.navigation.exitTransition
+import com.jgeek00.ServerStatus.navigation.popEnterTransition
+import com.jgeek00.ServerStatus.navigation.popExitTransition
 import com.jgeek00.ServerStatus.utils.createServerAddress
 import com.jgeek00.ServerStatus.utils.formatBits
 import com.jgeek00.ServerStatus.utils.formatBytes
 import com.jgeek00.ServerStatus.utils.formatMemory
 import com.jgeek00.ServerStatus.utils.formatStorage
+import com.jgeek00.ServerStatus.views.Status.Details.CpuDetails
+import com.jgeek00.ServerStatus.views.Status.Details.MemoryDetails
+import com.jgeek00.ServerStatus.views.Status.Details.NetworkDetails
+import com.jgeek00.ServerStatus.views.Status.Details.StorageDetails
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import okhttp3.Route
 import java.util.Locale
 
 
@@ -105,173 +119,125 @@ fun StatusView() {
             ServerInstancesRepositoryEntryPoint::class.java
         ).serverInstancesRepository
     }
-    val statusRepository = remember {
-        EntryPointAccessors.fromApplication(
-            context.applicationContext,
-            StatusRepositoryEntryPoint::class.java
-        ).statusRepository
-    }
-
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-    var refreshing by remember { mutableStateOf(false) }
-    val state = rememberPullToRefreshState()
-
-    val coroutineScope = CoroutineScope(Job() + Dispatchers.IO)
-
-    LaunchedEffect(refreshing) {
-        if (refreshing) {
-            coroutineScope.launch {
-                statusRepository.refresh()
-                refreshing = false
-            }
-        }
-    }
-
-    val values = statusRepository.data.collectAsState(initial = emptyList())
     val servers = serverInstancesRepository.servers.collectAsState(initial = emptyList())
 
-    Scaffold(
-        modifier = Modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-        topBar = {
-            LargeTopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest
-                ),
-                scrollBehavior = scrollBehavior,
-                title = {
-                    Column(
-                        horizontalAlignment = Alignment.Start
+    val navigationController = rememberNavController()
+
+    fun replaceRoute(route: String) {
+        navigationController.popBackStack()
+        navigationController.navigate(route)
+        NavigationManager.getInstance().clearNavEvent()
+    }
+
+    if (servers.value.isNotEmpty()) {
+        BoxWithConstraints {
+            val width = constraints.maxWidth
+
+            if (width > 1500) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.Top,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .weight(0.4f)
                     ) {
-                        Text(text = stringResource(R.string.status))
-                        statusRepository.selectedServer.value?.let { value ->
-                            Text(
-                                text = createServerAddress(value.method, value.ipDomain, value.port, value.path),
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontSize = 13.sp,
-                            )
-                        }
+                        GeneralStatus(
+                            viewCpuDetails = { replaceRoute(Routes.ROUTE_CPU_DETAILS) },
+                            viewMemoryDetails = { replaceRoute(Routes.ROUTE_MEMORY_DETAILS) },
+                            viewStorageDetails = { replaceRoute(Routes.ROUTE_STORAGE_DETAILS) },
+                            viewNetworkDetails = { replaceRoute(Routes.ROUTE_NETWORK_DETAILS) }
+                        )
                     }
-                },
-                actions = {
-                    TooltipBox(
-                        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
-                        tooltip = {
-                            PlainTooltip { Text(stringResource(R.string.settings)) }
-                        },
-                        state = rememberTooltipState(),
+                    Box(
+                        modifier = Modifier
+                            .weight(0.6f)
                     ) {
-                        IconButton(
-                            onClick = { NavigationManager.getInstance().navigateTo(Routes.ROUTE_SETTINGS) },
-                            modifier = Modifier
+                        NavHost(
+                            navController = navigationController,
+                            startDestination = Routes.ROUTE_EMPTY
                         ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Settings,
-                                contentDescription = stringResource(R.string.settings)
-                            )
+                            composable(
+                                route = Routes.ROUTE_EMPTY,
+                            ) {
+                                Box {}
+                            }
+                            composable(
+                                route = Routes.ROUTE_CPU_DETAILS,
+                            ) {
+                                CpuDetails(true)
+                            }
+                            composable(
+                                route = Routes.ROUTE_MEMORY_DETAILS,
+                            ) {
+                                MemoryDetails(true)
+                            }
+                            composable(
+                                route = Routes.ROUTE_STORAGE_DETAILS,
+                            ) {
+                                StorageDetails(true)
+                            }
+                            composable(
+                                route = Routes.ROUTE_NETWORK_DETAILS,
+                            ) {
+                                NetworkDetails(true)
+                            }
                         }
                     }
-                },
-            )
-        }
-    ) { padding ->
-        val displayCutout = if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) WindowInsets.displayCutout else WindowInsets(0.dp)
-        if (servers.value.isNotEmpty()) {
-            if (statusRepository.loading.value) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(padding)
-                        .padding(horizontal = 16.dp)
-                        .windowInsetsPadding(displayCutout)
-                        .fillMaxSize()
-                ) {
-                    CircularProgressIndicator()
-                    Spacer(modifier = Modifier.height(30.dp))
-                    Text(
-                        text = stringResource(R.string.loading_status),
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 22.sp
-                    )
-                }
-            }
-            else if (statusRepository.error.value || values.value.isEmpty()) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(padding)
-                        .padding(horizontal = 16.dp)
-                        .windowInsetsPadding(displayCutout)
-                        .fillMaxSize()
-                ) {
-                    Image(
-                        imageVector = Icons.Rounded.Error,
-                        contentDescription = stringResource(R.string.error),
-                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onSurfaceVariant),
-                        modifier = Modifier.size(36.dp)
-                    )
-                    Spacer(modifier = Modifier.height(30.dp))
-                    Text(
-                        text = stringResource(R.string.an_error_occurred_when_loading_the_status),
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontSize = 22.sp
-                    )
                 }
             }
             else {
-                PullToRefreshBox(
-                    state = state,
-                    isRefreshing = refreshing,
-                    onRefresh = { refreshing = true },
-                    modifier = Modifier
-                        .padding(padding)
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        modifier = Modifier
-                            .nestedScroll(scrollBehavior.nestedScrollConnection)
-                            .verticalScroll(rememberScrollState())
-                            .padding(bottom = 8.dp)
-                            .windowInsetsPadding(displayCutout)
-                    ) {
-                        values.value.last().cpu?.let {
-                            CpuCard(it)
-                            HorizontalDivider(
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                                modifier = Modifier.padding(horizontal = 16.dp)
-                            )
-                        }
-                        values.value.last().memory?.let {
-                            MemoryCard(it)
-                            HorizontalDivider(
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                                modifier = Modifier.padding(horizontal = 16.dp)
-                            )
-                        }
-                        values.value.last().storage?.let {
-                            StorageCard(it)
-                            HorizontalDivider(
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                                modifier = Modifier.padding(horizontal = 16.dp)
-                            )
-                        }
-                        values.value.last().network?.let { v1 ->
-                            val previous = if (values.value.size >= 2) values.value[values.value.size - 2].network else null
-                            NetworkCard(current = v1, previous = previous)
-                        }
-                    }
-                }
+                GeneralStatus(
+                    viewCpuDetails = { NavigationManager.getInstance().navigateTo(Routes.ROUTE_CPU_DETAILS) },
+                    viewMemoryDetails = { NavigationManager.getInstance().navigateTo(Routes.ROUTE_MEMORY_DETAILS) },
+                    viewStorageDetails = { NavigationManager.getInstance().navigateTo(Routes.ROUTE_STORAGE_DETAILS) },
+                    viewNetworkDetails = { NavigationManager.getInstance().navigateTo(Routes.ROUTE_NETWORK_DETAILS) }
+                )
             }
         }
-        else {
+    }
+    else {
+        Scaffold(
+            modifier = Modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            topBar = {
+                LargeTopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest
+                    ),
+                    scrollBehavior = scrollBehavior,
+                    title = {
+                        Text(text = stringResource(R.string.status))
+                    },
+                    actions = {
+                        TooltipBox(
+                            positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+                            tooltip = {
+                                PlainTooltip { Text(stringResource(R.string.settings)) }
+                            },
+                            state = rememberTooltipState(),
+                        ) {
+                            IconButton(
+                                onClick = { NavigationManager.getInstance().navigateTo(Routes.ROUTE_SETTINGS) },
+                                modifier = Modifier
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Settings,
+                                    contentDescription = stringResource(R.string.settings)
+                                )
+                            }
+                        }
+                    },
+                )
+            }
+        ) { padding ->
+            val displayCutout = if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) WindowInsets.displayCutout else WindowInsets(0.dp)
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -315,3 +281,4 @@ fun StatusView() {
         }
     }
 }
+

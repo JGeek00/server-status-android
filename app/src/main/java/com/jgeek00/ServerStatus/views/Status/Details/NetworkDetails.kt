@@ -76,7 +76,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NetworkDetails() {
+fun NetworkDetails(tabletMode: Boolean) {
     val context = LocalContext.current
 
     val statusRepository = remember {
@@ -108,15 +108,17 @@ fun NetworkDetails() {
                     )
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            NavigationManager.getInstance().popBack()
+                    if (!tabletMode) {
+                        IconButton(
+                            onClick = {
+                                NavigationManager.getInstance().popBack()
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = stringResource(R.string.back)
+                            )
                         }
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
                     }
                 }
             )

@@ -36,7 +36,7 @@ import com.jgeek00.ServerStatus.navigation.NavigationManager
 import com.jgeek00.ServerStatus.navigation.Routes
 
 @Composable
-fun CpuCard(values: CPU) {
+fun CpuCard(values: CPU, viewDetails: () -> Unit) {
     val configuration = LocalConfiguration.current
     val screenWidthDp = configuration.screenWidthDp.dp
     val gaugeWidth = if ((screenWidthDp/2 - 64.dp) <= 100.dp) screenWidthDp/2 - 64.dp else 100.dp
@@ -120,7 +120,7 @@ fun CpuCard(values: CPU) {
         ) {
             Button(
                 onClick = {
-                    NavigationManager.getInstance().navigateTo(Routes.ROUTE_CPU_DETAILS)
+                    viewDetails()
                 }
             ) {
                 Row(

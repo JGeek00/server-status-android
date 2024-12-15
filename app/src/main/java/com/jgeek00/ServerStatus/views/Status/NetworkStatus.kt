@@ -36,7 +36,7 @@ import com.jgeek00.ServerStatus.utils.formatBytes
 import java.util.Locale
 
 @Composable
-fun NetworkCard(current: Network, previous: Network?) {
+fun NetworkCard(current: Network, previous: Network?, viewDetails: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -136,7 +136,7 @@ fun NetworkCard(current: Network, previous: Network?) {
             ) {
                 Button(
                     onClick = {
-                        NavigationManager.getInstance().navigateTo(Routes.ROUTE_NETWORK_DETAILS)
+                        viewDetails()
                     }
                 ) {
                     Row(

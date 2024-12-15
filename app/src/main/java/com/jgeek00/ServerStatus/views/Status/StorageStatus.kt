@@ -36,7 +36,7 @@ import com.jgeek00.ServerStatus.navigation.Routes
 import com.jgeek00.ServerStatus.utils.formatStorage
 
 @Composable
-fun StorageCard(values: List<Storage>) {
+fun StorageCard(values: List<Storage>, viewDetails: () -> Unit) {
     val configuration = LocalConfiguration.current
     val screenWidthDp = configuration.screenWidthDp.dp
 
@@ -122,7 +122,7 @@ fun StorageCard(values: List<Storage>) {
         ) {
             Button(
                 onClick = {
-                    NavigationManager.getInstance().navigateTo(Routes.ROUTE_STORAGE_DETAILS)
+                    viewDetails()
                 }
             ) {
                 Row(

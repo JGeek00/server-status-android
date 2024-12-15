@@ -48,7 +48,7 @@ import androidx.compose.runtime.remember as remember
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MemoryDetails() {
+fun MemoryDetails(tabletMode: Boolean) {
     val context = LocalContext.current
 
     val statusRepository = remember {
@@ -80,15 +80,17 @@ fun MemoryDetails() {
                     )
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            NavigationManager.getInstance().popBack()
+                    if (!tabletMode) {
+                        IconButton(
+                            onClick = {
+                                NavigationManager.getInstance().popBack()
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = stringResource(R.string.back)
+                            )
                         }
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
                     }
                 }
             )

@@ -15,5 +15,7 @@ class Routes {
         const val ROUTE_MEMORY_DETAILS = "memory-details"
         const val ROUTE_STORAGE_DETAILS = "storage-details"
         const val ROUTE_NETWORK_DETAILS = "network-details"
+
+        const val ROUTE_EMPTY = "route-empty"
     }
 }

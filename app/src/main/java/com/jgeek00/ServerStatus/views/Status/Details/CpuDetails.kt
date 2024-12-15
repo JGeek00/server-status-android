@@ -86,7 +86,7 @@ import dagger.hilt.android.EntryPointAccessors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CpuDetails() {
+fun CpuDetails(tabletMode: Boolean) {
     val context = LocalContext.current
 
     val statusRepository = remember {
@@ -118,15 +118,17 @@ fun CpuDetails() {
                     )
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            NavigationManager.getInstance().popBack()
+                    if (!tabletMode) {
+                        IconButton(
+                            onClick = {
+                                NavigationManager.getInstance().popBack()
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = stringResource(R.string.back)
+                            )
                         }
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
                     }
                 }
             )

@@ -49,7 +49,7 @@ import dagger.hilt.android.EntryPointAccessors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StorageDetails() {
+fun StorageDetails(tabletMode: Boolean) {
     val context = LocalContext.current
 
     val statusRepository = remember {
@@ -81,15 +81,17 @@ fun StorageDetails() {
                     )
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            NavigationManager.getInstance().popBack()
+                    if (!tabletMode) {
+                        IconButton(
+                            onClick = {
+                                NavigationManager.getInstance().popBack()
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = stringResource(R.string.back)
+                            )
                         }
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
                     }
                 }
             )
