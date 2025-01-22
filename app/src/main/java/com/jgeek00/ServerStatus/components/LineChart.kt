@@ -24,8 +24,8 @@ import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianLayerRangeProvider
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
-import com.patrykandpatrick.vico.core.common.Dimensions
 import com.patrykandpatrick.vico.core.common.Fill
+import com.patrykandpatrick.vico.core.common.Insets
 import com.patrykandpatrick.vico.core.common.component.Shadow
 import com.patrykandpatrick.vico.core.common.component.ShapeComponent
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
@@ -79,7 +79,7 @@ fun LineChart(
 @Composable
 private fun rememberMarker(): DefaultCartesianMarker {
     val label = rememberTextComponent(
-        padding = Dimensions(horizontalDp = 8f, verticalDp = 4f),
+        padding = Insets(horizontalDp = 8f, verticalDp = 4f),
         background = ShapeComponent(
             fill = Fill(MaterialTheme.colorScheme.primaryContainer.toArgb()),
             shadow = Shadow(
@@ -90,7 +90,7 @@ private fun rememberMarker(): DefaultCartesianMarker {
         ),
         color = MaterialTheme.colorScheme.onPrimaryContainer,
         typeface = android.graphics.Typeface.DEFAULT_BOLD,
-        margins = Dimensions(bottomDp = 8f)
+        margins = Insets(bottomDp = 8f)
     )
     val indicator = rememberShapeComponent(
         fill = Fill(MaterialTheme.colorScheme.primary.toArgb()),
