@@ -6,15 +6,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisTickComponent
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
+import com.patrykandpatrick.vico.compose.common.ProvideVicoTheme
 import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 import com.patrykandpatrick.vico.compose.common.fill
+import com.patrykandpatrick.vico.compose.m3.common.rememberM3VicoTheme
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
@@ -27,15 +30,7 @@ import com.patrykandpatrick.vico.core.common.component.Shadow
 import com.patrykandpatrick.vico.core.common.component.ShapeComponent
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
 
-class ChartRange {
-    val min: Double
-    val max: Double
-
-    constructor(min: Double, max: Double) {
-        this.min = min
-        this.max = max
-    }
-}
+class ChartRange(val min: Double, val max: Double)
 
 @Composable
 fun LineChart(
@@ -43,34 +38,42 @@ fun LineChart(
     range: ChartRange? = null,
     modifier: Modifier = Modifier
 ) {
-    CartesianChartHost(
-        chart = rememberCartesianChart(
-            layers = arrayOf(
-                rememberLineCartesianLayer(
-                    rangeProvider = if (range != null) CartesianLayerRangeProvider.fixed(minY = range.min, maxY = range.max) else CartesianLayerRangeProvider.auto(),
-                    lineProvider = LineCartesianLayer.LineProvider.series(
-                        LineCartesianLayer.rememberLine(
-                            fill = LineCartesianLayer.LineFill.single(fill(MaterialTheme.colorScheme.primary)),
-                            areaFill = LineCartesianLayer.AreaFill.single(fill(MaterialTheme.colorScheme.primary.copy(alpha = 0.25f))),
+    ProvideVicoTheme(
+        rememberM3VicoTheme()
+    ) {
+        CartesianChartHost(
+            chart = rememberCartesianChart(
+                layers = arrayOf(
+                    rememberLineCartesianLayer(
+                        rangeProvider = if (range != null) CartesianLayerRangeProvider.fixed(minY = range.min, maxY = range.max) else CartesianLayerRangeProvider.auto(),
+                        lineProvider = LineCartesianLayer.LineProvider.series(
+                            LineCartesianLayer.rememberLine(
+                                fill = LineCartesianLayer.LineFill.single(fill(MaterialTheme.colorScheme.primary)),
+                                areaFill = LineCartesianLayer.AreaFill.single(fill(MaterialTheme.colorScheme.primary.copy(alpha = 0.25f))),
+                            )
                         )
+                    ),
+                ),
+                startAxis = VerticalAxis.rememberStart(
+                    tick = rememberAxisTickComponent(
+                        fill = Fill.Transparent
                     )
                 ),
+                bottomAxis = HorizontalAxis.rememberBottom(
+                    label = null,
+                    guideline = null,
+                    tickLength = 0.dp
+                ),
+                marker = rememberMarker()
             ),
-            startAxis = VerticalAxis.rememberStart(),
-            bottomAxis = HorizontalAxis.rememberBottom(
-                label = null,
-                guideline = null,
-                tickLength = 0.dp
+            modelProducer = modelProducer,
+            animationSpec = null,
+            scrollState = rememberVicoScrollState(
+                scrollEnabled = false
             ),
-            marker = rememberMarker()
-        ),
-        modelProducer = modelProducer,
-        animationSpec = null,
-        scrollState = rememberVicoScrollState(
-            scrollEnabled = false
-        ),
-        modifier = modifier
-    )
+            modifier = modifier
+        )
+    }
 }
 
 @Composable
