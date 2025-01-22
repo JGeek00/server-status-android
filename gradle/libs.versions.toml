@@ -60,21 +60,21 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
-androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version = "1.10.0" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version = "2025.01.00" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3", version = "1.4.0-alpha02" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version = "1.4.0-alpha06" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version = "2.9.0-alpha01" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version = "2.9.0-alpha04" }
 androidx-sqlite-ktx = { group = "androidx.sqlite", name = "sqlite-ktx", version.ref = "sqliteKtx" }
-androidx-material = { group = "androidx.compose.material", name = "material", version.ref = "material" }
-androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
-androidx-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "animation" }
+androidx-material = { group = "androidx.compose.material", name = "material", version = "1.8.0-alpha08" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version = "1.1.2" }
+androidx-animation = { group = "androidx.compose.animation", name = "animation", version = "1.8.0-alpha08" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktorClientAndroid" }
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorClientAuth" }
@@ -87,8 +87,8 @@ ktor-client-core-v230 = { module = "io.ktor:ktor-client-core", version.ref = "kt
 ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktorClientSerialization" }
 ktor-serialization-gson = { module = "io.ktor:ktor-serialization-gson", version.ref = "ktorSerializationGson" }
 ktor-serialization-gson-v230 = { module = "io.ktor:ktor-serialization-gson", version.ref = "ktorSerializationGsonVersion" }
-material3 = { group = "androidx.compose.material3", name = "material3", version = "1.4.0-alpha02" }
-androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
+material3 = { group = "androidx.compose.material3", name = "material3", version = "1.4.0-alpha06" }
+androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version = "1.7.6" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "converterGson" }
 billingclient-billing-ktx = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "billingKtx" }

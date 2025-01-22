@@ -50,6 +50,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.PopupPositionProvider
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.di.StatusRepositoryEntryPoint
 import com.jgeek00.ServerStatus.navigation.NavigationManager
@@ -124,7 +125,7 @@ fun GeneralStatus(
                 },
                 actions = {
                     TooltipBox(
-                        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+                        positionProvider = TooltipDefaults.rememberTooltipPositionProvider(),
                         tooltip = {
                             PlainTooltip { Text(stringResource(R.string.settings)) }
                         },

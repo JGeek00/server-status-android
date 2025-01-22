@@ -217,7 +217,7 @@ fun StatusView() {
                     },
                     actions = {
                         TooltipBox(
-                            positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+                            positionProvider = TooltipDefaults.rememberTooltipPositionProvider(),
                             tooltip = {
                                 PlainTooltip { Text(stringResource(R.string.settings)) }
                             },
