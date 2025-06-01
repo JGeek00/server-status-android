@@ -1,11 +1,5 @@
 package com.jgeek00.ServerStatus.navigation
 
-import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,32 +44,24 @@ fun AppNavigation() {
 
     NavHost(
         navController = navigationController,
-        startDestination = if (NavigationManager.getInstance().onboardingCompleted.value) Routes.ROUTE_STATUS else Routes.ONBOARDING
+        startDestination = if (NavigationManager.getInstance().onboardingCompleted.value) Routes.ROUTE_STATUS else Routes.ONBOARDING,
+        enterTransition = { enterTransition },
+        exitTransition = { exitTransition },
+        popEnterTransition = { popEnterTransition },
+        popExitTransition = { popExitTransition }
     ) {
         composable(
             route = Routes.ROUTE_STATUS,
-            enterTransition = { enterTransition },
-            exitTransition = { exitTransition },
-            popEnterTransition = { popEnterTransition },
-            popExitTransition = { popExitTransition }
         ) {
             StatusView()
         }
         composable(
             route = Routes.ROUTE_SETTINGS,
-            enterTransition = { enterTransition },
-            exitTransition = { exitTransition },
-            popEnterTransition = { popEnterTransition },
-            popExitTransition = { popExitTransition }
         ) {
             SettingsView()
         }
         composable(
             route = Routes.ROUTE_SERVER_FORM,
-            enterTransition = { enterTransition },
-            exitTransition = { exitTransition },
-            popEnterTransition = { popEnterTransition },
-            popExitTransition = { popExitTransition },
             arguments = listOf(
                 navArgument(name = Routes.ARG_SERVER_ID) { type = NavType.StringType; nullable = true },
             )
@@ -84,49 +70,28 @@ fun AppNavigation() {
         }
         composable(
             route = Routes.ONBOARDING,
-            enterTransition = { enterTransition },
-            exitTransition = { exitTransition },
-            popEnterTransition = { popEnterTransition },
-            popExitTransition = { popExitTransition },
         ) {
             OnboardingView()
         }
         composable(
             route = Routes.ROUTE_CPU_DETAILS,
-            enterTransition = { enterTransition },
-            exitTransition = { exitTransition },
-            popEnterTransition = { popEnterTransition },
-            popExitTransition = { popExitTransition },
         ) {
             CpuDetails(false)
         }
         composable(
             route = Routes.ROUTE_MEMORY_DETAILS,
-            enterTransition = { enterTransition },
-            exitTransition = { exitTransition },
-            popEnterTransition = { popEnterTransition },
-            popExitTransition = { popExitTransition },
         ) {
             MemoryDetails(false)
         }
         composable(
             route = Routes.ROUTE_STORAGE_DETAILS,
-            enterTransition = { enterTransition },
-            exitTransition = { exitTransition },
-            popEnterTransition = { popEnterTransition },
-            popExitTransition = { popExitTransition },
         ) {
             StorageDetails(false)
         }
         composable(
             route = Routes.ROUTE_NETWORK_DETAILS,
-            enterTransition = { enterTransition },
-            exitTransition = { exitTransition },
-            popEnterTransition = { popEnterTransition },
-            popExitTransition = { popExitTransition },
         ) {
             NetworkDetails(false)
         }
-
     }
 }
