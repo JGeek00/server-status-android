@@ -112,7 +112,9 @@ fun CpuDetails(tabletMode: Boolean) {
                 .padding(padding)
         ) {
             if (last?.cpu?.cpuCores != null) {
-                val maxTemp = last.cpu.cpuCores.map { if (it.temperatures != null) it.temperatures[0] else 0 }.max()
+                val maxTemp =
+                    last.cpu.cpuCores.mapNotNull { if (!it.temperatures.isNullOrEmpty()) it.temperatures[0] else 0.0 }
+                        .max()
 
                 item {
                     SectionHeader(title = stringResource(R.string.information))
@@ -147,7 +149,7 @@ fun CpuDetails(tabletMode: Boolean) {
                     }
                     ListTile(
                         label = stringResource(R.string.temperature),
-                        supportingText = "${maxTemp}°C"
+                        supportingText = "${maxTemp.toInt()}°C"
                     )
                 }
                 items(last.cpu.cpuCores.size) { coreIndex ->
@@ -172,8 +174,12 @@ private fun CpuCoreCharts(data: List<StatusResult>, coreIndex: Int) {
         val freqsChart = if (freqsValues.size < 20) freqsValues.padEnd(20, 0f) else freqsValues
 
         val coreTemps = sliced.mapNotNull { it.cpu?.cpuCores?.get(coreIndex)?.temperatures }
-        val maxTemp = coreTemps.maxOfOrNull { it[1] }?.toDouble()
-        val tempsValues = coreTemps.map { (it[0]).toFloat() }
+        val maxTemp = coreTemps.flatten().filterNotNull().maxOrNull()
+        val tempsValues = coreTemps.map {
+            val filtered = it.filterNotNull()
+            if (filtered.isNotEmpty()) filtered[0]
+            else 0
+        }
         val tempsChart = if (tempsValues.size < 20) tempsValues.padEnd(20, 0f) else tempsValues
 
 

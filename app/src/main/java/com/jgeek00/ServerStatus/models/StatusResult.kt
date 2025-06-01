@@ -18,7 +18,7 @@ data class CPU (
 )
 
 data class CPUCore (
-    val temperatures: List<Long>? = null,
+    val temperatures: List<Double?>? = null,
     val frequencies: Frequencies? = null
 )
 

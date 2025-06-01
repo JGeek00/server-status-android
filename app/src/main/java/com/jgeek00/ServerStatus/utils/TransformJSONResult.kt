@@ -17,19 +17,40 @@ fun transformStatusJSON(input: JsonElement): JsonElement {
             val temperatures = cpu.getAsJsonObject("temperatures")
             val frequencies = cpu.getAsJsonObject("frequencies")
 
-            frequencies?.entrySet()?.forEach { (index, values) ->
+            val sortedFrequencies = frequencies?.entrySet()
+                ?.map { entry ->
+                    val cpuNumber = entry.key.removePrefix("cpu").toIntOrNull()
+                    cpuNumber to entry
+                }
+                ?.filter { it.first != null }
+                ?.sortedBy { it.first }
+                ?.associateTo(LinkedHashMap()) { it.second.key to it.second.value }
+
+            sortedFrequencies?.forEach { (index, values) ->
                 val coreData = JsonObject()
                 val coreIndex = index.replace("cpu", "")
-                val coreTemperature = temperatures?.getAsJsonArray("Core $coreIndex")
-                if (coreTemperature != null) {
-                    coreData.add("temperatures", coreTemperature)
-                }
-                coreData.add("frequencies", JsonObject().apply {
-                    values.asJsonObject.entrySet().forEach { (k, v) ->
-                        addProperty(k, v.asInt)
+
+                val cpuTemps = cpu.getAsJsonObject("temperatures")
+                if (cpuTemps.has("Tctl")) {
+                    val temp = cpuTemps.getAsJsonArray("Tctl")
+                    if (temp != null) {
+                        coreData.add("temperatures", temp)
                     }
-                })
-                coresData.add(coreData)
+                    coreData.add("frequencies", values)
+                    coresData.add(coreData)
+                }
+                else {
+                    val coreTemperature = temperatures?.getAsJsonArray("Core $coreIndex")
+                    if (coreTemperature != null) {
+                        coreData.add("temperatures", coreTemperature)
+                    }
+                    coreData.add("frequencies", JsonObject().apply {
+                        values.asJsonObject.entrySet().forEach { (k, v) ->
+                            addProperty(k, v.asInt)
+                        }
+                    })
+                    coresData.add(coreData)
+                }
             }
 
             cpu.remove("frequencies")
