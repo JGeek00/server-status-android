@@ -1,6 +1,7 @@
 package com.jgeek00.ServerStatus.views.Status.Details
 
 import android.content.res.Configuration
+import androidx.compose.animation.core.snap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -35,12 +37,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.lerp
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jgeek00.ServerStatus.R
@@ -73,6 +80,12 @@ import com.patrykandpatrick.vico.core.common.component.Shadow
 import com.patrykandpatrick.vico.core.common.component.ShapeComponent
 import com.patrykandpatrick.vico.core.common.shape.CorneredShape
 import dagger.hilt.android.EntryPointAccessors
+import ir.ehsannarmani.compose_charts.LineChart
+import ir.ehsannarmani.compose_charts.models.DrawStyle
+import ir.ehsannarmani.compose_charts.models.HorizontalIndicatorProperties
+import ir.ehsannarmani.compose_charts.models.LabelHelperProperties
+import ir.ehsannarmani.compose_charts.models.Line
+import ir.ehsannarmani.compose_charts.models.PopupProperties
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -170,10 +183,11 @@ fun NetworkDetails(tabletMode: Boolean) {
 
 @Composable
 private fun NetworkChart(data: List<StatusResult>) {
-    val modelProducer = remember { CartesianChartModelProducer() }
-
     var previousTx by remember { mutableStateOf<List<Double>>(emptyList()) }
     var previousRx by remember { mutableStateOf<List<Double>>(emptyList()) }
+
+    var txChart by remember { mutableStateOf<List<Double>>(emptyList()) }
+    var rxChart by remember { mutableStateOf<List<Double>>(emptyList()) }
 
     LaunchedEffect(data) {
         if (data.size <= 1) return@LaunchedEffect
@@ -187,120 +201,81 @@ private fun NetworkChart(data: List<StatusResult>) {
         val currentTx = current.network.tx.toDouble().minus(previous.network.tx.toDouble())/1000
         val currentRx = current.network.rx.toDouble().minus(previous.network.rx.toDouble())/1000
 
-        val newTx = (previousTx + currentTx)
-        val newRx = previousRx + currentRx
+        val newTx = listOf(currentTx) + previousTx
+        val newRx = listOf(currentRx) + previousRx
 
-        val txChart = if (newTx.size < 20) newTx.padEnd(20, 0f) else newTx.takeLast(20)
-        val rxChart = if (newRx.size < 20) newRx.padEnd(20, 0f) else newRx.takeLast(20)
-
-        modelProducer.runTransaction {
-            lineSeries { series(txChart) }
-            lineSeries { series(rxChart) }
-        }
+        txChart = if (newTx.size < 20) newTx.padEnd(20, 0.0) else newTx.take(20)
+        rxChart = if (newRx.size < 20) newRx.padEnd(20, 0.0) else newRx.take(20)
 
         previousTx = newTx
         previousRx = newRx
     }
 
-    Column {
-        CartesianChartHost(
-            chart = rememberCartesianChart(
-                layers = arrayOf(
-                    rememberLineCartesianLayer(
-                        lineProvider = LineCartesianLayer.LineProvider.series(
-                            LineCartesianLayer.rememberLine(
-                                fill = LineCartesianLayer.LineFill.single(fill(MaterialTheme.colorScheme.primary)),
-                                areaFill = LineCartesianLayer.AreaFill.single(fill(MaterialTheme.colorScheme.primary.copy(alpha = 0.25f))),
-                            )
-                        )
+    LineChart(
+        modifier = Modifier
+            .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 32.dp)
+            .height(400.dp),
+        data = listOf(
+            Line(
+                label = "TX (Kbit/s)",
+                values = txChart,
+                color = SolidColor(MaterialTheme.colorScheme.primary),
+                drawStyle = DrawStyle.Stroke(width = 2.dp),
+                firstGradientFillColor = SolidColor(MaterialTheme.colorScheme.primary).value.copy(alpha = 0.75f),
+                secondGradientFillColor = Color.Transparent,
+                gradientAnimationDelay = 0,
+                gradientAnimationSpec = snap(),
+                strokeAnimationSpec = snap(),
+                curvedEdges = true,
+                popupProperties = PopupProperties(
+                    enabled = true,
+                    animationSpec = snap(),
+                    duration = 0,
+                    mode = PopupProperties.Mode.PointMode(),
+                    textStyle = TextStyle(
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        fontWeight = FontWeight.SemiBold
                     ),
-                    rememberLineCartesianLayer(
-                        lineProvider = LineCartesianLayer.LineProvider.series(
-                            LineCartesianLayer.rememberLine(
-                                fill = LineCartesianLayer.LineFill.single(fill(MaterialTheme.colorScheme.secondary)),
-                                areaFill = LineCartesianLayer.AreaFill.single(fill(MaterialTheme.colorScheme.secondary.copy(alpha = 0.25f))),
-                            )
-                        )
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentBuilder = { _, _, value -> String.format("%.2f", value) },
+                    contentVerticalPadding = 6.dp,
+                    contentHorizontalPadding = 12.dp,
+                    cornerRadius = 6.dp
+                )
+            ),
+            Line(
+                label = "RX (Kbit/s)",
+                values = rxChart,
+                color = SolidColor(MaterialTheme.colorScheme.secondary),
+                drawStyle = DrawStyle.Stroke(width = 2.dp),
+                firstGradientFillColor = SolidColor(MaterialTheme.colorScheme.secondary).value.copy(alpha = 0.75f),
+                secondGradientFillColor = Color.Transparent,
+                gradientAnimationDelay = 0,
+                gradientAnimationSpec = snap(),
+                strokeAnimationSpec = snap(),
+                curvedEdges = true,
+                popupProperties = PopupProperties(
+                    enabled = true,
+                    animationSpec = snap(),
+                    duration = 0,
+                    mode = PopupProperties.Mode.PointMode(),
+                    textStyle = TextStyle(
+                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        fontWeight = FontWeight.SemiBold
                     ),
-                ),
-                startAxis = VerticalAxis.rememberStart(
-                    tick = rememberAxisTickComponent(
-                        fill = Fill.Transparent
-                    )
-                ),
-                bottomAxis = HorizontalAxis.rememberBottom(
-                    label = null,
-                    guideline = null,
-                    tickLength = 0.dp
-                ),
-                marker = rememberMarker()
-            ),
-            modelProducer = modelProducer,
-            animationSpec = null,
-            scrollState = rememberVicoScrollState(
-                scrollEnabled = false
-            ),
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-        )
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(top = 8.dp, start = 24.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(12.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary)
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentBuilder = { _, _, value -> String.format("%.2f", value) },
+                    contentVerticalPadding = 6.dp,
+                    contentHorizontalPadding = 12.dp,
+                    cornerRadius = 6.dp
+                )
             )
-            Spacer(Modifier.width(8.dp))
-            Text(
-                text = "TX (Kbit/s)",
-                fontSize = 12.sp
-            )
-            Spacer(Modifier.width(24.dp))
-            Box(
-                modifier = Modifier
-                    .size(12.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.secondary)
-            )
-            Spacer(Modifier.width(8.dp))
-            Text(
-                text = "RX (Kbit/s)",
-                fontSize = 12.sp
-            )
-        }
-    }
-}
-
-@Composable
-private fun rememberMarker(): DefaultCartesianMarker {
-    val label = rememberTextComponent(
-        padding = Insets(horizontalDp = 8f, verticalDp = 4f),
-        background = ShapeComponent(
-            fill = Fill(MaterialTheme.colorScheme.primaryContainer.toArgb()),
-            shadow = Shadow(
-                radiusDp = 4f,
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.4f).toArgb()
-            ),
-            shape = CorneredShape.Pill
         ),
-        color = MaterialTheme.colorScheme.onPrimaryContainer,
-        typeface = android.graphics.Typeface.DEFAULT_BOLD,
-        margins = Insets(bottomDp = 8f)
-    )
-    val indicator = rememberShapeComponent(
-        fill = Fill(MaterialTheme.colorScheme.primary.toArgb()),
-        strokeThickness = 8.dp,
-        shape = CorneredShape.Pill
-    )
-
-    return DefaultCartesianMarker(
-        label = label,
-        labelPosition = DefaultCartesianMarker.LabelPosition.AbovePoint,
-        indicator = { _ -> indicator },
+        animationDelay = 0,
+        curvedEdges = false,
+        indicatorProperties = HorizontalIndicatorProperties(
+            enabled = true,
+            contentBuilder = { String.format("%.2f", it) },
+        )
     )
 }
