@@ -1,6 +1,7 @@
 package com.jgeek00.ServerStatus.components
 
 import androidx.compose.animation.core.snap
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -8,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ir.ehsannarmani.compose_charts.LineChart
 import ir.ehsannarmani.compose_charts.models.DrawStyle
@@ -68,6 +70,10 @@ fun LineChart2(
         indicatorProperties = HorizontalIndicatorProperties(
             enabled = true,
             contentBuilder = axisFormatter ?: { it.toInt().toString() },
+            textStyle = TextStyle(
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.End
+            )
         )
     )
 }

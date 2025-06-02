@@ -276,6 +276,15 @@ private fun NetworkChart(data: List<StatusResult>) {
         indicatorProperties = HorizontalIndicatorProperties(
             enabled = true,
             contentBuilder = { String.format("%.2f", it) },
+            textStyle = TextStyle(
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        ),
+        labelHelperProperties = LabelHelperProperties(
+            enabled = true,
+            textStyle = TextStyle(
+                color = MaterialTheme.colorScheme.onSurface
+            )
         )
     )
 }
