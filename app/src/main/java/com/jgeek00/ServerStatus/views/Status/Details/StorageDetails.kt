@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,7 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -34,17 +34,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jgeek00.ServerStatus.R
-import com.jgeek00.ServerStatus.components.ChartRange
 import com.jgeek00.ServerStatus.components.LineChart
 import com.jgeek00.ServerStatus.components.ListTile
 import com.jgeek00.ServerStatus.components.SectionHeader
 import com.jgeek00.ServerStatus.di.StatusRepositoryEntryPoint
 import com.jgeek00.ServerStatus.models.StatusResult
 import com.jgeek00.ServerStatus.navigation.NavigationManager
-import com.jgeek00.ServerStatus.utils.formatMemory
 import com.jgeek00.ServerStatus.utils.formatStorage
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import dagger.hilt.android.EntryPointAccessors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -164,21 +160,22 @@ private fun StorageItem(data: List<StatusResult>, index: Int) {
 
 @Composable
 private fun StorageChart(data: List<StatusResult>, index: Int) {
-    val usageModelProducer = remember { CartesianChartModelProducer() }
-
     val maxValue = data.mapNotNull { if (it.memory?.total != null) it.storage?.get(index)?.total else null }.max()
 
-    LaunchedEffect(data) {
-        val slicedValues = if (data.size > 20) data.reversed().slice(0..19) else data.reversed()
-        val values = slicedValues.mapNotNull { if (it.storage?.get(index)?.total != null && it.storage.get(index).available != null) it.storage.get(index).total!! - it.storage.get(index).available!! else null }
-
-        usageModelProducer.runTransaction { lineSeries { series(values.map { it/1073741824 }) } }
-    }
+    val slicedValues = if (data.size > 20) data.reversed().slice(0..19) else data.reversed()
+    val values = slicedValues.mapNotNull { if (it.storage?.get(index)?.total != null && it.storage.get(index).available != null) it.storage.get(index).total!! - it.storage.get(index).available!! else null }
+    val chartValues = values.map { it/1073741824 }
 
     LineChart(
-        modelProducer = usageModelProducer,
-        range = ChartRange(min = 0.0, max = maxValue/1073741824),
         modifier = Modifier
-            .padding(horizontal = 16.dp)
+            .height(300.dp)
+            .padding(16.dp),
+        values = chartValues,
+        color = MaterialTheme.colorScheme.primary,
+        secondaryColor = MaterialTheme.colorScheme.primaryContainer,
+        maxValue = maxValue/1073741824,
+        minValue = 0.0,
+        tooltipFormatter = { _, _, value -> String.format("%.2f", value) },
+        axisFormatter = { String.format("%.2f", it) }
     )
 }
