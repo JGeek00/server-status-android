@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -24,8 +23,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
@@ -36,20 +35,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jgeek00.ServerStatus.R
-import com.jgeek00.ServerStatus.components.ChartRange
 import com.jgeek00.ServerStatus.components.LineChart
-import com.jgeek00.ServerStatus.components.LineChart2
 import com.jgeek00.ServerStatus.components.ListTile
 import com.jgeek00.ServerStatus.components.SectionHeader
 import com.jgeek00.ServerStatus.di.StatusRepositoryEntryPoint
 import com.jgeek00.ServerStatus.models.StatusResult
 import com.jgeek00.ServerStatus.navigation.NavigationManager
-import com.jgeek00.ServerStatus.utils.cacheValue
 import com.jgeek00.ServerStatus.utils.formatMemory
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import dagger.hilt.android.EntryPointAccessors
-import androidx.compose.runtime.remember as remember
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -188,7 +181,7 @@ private fun MemoryChart(data: List<StatusResult>) {
     val values = slicedValues.mapNotNull { if (it.memory?.total != null && it.memory.available != null) it.memory.total - it.memory.available else null }
     val chartValues = values.map { it.toDouble()/1048576 }
 
-    LineChart2(
+    LineChart(
         modifier = Modifier
             .height(300.dp)
             .padding(16.dp),

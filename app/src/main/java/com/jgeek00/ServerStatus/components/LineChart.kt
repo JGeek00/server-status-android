@@ -1,106 +1,79 @@
 package com.jgeek00.ServerStatus.components
 
+import androidx.compose.animation.core.snap
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisTickComponent
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
-import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
-import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
-import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
-import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
-import com.patrykandpatrick.vico.compose.common.ProvideVicoTheme
-import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
-import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
-import com.patrykandpatrick.vico.compose.common.fill
-import com.patrykandpatrick.vico.compose.m3.common.rememberM3VicoTheme
-import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
-import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianLayerRangeProvider
-import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
-import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
-import com.patrykandpatrick.vico.core.common.Fill
-import com.patrykandpatrick.vico.core.common.Insets
-import com.patrykandpatrick.vico.core.common.component.Shadow
-import com.patrykandpatrick.vico.core.common.component.ShapeComponent
-import com.patrykandpatrick.vico.core.common.shape.CorneredShape
-
-class ChartRange(val min: Double, val max: Double)
+import ir.ehsannarmani.compose_charts.LineChart
+import ir.ehsannarmani.compose_charts.models.DrawStyle
+import ir.ehsannarmani.compose_charts.models.HorizontalIndicatorProperties
+import ir.ehsannarmani.compose_charts.models.LabelHelperProperties
+import ir.ehsannarmani.compose_charts.models.Line
+import ir.ehsannarmani.compose_charts.models.PopupProperties
 
 @Composable
 fun LineChart(
-    modelProducer: CartesianChartModelProducer,
-    range: ChartRange? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    values: List<Double>,
+    color: Color,
+    secondaryColor: Color,
+    maxValue: Double,
+    minValue: Double,
+    axisFormatter: ((Double) -> String)? = null,
+    tooltipFormatter: ((Int, Int, Double) -> String)? = null
 ) {
-    ProvideVicoTheme(
-        rememberM3VicoTheme()
-    ) {
-        CartesianChartHost(
-            chart = rememberCartesianChart(
-                layers = arrayOf(
-                    rememberLineCartesianLayer(
-                        rangeProvider = if (range != null) CartesianLayerRangeProvider.fixed(minY = range.min, maxY = range.max) else CartesianLayerRangeProvider.auto(),
-                        lineProvider = LineCartesianLayer.LineProvider.series(
-                            LineCartesianLayer.rememberLine(
-                                fill = LineCartesianLayer.LineFill.single(fill(MaterialTheme.colorScheme.primary)),
-                                areaFill = LineCartesianLayer.AreaFill.single(fill(MaterialTheme.colorScheme.primary.copy(alpha = 0.25f))),
-                            )
-                        )
-                    ),
-                ),
-                startAxis = VerticalAxis.rememberStart(
-                    tick = rememberAxisTickComponent(
-                        fill = Fill.Transparent
+    LineChart(
+        modifier = modifier,
+        data = remember(values) {
+            listOf(
+                Line(
+                    label = "",
+                    values = values,
+                    color = SolidColor(color),
+                    drawStyle = DrawStyle.Stroke(width = 2.dp),
+                    firstGradientFillColor = SolidColor(color).value.copy(alpha = 0.75f),
+                    secondGradientFillColor = Color.Transparent,
+                    gradientAnimationDelay = 0,
+                    gradientAnimationSpec = snap(),
+                    strokeAnimationSpec = snap(),
+                    curvedEdges = true,
+                    popupProperties = PopupProperties(
+                        enabled = true,
+                        animationSpec = snap(),
+                        duration = 0,
+                        mode = PopupProperties.Mode.PointMode(),
+                        textStyle = TextStyle(
+                            color = secondaryColor,
+                            fontWeight = FontWeight.SemiBold
+                        ),
+                        containerColor = color,
+                        contentBuilder = tooltipFormatter ?: { _, _, value -> value.toInt().toString() },
+                        contentVerticalPadding = 6.dp,
+                        contentHorizontalPadding = 12.dp,
+                        cornerRadius = 6.dp
                     )
-                ),
-                bottomAxis = HorizontalAxis.rememberBottom(
-                    label = null,
-                    guideline = null,
-                    tickLength = 0.dp
-                ),
-                marker = rememberMarker()
-            ),
-            modelProducer = modelProducer,
-            animationSpec = null,
-            scrollState = rememberVicoScrollState(
-                scrollEnabled = false
-            ),
-            modifier = modifier
+                )
+            )
+        },
+        animationDelay = 0,
+        maxValue = maxValue,
+        minValue = minValue,
+        labelHelperProperties = LabelHelperProperties(enabled = false),
+        curvedEdges = false,
+        indicatorProperties = HorizontalIndicatorProperties(
+            enabled = true,
+            contentBuilder = axisFormatter ?: { it.toInt().toString() },
+            textStyle = TextStyle(
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.End
+            )
         )
-    }
-}
-
-@Composable
-private fun rememberMarker(): DefaultCartesianMarker {
-    val label = rememberTextComponent(
-        padding = Insets(horizontalDp = 8f, verticalDp = 4f),
-        background = ShapeComponent(
-            fill = Fill(MaterialTheme.colorScheme.primaryContainer.toArgb()),
-            shadow = Shadow(
-                radiusDp = 4f,
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.4f).toArgb()
-            ),
-            shape = CorneredShape.Pill
-        ),
-        color = MaterialTheme.colorScheme.onPrimaryContainer,
-        typeface = android.graphics.Typeface.DEFAULT_BOLD,
-        margins = Insets(bottomDp = 8f)
-    )
-    val indicator = rememberShapeComponent(
-        fill = Fill(MaterialTheme.colorScheme.primary.toArgb()),
-        strokeThickness = 8.dp,
-        shape = CorneredShape.Pill
-    )
-
-    return DefaultCartesianMarker(
-        label = label,
-        labelPosition = DefaultCartesianMarker.LabelPosition.AbovePoint,
-        indicator = { _ -> indicator },
     )
 }

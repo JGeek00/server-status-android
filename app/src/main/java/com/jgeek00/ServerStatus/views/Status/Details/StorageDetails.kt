@@ -22,7 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -35,18 +34,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jgeek00.ServerStatus.R
-import com.jgeek00.ServerStatus.components.ChartRange
 import com.jgeek00.ServerStatus.components.LineChart
-import com.jgeek00.ServerStatus.components.LineChart2
 import com.jgeek00.ServerStatus.components.ListTile
 import com.jgeek00.ServerStatus.components.SectionHeader
 import com.jgeek00.ServerStatus.di.StatusRepositoryEntryPoint
 import com.jgeek00.ServerStatus.models.StatusResult
 import com.jgeek00.ServerStatus.navigation.NavigationManager
-import com.jgeek00.ServerStatus.utils.formatMemory
 import com.jgeek00.ServerStatus.utils.formatStorage
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import dagger.hilt.android.EntryPointAccessors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -172,7 +166,7 @@ private fun StorageChart(data: List<StatusResult>, index: Int) {
     val values = slicedValues.mapNotNull { if (it.storage?.get(index)?.total != null && it.storage.get(index).available != null) it.storage.get(index).total!! - it.storage.get(index).available!! else null }
     val chartValues = values.map { it/1073741824 }
 
-    LineChart2(
+    LineChart(
         modifier = Modifier
             .height(300.dp)
             .padding(16.dp),
