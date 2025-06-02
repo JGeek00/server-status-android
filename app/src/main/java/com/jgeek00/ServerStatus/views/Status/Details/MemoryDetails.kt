@@ -2,13 +2,17 @@ package com.jgeek00.ServerStatus.views.Status.Details
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.ChartRange
 import com.jgeek00.ServerStatus.components.LineChart
+import com.jgeek00.ServerStatus.components.LineChart2
 import com.jgeek00.ServerStatus.components.ListTile
 import com.jgeek00.ServerStatus.components.SectionHeader
 import com.jgeek00.ServerStatus.di.StatusRepositoryEntryPoint
@@ -101,70 +106,75 @@ fun MemoryDetails(tabletMode: Boolean) {
                 0.dp
             )
 
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(32.dp),
+        Column(
             modifier = Modifier
+                .verticalScroll(rememberScrollState())
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .windowInsetsPadding(displayCutout)
+                .windowInsetsPadding(
+                    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) displayCutout else WindowInsets(
+                        0.dp
+                    )
+                )
                 .padding(padding)
         ) {
             if (last?.memory != null) {
-
-                item {
-                    SectionHeader(title = stringResource(R.string.general_status))
-                    if (last.memory.total != null) {
-                        ListTile(
-                            label = stringResource(R.string.total),
-                            supportingText = formatMemory(last.memory.total)
-                        )
-                    }
-                    if (last.memory.available != null && last.memory.total != null) {
-                        val used = last.memory.total - last.memory.available
-                        ListTile(
-                            label = stringResource(R.string.In_use),
-                            supportingText = formatMemory(used)
-                        )
-                    }
-                    if (last.memory.available != null) {
-                        ListTile(
-                            label = stringResource(R.string.Available),
-                            supportingText = formatMemory(last.memory.available)
-                        )
-                    }
-                    if (last.memory.cached != null) {
-                        ListTile(
-                            label = stringResource(R.string.In_cache),
-                            supportingText = formatMemory(last.memory.cached)
-                        )
-                    }
-                    if (last.memory.swap_total != null) {
-                        ListTile(
-                            label = stringResource(R.string.swap_total),
-                            supportingText = formatMemory(last.memory.swap_total)
-                        )
-                    }
-                    if (last.memory.swap_available != null) {
-                        ListTile(
-                            label = stringResource(R.string.swap_available),
-                            supportingText = formatMemory(last.memory.swap_available)
-                        )
-                    }
+                SectionHeader(
+                    title = stringResource(R.string.general_status),
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp)
+                )
+                if (last.memory.total != null) {
+                    ListTile(
+                        label = stringResource(R.string.total),
+                        supportingText = formatMemory(last.memory.total)
+                    )
                 }
-                item {
-                    SectionHeader(title = stringResource(R.string.usage))
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = stringResource(R.string.memory_gb),
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 12.sp,
-                        )
-                    }
-                    MemoryChart(data = values)
+                if (last.memory.available != null && last.memory.total != null) {
+                    val used = last.memory.total - last.memory.available
+                    ListTile(
+                        label = stringResource(R.string.In_use),
+                        supportingText = formatMemory(used)
+                    )
                 }
+                if (last.memory.available != null) {
+                    ListTile(
+                        label = stringResource(R.string.Available),
+                        supportingText = formatMemory(last.memory.available)
+                    )
+                }
+                if (last.memory.cached != null) {
+                    ListTile(
+                        label = stringResource(R.string.In_cache),
+                        supportingText = formatMemory(last.memory.cached)
+                    )
+                }
+                if (last.memory.swap_total != null) {
+                    ListTile(
+                        label = stringResource(R.string.swap_total),
+                        supportingText = formatMemory(last.memory.swap_total)
+                    )
+                }
+                if (last.memory.swap_available != null) {
+                    ListTile(
+                        label = stringResource(R.string.swap_available),
+                        supportingText = formatMemory(last.memory.swap_available)
+                    )
+                }
+                SectionHeader(
+                    title = stringResource(R.string.usage),
+                    modifier = Modifier.padding(start = 16.dp, top = 32.dp)
+                )
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.memory_gb),
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 12.sp,
+                    )
+                }
+                MemoryChart(data = values)
             }
         }
     }
@@ -172,21 +182,22 @@ fun MemoryDetails(tabletMode: Boolean) {
 
 @Composable
 private fun MemoryChart(data: List<StatusResult>) {
-    val usageModelProducer = remember { CartesianChartModelProducer() }
+    val maxValue = data.mapNotNull { if (it.memory?.total != null) it.memory.total.toDouble() else null }.max()
 
-    val maxValue = data.mapNotNull { if (it.memory?.total != null) it.memory.total else null }.max()
+    val slicedValues = if (data.size > 20) data.reversed().slice(0..19) else data.reversed()
+    val values = slicedValues.mapNotNull { if (it.memory?.total != null && it.memory.available != null) it.memory.total - it.memory.available else null }
+    val chartValues = values.map { it.toDouble()/1048576 }
 
-    LaunchedEffect(data) {
-        val slicedValues = if (data.size > 20) data.reversed().slice(0..19) else data.reversed()
-        val values = slicedValues.mapNotNull { if (it.memory?.total != null && it.memory.available != null) it.memory.total - it.memory.available else null }
-
-        usageModelProducer.runTransaction { lineSeries { series(values.map { it.toDouble()/1048576 }) } }
-    }
-
-    LineChart(
-        modelProducer = usageModelProducer,
-        range = ChartRange(min = 0.0, max = (maxValue.toDouble())/1048576),
+    LineChart2(
         modifier = Modifier
-            .padding(horizontal = 16.dp)
+            .height(300.dp)
+            .padding(16.dp),
+        values = chartValues,
+        color = MaterialTheme.colorScheme.primary,
+        secondaryColor = MaterialTheme.colorScheme.primaryContainer,
+        maxValue = maxValue/1048576,
+        minValue = 0.0,
+        tooltipFormatter = { _, _, value -> String.format("%.2f", value) },
+        axisFormatter = { String.format("%.2f", it) }
     )
 }

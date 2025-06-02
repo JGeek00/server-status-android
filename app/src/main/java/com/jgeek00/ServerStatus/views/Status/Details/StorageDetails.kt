@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.jgeek00.ServerStatus.R
 import com.jgeek00.ServerStatus.components.ChartRange
 import com.jgeek00.ServerStatus.components.LineChart
+import com.jgeek00.ServerStatus.components.LineChart2
 import com.jgeek00.ServerStatus.components.ListTile
 import com.jgeek00.ServerStatus.components.SectionHeader
 import com.jgeek00.ServerStatus.di.StatusRepositoryEntryPoint
@@ -164,21 +166,22 @@ private fun StorageItem(data: List<StatusResult>, index: Int) {
 
 @Composable
 private fun StorageChart(data: List<StatusResult>, index: Int) {
-    val usageModelProducer = remember { CartesianChartModelProducer() }
-
     val maxValue = data.mapNotNull { if (it.memory?.total != null) it.storage?.get(index)?.total else null }.max()
 
-    LaunchedEffect(data) {
-        val slicedValues = if (data.size > 20) data.reversed().slice(0..19) else data.reversed()
-        val values = slicedValues.mapNotNull { if (it.storage?.get(index)?.total != null && it.storage.get(index).available != null) it.storage.get(index).total!! - it.storage.get(index).available!! else null }
+    val slicedValues = if (data.size > 20) data.reversed().slice(0..19) else data.reversed()
+    val values = slicedValues.mapNotNull { if (it.storage?.get(index)?.total != null && it.storage.get(index).available != null) it.storage.get(index).total!! - it.storage.get(index).available!! else null }
+    val chartValues = values.map { it/1073741824 }
 
-        usageModelProducer.runTransaction { lineSeries { series(values.map { it/1073741824 }) } }
-    }
-
-    LineChart(
-        modelProducer = usageModelProducer,
-        range = ChartRange(min = 0.0, max = maxValue/1073741824),
+    LineChart2(
         modifier = Modifier
-            .padding(horizontal = 16.dp)
+            .height(300.dp)
+            .padding(16.dp),
+        values = chartValues,
+        color = MaterialTheme.colorScheme.primary,
+        secondaryColor = MaterialTheme.colorScheme.primaryContainer,
+        maxValue = maxValue/1073741824,
+        minValue = 0.0,
+        tooltipFormatter = { _, _, value -> String.format("%.2f", value) },
+        axisFormatter = { String.format("%.2f", it) }
     )
 }

@@ -191,7 +191,9 @@ private fun CpuCoreCharts(data: List<StatusResult>, coreIndex: Int) {
         }
         val tempsChart = if (tempsValues.size < 20) tempsValues.padEnd(20, 0.0) else tempsValues
 
-        Column {
+        Column(
+            modifier = Modifier.padding(bottom = 16.dp)
+        ) {
             SectionHeader(
                 title = stringResource(R.string.core, coreIndex + 1),
                 modifier = Modifier
@@ -215,6 +217,7 @@ private fun CpuCoreCharts(data: List<StatusResult>, coreIndex: Int) {
                     .padding(16.dp),
                 values = freqsChart,
                 color = MaterialTheme.colorScheme.primary,
+                secondaryColor = MaterialTheme.colorScheme.primaryContainer,
                 maxValue = maxFreq ?: 0.0,
                 minValue = 0.0
             )
@@ -237,6 +240,7 @@ private fun CpuCoreCharts(data: List<StatusResult>, coreIndex: Int) {
                     .padding(horizontal = 16.dp),
                 values = tempsChart,
                 color = MaterialTheme.colorScheme.primary,
+                secondaryColor = MaterialTheme.colorScheme.primaryContainer,
                 maxValue = maxTemp ?: 0.0,
                 minValue = 0.0
             )
