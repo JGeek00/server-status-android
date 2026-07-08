@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "com.jgeek00.ServerStatus"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.jgeek00.ServerStatus"
         minSdk = 30
-        targetSdk = 35
+        targetSdk = 37
         versionCode = 19
         versionName = "1.2.2"
 
