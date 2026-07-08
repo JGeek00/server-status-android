@@ -14,11 +14,11 @@ data class CPU (
     val count: Long? = null,
     val cache: Long? = null,
     val cores: Long? = null,
-    val cpuCores: List<CPUCore>? = null
+    val cpuCores: List<CPUCore>? = null,
+    val temperature: List<Int>? = null
 )
 
 data class CPUCore (
-    val temperatures: List<Double?>? = null,
     val frequencies: Frequencies? = null
 )
 

@@ -113,10 +113,6 @@ fun CpuDetails(tabletMode: Boolean) {
                 .padding(p)
         ) {
             if (last?.cpu?.cpuCores != null) {
-                val maxTemp =
-                    last.cpu.cpuCores.mapNotNull { if (!it.temperatures.isNullOrEmpty()) it.temperatures[0] else 0.0 }
-                        .max()
-
                 SectionHeader(title = stringResource(R.string.information))
                 if (last.cpu.model != null) {
                     ListTile(
@@ -150,9 +146,25 @@ fun CpuDetails(tabletMode: Boolean) {
                         supportingText = "${(last.cpu.utilisation * 100).toInt()}%"
                     )
                 }
-                ListTile(
-                    label = stringResource(R.string.temperature),
-                    supportingText = "${maxTemp.toInt()}°C"
+
+                val reversed = if (values.size > 20) values.reversed().take(20) else values.reversed()
+                val tempValues = reversed.map { it.cpu?.temperature?.firstOrNull()?.toDouble() ?: 0.0 }
+                    .let { if (it.size < 20) it.padEnd(20, 0.0) else it }
+                val tempMax = maxOf(
+                    tempValues.maxOrNull() ?: 0.0,
+                    reversed.mapNotNull { it.cpu?.temperature?.getOrNull(1)?.toDouble() }.maxOrNull() ?: 0.0
+                )
+
+                SectionHeader(title = "Temperature (ºC)")
+                LineChart(
+                    modifier = Modifier
+                        .height(300.dp)
+                        .padding(16.dp),
+                    values = tempValues,
+                    color = MaterialTheme.colorScheme.primary,
+                    secondaryColor = MaterialTheme.colorScheme.primaryContainer,
+                    maxValue = tempMax,
+                    minValue = 0.0
                 )
 
                 List(size = last.cpu.cpuCores.size) {index -> index }.map {
@@ -172,15 +184,7 @@ private fun CpuCoreCharts(data: List<StatusResult>, coreIndex: Int) {
         val maxFreq = coreFreqs.maxOfOrNull { it.max ?: 0 }?.toDouble()
         val freqsValues = coreFreqs.map { (it.now ?: 0).toDouble() }
         val freqsChart = if (freqsValues.size < 20) freqsValues.padEnd(20, 0.0) else freqsValues
-
-        val coreTemps = sliced.mapNotNull { it.cpu?.cpuCores?.get(coreIndex)?.temperatures }
-        val maxTemp = coreTemps.flatten().filterNotNull().maxOrNull()
-        val tempsValues = coreTemps.map {
-            val filtered = it.filterNotNull()
-            if (filtered.isNotEmpty()) filtered[0]
-            else 0.0
-        }
-        val tempsChart = if (tempsValues.size < 20) tempsValues.padEnd(20, 0.0) else tempsValues
+        val freqMaxValue = maxOf(freqsValues.maxOrNull() ?: 0.0, maxFreq ?: 0.0)
 
         Column(
             modifier = Modifier.padding(bottom = 16.dp)
@@ -209,30 +213,7 @@ private fun CpuCoreCharts(data: List<StatusResult>, coreIndex: Int) {
                 values = freqsChart,
                 color = MaterialTheme.colorScheme.primary,
                 secondaryColor = MaterialTheme.colorScheme.primaryContainer,
-                maxValue = maxFreq ?: 0.0,
-                minValue = 0.0
-            )
-            Spacer(Modifier.height(16.dp))
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.temperature_c),
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-            }
-            LineChart(
-                modifier = Modifier
-                    .height(300.dp)
-                    .padding(horizontal = 16.dp),
-                values = tempsChart,
-                color = MaterialTheme.colorScheme.primary,
-                secondaryColor = MaterialTheme.colorScheme.primaryContainer,
-                maxValue = maxTemp ?: 0.0,
+                maxValue = freqMaxValue,
                 minValue = 0.0
             )
         }

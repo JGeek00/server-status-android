@@ -94,8 +94,7 @@ fun CpuCard(values: CPU, viewDetails: () -> Unit) {
                     }
                 )
             }
-            values.cpuCores?.let {
-                val maxTemp = ((it.map { core -> core.temperatures?.first() }.filter { temp -> temp != null }) as List<Long>).max()
+            values.temperature?.firstOrNull()?.let { maxTemp ->
                 Gauge(
                     value = "$maxTemp ºC",
                     colors = gaugeColors,
