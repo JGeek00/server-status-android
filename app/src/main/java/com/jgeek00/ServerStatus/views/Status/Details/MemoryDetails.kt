@@ -118,38 +118,38 @@ fun MemoryDetails(tabletMode: Boolean) {
                 if (last.memory.total != null) {
                     ListTile(
                         label = stringResource(R.string.total),
-                        supportingText = formatMemory(last.memory.total)
+                        supportingText = "${formatMemory(last.memory.total)} GB"
                     )
                 }
                 if (last.memory.available != null && last.memory.total != null) {
                     val used = last.memory.total - last.memory.available
                     ListTile(
                         label = stringResource(R.string.In_use),
-                        supportingText = formatMemory(used)
+                        supportingText = "${formatMemory(used)} GB"
                     )
                 }
                 if (last.memory.available != null) {
                     ListTile(
                         label = stringResource(R.string.Available),
-                        supportingText = formatMemory(last.memory.available)
+                        supportingText = "${formatMemory(last.memory.available)} GB"
                     )
                 }
                 if (last.memory.cached != null) {
                     ListTile(
                         label = stringResource(R.string.In_cache),
-                        supportingText = formatMemory(last.memory.cached)
+                        supportingText = "${formatMemory(last.memory.cached)} GB"
                     )
                 }
                 if (last.memory.swap_total != null) {
                     ListTile(
                         label = stringResource(R.string.swap_total),
-                        supportingText = formatMemory(last.memory.swap_total)
+                        supportingText = "${formatMemory(last.memory.swap_total)} GB"
                     )
                 }
                 if (last.memory.swap_available != null) {
                     ListTile(
                         label = stringResource(R.string.swap_available),
-                        supportingText = formatMemory(last.memory.swap_available)
+                        supportingText = "${formatMemory(last.memory.swap_available)} GB"
                     )
                 }
                 SectionHeader(
